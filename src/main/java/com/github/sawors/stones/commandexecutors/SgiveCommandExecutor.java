@@ -2,9 +2,10 @@ package com.github.sawors.stones.commandexecutors;
 
 import com.github.sawors.stones.Stones;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.*;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -13,12 +14,8 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.plugin.Plugin;
-import org.checkerframework.checker.units.qual.A;
 
-import javax.naming.Name;
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class SgiveCommandExecutor implements CommandExecutor {
     static NamespacedKey keywear = new NamespacedKey(Stones.getPlugin(Stones.class), "weartype");
@@ -208,6 +205,21 @@ public class SgiveCommandExecutor implements CommandExecutor {
                     meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
                     meta.getPersistentDataContainer().set(keytype, PersistentDataType.STRING, "dice6");
                     //meta.getPersistentDataContainer().set(keywear, PersistentDataType.STRING, ""); // if item is a wearable. Possible wearables : head, chest, legs, feet, ring
+                    //add item
+                    item.setItemMeta(meta);
+                    p.getInventory().addItem(item);
+                    return true;
+
+                case "iron_dagger":
+                    item.setType(Material.IRON_SWORD);
+                    meta.displayName(Component.text(ChatColor.GRAY +  "Iron Dagger"));
+                    meta.setLocalizedName("daggeriron");
+                    lore.add(Component.text(""));
+                    lore.add(Component.text(""));
+                    meta.lore(lore);
+                    //meta.setUnbreakable(false);
+                    meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+                    meta.getPersistentDataContainer().set(keytype, PersistentDataType.STRING, "dagger"); // set item type if it's needed (optional) (useful for instruments etc...)meta.getPersistentDataContainer().set(ison, PersistentDataType.INTEGER, 0); // set if item is "on" (1) or "off" (0), useful if you want to make an actionable item (flashlight, resonant crystal, instrument)
                     //add item
                     item.setItemMeta(meta);
                     p.getInventory().addItem(item);

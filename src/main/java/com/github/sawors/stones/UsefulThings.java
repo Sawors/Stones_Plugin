@@ -5,7 +5,7 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -173,8 +173,12 @@ public class UsefulThings {
      * @param victim the entity which is being attacked (typically EntityDamageByEntityEvent.getEntity())
      * @return true if the attacker is behind the victim, false otherwise
      */
-    public static boolean isBehind(Player attacker, Entity victim){
-        return Math.abs(Math.abs(victim.getLocation().getYaw()) - Math.abs(attacker.getLocation().getYaw())) <= 22.5;
+    public static boolean isBehind(Player attacker, LivingEntity victim){
+        if(Math.abs(victim.getLocation().getYaw()) > 180){
+            return Math.abs((Math.abs(victim.getLocation().getYaw()-360)) - Math.abs(attacker.getLocation().getYaw())) <= 22.5;
+        } else{
+            return Math.abs(Math.abs(victim.getLocation().getYaw()) - Math.abs(attacker.getLocation().getYaw())) <= 22.5;
+        }
     }
 
     /**
@@ -185,7 +189,12 @@ public class UsefulThings {
      * @param range used to specify the "width" of the cone behind the victim where this method returns true (example : 90 will return true when attacker is behind the entity at +-90 degrees)
      * @return true if the attacker is behind the victim, false otherwise
      */
-    public static boolean isBehind(Player attacker, Entity victim, double range){
-        return Math.abs(Math.abs(victim.getLocation().getYaw()) - Math.abs(attacker.getLocation().getYaw())) <= range;
+    public static boolean isBehind(Player attacker, LivingEntity victim, double range){
+        if(Math.abs(victim.getLocation().getYaw()) > 180){
+            return Math.abs((Math.abs(victim.getLocation().getYaw()-360)) - Math.abs(attacker.getLocation().getYaw())) <= range;
+        } else{
+            return Math.abs(Math.abs(victim.getLocation().getYaw()) - Math.abs(attacker.getLocation().getYaw())) <= range;
+        }
     }
+
 }
