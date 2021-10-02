@@ -1,0 +1,22 @@
+name: Stones
+version: '1.17.1'
+main: com.github.sawors.stones.Stones
+api-version: 1.17
+commands:
+
+  mark-location:
+    description: Spawn a 32 block tall cobble dick
+    usage: /<command>
+    aliases: [cobcock, tower, dick]
+  worldspawn-mobs:
+    description: Spawn fishs at world spawn
+    usage: /<command>
+  vvoid:
+    description: set your health and hunger to 1/0
+    usage: /<command>
+  sgive:
+    description: gives you one of swrs custom items
+    usage: /<command>
+  getname:
+    description: gives you informations about the item in you main hand's name
+    usage: /<command>
