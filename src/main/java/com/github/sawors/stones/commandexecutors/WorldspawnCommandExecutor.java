@@ -14,8 +14,8 @@ public class WorldspawnCommandExecutor implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args){
     if(args.length == 2){
 
-            Long initialDelay = (Long.parseLong(args[0]))*20;
-            Long spawnDelay = (Long.parseLong(args[1]))*20;     //transform seconds in MC ticks
+            long initialDelay = (Long.parseLong(args[0]))*20;
+            long spawnDelay = (Long.parseLong(args[1]))*20;     //transform seconds in MC ticks
 
         new FishSpawnRunnable(plugin).runTaskTimer(plugin, initialDelay, spawnDelay);
             return true;
