@@ -1,18 +1,9 @@
 package com.github.sawors.stones;
 
-import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
-import com.comphenix.protocol.events.ListenerPriority;
-import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketEvent;
 import com.github.sawors.stones.commandexecutors.*;
-import com.github.sawors.stones.listeners.AnvilListeners;
-import com.github.sawors.stones.listeners.ListenersALL;
-import com.github.sawors.stones.listeners.MovementListener;
-import com.github.sawors.stones.listeners.OnPlayerConnect;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
+import com.github.sawors.stones.listeners.*;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -34,6 +25,7 @@ public final class Stones extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new OnPlayerConnect(), this);
         getServer().getPluginManager().registerEvents(new AnvilListeners(), this);
         getServer().getPluginManager().registerEvents(new MovementListener(), this);
+        getServer().getPluginManager().registerEvents(new AttackListeners(), this);
 
         //      LOAD COMMANDS
         getServer().getPluginCommand("mark-location").setExecutor(new TowerCommandExecutor());

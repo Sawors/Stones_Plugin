@@ -85,12 +85,6 @@ public class ListenersALL implements Listener {
             p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 100, 2, false));
         }
     }
-    @EventHandler
-    public void onPlayerGrabItem(InventoryClickEvent event){
-        if(event.getCursor() != null && event.getCursor().getEnchantments().containsKey(Enchantment.FIRE_ASPECT) && event.getCursor().getEnchantmentLevel(Enchantment.FIRE_ASPECT) == 1 && Bukkit.getPlayer(event.getWhoClicked().getName()) != null){
-            UsefulThings.extinguishItem(event.getCursor(), "normal", Bukkit.getPlayer(event.getWhoClicked().getName()));
-        }
-    }
 
     @EventHandler
     public void onArrowHit(ProjectileHitEvent event){
@@ -124,6 +118,9 @@ public class ListenersALL implements Listener {
                 event.setCancelled(true);
                 //System.out.println("Yaaaaaa 3");
             }
+        }
+        if(event.getCursor() != null && event.getCursor().getEnchantments().containsKey(Enchantment.FIRE_ASPECT) && event.getCursor().getEnchantmentLevel(Enchantment.FIRE_ASPECT) == 1 && Bukkit.getPlayer(event.getWhoClicked().getName()) != null){
+            UsefulThings.extinguishItem(event.getCursor(), "normal", Bukkit.getPlayer(event.getWhoClicked().getName()));
         }
     }
 

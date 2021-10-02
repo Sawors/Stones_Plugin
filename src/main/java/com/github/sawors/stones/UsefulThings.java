@@ -5,6 +5,7 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -14,27 +15,52 @@ import java.util.Random;
 import java.util.logging.Level;
 
 public class UsefulThings {
-    //check if fire is on netherrack
-    public static boolean isEternalFire(Block b){
-        return b != null && b.getType() == Material.FIRE && b.getLocation().subtract(0, 1, 0).getBlock().getType() == Material.NETHERRACK;
+
+    /**
+     * Return if the fire is eternal (on netherrack) or not
+     * @param  block  the block to check (must be fire)
+     * @return      true of false depending if the fire is on netherrack or not
+     */
+    public static boolean isEternalFire(Block block){
+        return block != null && block.getType() == Material.FIRE && block.getLocation().subtract(0, 1, 0).getBlock().getType() == Material.NETHERRACK;
     }
 
-    //case void -> ()
+    /**
+     * Used to apply some subtle random pitch variations to a sound
+     * @return      a random pitch between 0.8 and 1.2 (float)
+     */
     public static float randomPitchSimple(){
         return (float) ((new Random().nextDouble() * 0.4) + 0.8);
     }
 
-    //case float -> (0.5f)
+    /**
+     * Used to apply some subtle random pitch variations to a sound (formula is ((random_number)*amplitude + displacement))
+     * Default values for amplitude and displacement are respectively 0.4 and 0.8
+     * @param amplitude how much the pitch will vary in range (default 0.4). Example : 0.4 will give values between 0.0 and 0.8 (float)
+     * @param displacement how much the value is displaced along the y-axis (default 0.8). Example : 1 will set the output of the pitch to be 1 higher
+     * @return      a random pitch in the range defined
+     */
     public static float randomPitchSimple(float amplitude, float displacement){
         return (new Random().nextFloat() * amplitude) + displacement;
     }
 
-    //case double -> (0.5)
+    /**
+     * Used to apply some subtle random pitch variations to a sound (formula is ((random_number)*amplitude + displacement))
+     * Default values for amplitude and displacement are respectively 0.4 and 0.8
+     * @param amplitude how much the pitch will vary in range (default 0.4). Example : 0.4 will give values between 0.0 and 0.8 (float)
+     * @param displacement how much the value is displaced along the y-axis (default 0.8). Example : 1 will set the output of the pitch to be 1 higher
+     * @return      a random pitch in the range defined
+     */
     public static float randomPitchSimple(double amplitude, double displacement){
         return (float) ((new Random().nextDouble() * amplitude) + displacement);
     }
 
-    //ignite the item in hand
+    /**
+     * Adds the Fire Aspect enchant to the specified item (must be a sword or a "fireaspectable" item (I don't know any except swords)
+     * @param item the item to enchant (MUST BE PROVIDED YOU GENIUS)
+     * @param level how high you want the enchant. Possible values are : 1; 2; 0 to add 1 to the existing enchant (if lv = 0 makes lv = 1); -1 to remove enchant
+     * @param player a player where the sound effects and particles will be played (can be null normally (pro code))
+     */
     public static void igniteItem(@NotNull ItemStack item, int level, Player player){
         try{
             if((!item.getEnchantments().containsKey(Enchantment.FIRE_ASPECT)) && level == 1){
@@ -82,7 +108,12 @@ public class UsefulThings {
         }
     }
 
-    //extinguish it
+    /**
+     * Extinguish the item provided (removes Fire Aspect enchant or any flame-related attribute (torches to unlit torches for example))
+     * @param item the item to extinguish (MUST BE PROVIDED YOU GENIUS)
+     * @param reason why did the item has been extinguished. Possible values are : "water" for water bases extinguish; "normal" for normal; "fake" to just play particles and not actually extinguish the item (in rain for instance)
+     * @param player a player where the sound effects and particles will be played
+     */
     public static void extinguishItem(@NotNull ItemStack item, String reason, Player player){
         if(item.getEnchantments().containsKey(Enchantment.FIRE_ASPECT)){
             if(reason != null && player != null) {
@@ -133,5 +164,28 @@ public class UsefulThings {
         } else {
             return "UNKNOWN";
         }
+    }
+
+    /**
+     * Used to check if an entity is behind another, generally while attacking (mainly for backstabs)
+     * the default angle for this method is +-22.5 degrees (considering the back of the entity to be 0 degree)
+     * @param attacker the entity performing the attack (typically EntityDamageByEntityEvent.getDamager())
+     * @param victim the entity which is being attacked (typically EntityDamageByEntityEvent.getEntity())
+     * @return true if the attacker is behind the victim, false otherwise
+     */
+    public static boolean isBehind(Player attacker, Entity victim){
+        return Math.abs(Math.abs(victim.getLocation().getYaw()) - Math.abs(attacker.getLocation().getYaw())) <= 22.5;
+    }
+
+    /**
+     * Used to check if an entity is behind another, generally while attacking (mainly for backstabs)
+     * the default angle for this method is +-22.5 degrees (considering the back of the entity to be 0 degree)
+     * @param attacker the entity performing the attack (typically EntityDamageByEntityEvent.getDamager())
+     * @param victim the entity which is being attacked (typically EntityDamageByEntityEvent.getEntity())
+     * @param range used to specify the "width" of the cone behind the victim where this method returns true (example : 90 will return true when attacker is behind the entity at +-90 degrees)
+     * @return true if the attacker is behind the victim, false otherwise
+     */
+    public static boolean isBehind(Player attacker, Entity victim, double range){
+        return Math.abs(Math.abs(victim.getLocation().getYaw()) - Math.abs(attacker.getLocation().getYaw())) <= range;
     }
 }
