@@ -1,36 +1,40 @@
 package com.github.sawors.stones;
 
-import org.bukkit.*;
+import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.java.JavaPluginLoader;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Random;
 import java.util.logging.Level;
 
 public class UsefulThings {
+    //check if fire is on netherrack
     public static boolean isEternalFire(Block b){
         return b != null && b.getType() == Material.FIRE && b.getLocation().subtract(0, 1, 0).getBlock().getType() == Material.NETHERRACK;
     }
+
     //case void -> ()
     public static float randomPitchSimple(){
         return (float) ((new Random().nextDouble() * 0.4) + 0.8);
     }
+
     //case float -> (0.5f)
     public static float randomPitchSimple(float amplitude, float displacement){
         return (new Random().nextFloat() * amplitude) + displacement;
     }
+
     //case double -> (0.5)
     public static float randomPitchSimple(double amplitude, double displacement){
         return (float) ((new Random().nextDouble() * amplitude) + displacement);
     }
 
+    //ignite the item in hand
     public static void igniteItem(@NotNull ItemStack item, int level, Player player){
         try{
             if((!item.getEnchantments().containsKey(Enchantment.FIRE_ASPECT)) && level == 1){
@@ -77,7 +81,9 @@ public class UsefulThings {
             Stones.getPlugin(Stones.class).getLogger().log(Level.INFO, "an error occurred while igniting this item");
         }
     }
-    public static void extinguishItem(ItemStack item, String reason, Player player){
+
+    //extinguish it
+    public static void extinguishItem(@NotNull ItemStack item, String reason, Player player){
         if(item.getEnchantments().containsKey(Enchantment.FIRE_ASPECT)){
             if(reason != null && player != null) {
                 switch (reason) {
@@ -101,6 +107,31 @@ public class UsefulThings {
                 item.removeEnchantment(Enchantment.FIRE_ASPECT);
 
             }
+        }
+    }
+
+    public static String getBlockMaterialCategory(@NotNull Block block){
+        String blockname = block.getType().toString();
+        // || blockname.contains("")
+        if(blockname.contains("WOOD") || blockname.contains("SPRUCE") || blockname.contains("BIRCH") || blockname.contains("OAK") || blockname.contains("ACACIA") || blockname.contains("JUNGLE")){
+            return "WOOD";
+        }
+        else if(blockname.contains("STONE") || blockname.contains("ANDSEITE") || blockname.contains("PRISMARINE") || blockname.contains("GRANITE") || blockname.contains("DIORITE")){
+            return "STONE";
+        }
+        else if(blockname.contains("IRON") || blockname.contains("GOLD") || blockname.contains("COPPER") || blockname.contains("NETHERITE")){
+            return "METAL";
+        }
+        else if(blockname.contains("GLASS")){
+            return "GLASS";
+        }
+        else if(blockname.contains("GRASS") || blockname.contains("LEAVES") || blockname.contains("FLOWER")){
+            return "PLANT";
+        }
+        else if(blockname.contains("SAND")){
+            return "GROUND";
+        } else {
+            return "UNKNOWN";
         }
     }
 }

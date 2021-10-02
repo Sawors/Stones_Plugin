@@ -1,49 +1,38 @@
 package com.github.sawors.stones.listeners;
 
-import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
-import com.comphenix.protocol.events.ListenerPriority;
-import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketEvent;
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
-import com.destroystokyo.paper.event.entity.ProjectileCollideEvent;
 import com.github.sawors.stones.SerializeInventory;
-import com.github.sawors.stones.Stones;
 import com.github.sawors.stones.UsefulThings;
 import com.github.sawors.stones.commandexecutors.SgiveCommandExecutor;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.ExperienceOrb;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BlockDataMeta;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataAdapterContext;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.util.io.BukkitObjectOutputStream;
-import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
-import javax.naming.Name;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.sql.Array;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Objects;
+import java.util.Random;
 
 public class ListenersALL implements Listener {
 
@@ -107,7 +96,7 @@ public class ListenersALL implements Listener {
     public void onArrowHit(ProjectileHitEvent event){
         if(event.getHitBlock() != null && event.getEntity() instanceof Arrow){
             Block block = event.getHitBlock();
-            block.getWorld().playSound(block.getLocation(), block.getSoundGroup().getBreakSound(), 1.5f, UsefulThings.randomPitchSimple()+2);
+            block.getWorld().playSound(block.getLocation(), block.getSoundGroup().getPlaceSound(), 1.5f, UsefulThings.randomPitchSimple()+2);
             // switch for sound
         }
     }
