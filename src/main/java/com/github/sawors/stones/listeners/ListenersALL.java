@@ -96,7 +96,7 @@ public class ListenersALL implements Listener {
     public void onArrowHit(ProjectileHitEvent event){
         if(event.getHitBlock() != null && event.getEntity() instanceof Arrow){
             Block block = event.getHitBlock();
-            block.getWorld().playSound(block.getLocation(), block.getSoundGroup().getPlaceSound(), 1.5f, UsefulThings.randomPitchSimple()+2);
+            block.getWorld().playSound(block.getLocation(), block.getSoundGroup().getPlaceSound(), 1f, UsefulThings.randomPitchSimple()+0.2f);
             // switch for sound
         }
     }
