@@ -35,6 +35,7 @@ public final class Stones extends JavaPlugin {
         getServer().getPluginCommand("getname").setExecutor(new NameCommandExecutor());
         getServer().getPluginCommand("ignite").setExecutor(new IgniteCommandExecutor());
         getServer().getPluginCommand("checklist").setExecutor(new MovementCheckListCommandExecutor());
+        getServer().getPluginCommand("sit").setExecutor(new SitCommandExecutor());
 
         //      INITIATE PROTOCOLLIB
         ProtocolManager manager = ProtocolLibrary.getProtocolManager();

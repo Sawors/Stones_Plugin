@@ -1,12 +1,14 @@
 package com.github.sawors.stones;
 
-import org.bukkit.Material;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
+import net.kyori.adventure.text.Component;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -194,6 +196,112 @@ public class UsefulThings {
             return Math.abs((Math.abs(victim.getLocation().getYaw()-360)) - Math.abs(attacker.getLocation().getYaw())) <= range;
         } else{
             return Math.abs(Math.abs(victim.getLocation().getYaw()) - Math.abs(attacker.getLocation().getYaw())) <= range;
+        }
+    }
+
+    /**
+     * Used to sit an entity at it's location. Conditions : entity must : be on ground, not swimming, not jumping
+     * @param entity the entity to sit
+     */
+    public static void sitEntity(LivingEntity entity){
+        if(entity.getLocation().subtract(0,0.1,0).getBlock().isSolid() && !entity.isJumping() && !entity.isSwimming()){
+            ArmorStand e = (ArmorStand) entity.getWorld().spawnEntity(entity.getLocation().subtract(0,0.9,0), EntityType.ARMOR_STAND);
+            e.setGravity(false);
+            e.setVisible(false);
+            e.setInvulnerable(true);
+            e.setSmall(true);
+            e.setCustomName("seat");
+            e.setCustomNameVisible(false);
+            e.addEquipmentLock(EquipmentSlot.HEAD, ArmorStand.LockType.ADDING_OR_CHANGING);
+            e.addEquipmentLock(EquipmentSlot.CHEST, ArmorStand.LockType.ADDING_OR_CHANGING);
+            e.addEquipmentLock(EquipmentSlot.LEGS, ArmorStand.LockType.ADDING_OR_CHANGING);
+            e.addEquipmentLock(EquipmentSlot.FEET, ArmorStand.LockType.ADDING_OR_CHANGING);
+
+            e.addPassenger(entity);
+
+        } else {
+            if(entity instanceof Player){
+                entity.sendActionBar(Component.text(ChatColor.RED + "you must be on ground to sit"));
+            }
+        }
+    }
+
+    /**
+     * Used to sit an entity at it's location. Conditions : entity must : be on ground, not swimming, not jumping
+     * @param entity the entity to sit
+     * @param forcesit if the sit should be forced or not (ignore Conditions)
+     */
+    public static void sitEntity(LivingEntity entity, boolean forcesit){
+        if(forcesit){
+            ArmorStand e = (ArmorStand) entity.getWorld().spawnEntity(entity.getLocation().subtract(0,0.9,0), EntityType.ARMOR_STAND);
+            e.setGravity(false);
+            e.setVisible(false);
+            e.setInvulnerable(true);
+            e.setSmall(true);
+            e.setCustomName("seat");
+            e.setCustomNameVisible(false);
+            e.addEquipmentLock(EquipmentSlot.HEAD, ArmorStand.LockType.ADDING_OR_CHANGING);
+            e.addEquipmentLock(EquipmentSlot.CHEST, ArmorStand.LockType.ADDING_OR_CHANGING);
+            e.addEquipmentLock(EquipmentSlot.LEGS, ArmorStand.LockType.ADDING_OR_CHANGING);
+            e.addEquipmentLock(EquipmentSlot.FEET, ArmorStand.LockType.ADDING_OR_CHANGING);
+
+            e.addPassenger(entity);
+        } else {
+            UsefulThings.sitEntity(entity);
+        }
+    }
+
+    /**
+     * Used to sit an entity at it's location. Conditions : entity must : be on ground, not swimming, not jumping
+     * @param entity the entity to sit
+     * @param location where to sit the entity
+     */
+    public static void sitEntity(LivingEntity entity, Location location){
+        if(entity.getLocation().subtract(0,0.1,0).getBlock().isSolid() && !entity.isJumping() && !entity.isSwimming()){
+            ArmorStand e = (ArmorStand) entity.getWorld().spawnEntity(location.subtract(0,0.9,0), EntityType.ARMOR_STAND);
+            e.setGravity(false);
+            e.setVisible(false);
+            e.setInvulnerable(true);
+            e.setSmall(true);
+            e.setCustomName("seat");
+            e.setCustomNameVisible(false);
+            e.addEquipmentLock(EquipmentSlot.HEAD, ArmorStand.LockType.ADDING_OR_CHANGING);
+            e.addEquipmentLock(EquipmentSlot.CHEST, ArmorStand.LockType.ADDING_OR_CHANGING);
+            e.addEquipmentLock(EquipmentSlot.LEGS, ArmorStand.LockType.ADDING_OR_CHANGING);
+            e.addEquipmentLock(EquipmentSlot.FEET, ArmorStand.LockType.ADDING_OR_CHANGING);
+
+            e.addPassenger(entity);
+
+        } else {
+            if(entity instanceof Player){
+                entity.sendActionBar(Component.text(ChatColor.RED + "you must be on ground to sit"));
+            }
+        }
+    }
+
+    /**
+     * Used to sit an entity at it's location. Conditions : entity must : be on ground, not swimming, not jumping
+     * @param entity the entity to sit
+     * @param location where to sit the entity
+     * @param forcesit if the sit should be forced or not (ignore Conditions)
+     */
+    public static void sitEntity(LivingEntity entity, Location location, boolean forcesit){
+        if(forcesit){
+            ArmorStand e = (ArmorStand) entity.getWorld().spawnEntity(location.subtract(0,0.9,0), EntityType.ARMOR_STAND);
+            e.setGravity(false);
+            e.setVisible(false);
+            e.setInvulnerable(true);
+            e.setSmall(true);
+            e.setCustomName("seat");
+            e.setCustomNameVisible(false);
+            e.addEquipmentLock(EquipmentSlot.HEAD, ArmorStand.LockType.ADDING_OR_CHANGING);
+            e.addEquipmentLock(EquipmentSlot.CHEST, ArmorStand.LockType.ADDING_OR_CHANGING);
+            e.addEquipmentLock(EquipmentSlot.LEGS, ArmorStand.LockType.ADDING_OR_CHANGING);
+            e.addEquipmentLock(EquipmentSlot.FEET, ArmorStand.LockType.ADDING_OR_CHANGING);
+
+            e.addPassenger(entity);
+        } else {
+            UsefulThings.sitEntity(entity, location);
         }
     }
 

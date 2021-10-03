@@ -96,7 +96,12 @@ public class AttackListeners implements Listener {
                 damager.sendMessage(ChatColor.GREEN + String.valueOf(multiplier));
                 damager.sendMessage(ChatColor.GREEN + "\n");
                 if(multiplier > 0){
-                    receiver.damage((event.getDamage()*multiplier)-event.getDamage());
+                    if(damager.hasPotionEffect(PotionEffectType.SPEED)){
+                        receiver.damage(((event.getDamage()*multiplier)-event.getDamage())+(damager.getPotionEffect(PotionEffectType.SPEED).getAmplifier()*0.2*((event.getDamage()*multiplier)-event.getDamage())));
+                    }else{
+                        receiver.damage((event.getDamage()*multiplier)-event.getDamage());
+                    }
+
                     receiver.addPotionEffect(potionslowlight);
                     damager.addPotionEffect(potionslowlight);
                     receiver.getWorld().playSound(receiver.getLocation(), Sound.ENTITY_COD_HURT, 1, 1.2f);

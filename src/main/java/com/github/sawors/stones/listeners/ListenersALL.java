@@ -10,10 +10,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.ExperienceOrb;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
@@ -28,6 +25,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.spigotmc.event.entity.EntityDismountEvent;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -295,6 +293,19 @@ public class ListenersALL implements Listener {
 
 
             }
+        }
+
+        @EventHandler
+        public void onPlayerLeaveSit(EntityDismountEvent event){
+        if(event.getEntity() instanceof Player && event.getDismounted() instanceof ArmorStand){
+            Player player = (Player) event.getEntity();
+            ArmorStand seat = (ArmorStand) event.getDismounted();
+            if(seat.getCustomName() != null && seat.getCustomName().contains("seat")){
+                seat.remove();
+                player.teleport(player.getLocation().add(0,1,0));
+            }
+        }
+
         }
 
         @EventHandler

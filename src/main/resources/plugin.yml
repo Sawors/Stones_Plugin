@@ -27,3 +27,6 @@ commands:
   checklist:
     description: shows you the movement checklist
     usage: /<command>
+  sit:
+    description: sit where you stand
+    usage: /<command>
