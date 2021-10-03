@@ -138,7 +138,15 @@ public class ListenersALL implements Listener {
                     //p.sendMessage("(" + (Math.round(bLoca.getZ() * 1000)/1000) + ";" + (Math.round(bLoca.getY() * 1000)/1000) + ")");
                 }
         }*/
+        if(item == null){
+            /*p.sendMessage(ChatColor.YELLOW + "length : " + ChatColor.GREEN + p.getVelocity().length() + "\n");
+            p.sendMessage(ChatColor.YELLOW + "velocity : " + ChatColor.GREEN + p.getVelocity() + "\n");
+            p.sendMessage(ChatColor.YELLOW + "X : " + ChatColor.GREEN + p.getVelocity().getX() + "\n");
+            p.sendMessage(ChatColor.YELLOW + "Y : " + ChatColor.GREEN + p.getVelocity().getY() + "\n");
+            p.sendMessage(ChatColor.YELLOW + "Z : " + ChatColor.GREEN + p.getVelocity().getZ() + "\n");*/
+            p.sendMessage(ChatColor.YELLOW + "value : " + ChatColor.GREEN + (p.getWalkSpeed()*20));
 
+        }
 
         if(item != null && item.getItemMeta().isUnbreakable() && item.getItemMeta().hasLore()) {
 
@@ -174,6 +182,7 @@ public class ListenersALL implements Listener {
                p.playSound(p.getLocation(), "minecraft:sawors.resonantcrystal_on", 1, (float) (Math.sin(new Random().nextFloat()) / 4 + 0.9));
 
            }
+
 
    //ROLL D6
             if(item.getItemMeta().getPersistentDataContainer().get(SgiveCommandExecutor.getKey("type"), PersistentDataType.STRING) != null && item.getItemMeta().getPersistentDataContainer().get(SgiveCommandExecutor.getKey("type"), PersistentDataType.STRING).equals("dice6")){

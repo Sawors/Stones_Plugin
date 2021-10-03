@@ -224,6 +224,20 @@ public class SgiveCommandExecutor implements CommandExecutor {
                     item.setItemMeta(meta);
                     p.getInventory().addItem(item);
                     return true;
+                case "iron_curved_dagger":
+                    item.setType(Material.IRON_SWORD);
+                    meta.displayName(Component.text(ChatColor.GRAY +  "Iron Curved Dagger"));
+                    meta.setLocalizedName("curveddaggeriron");
+                    lore.add(Component.text(""));
+                    lore.add(Component.text(""));
+                    meta.lore(lore);
+                    //meta.setUnbreakable(false);
+                    meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+                    meta.getPersistentDataContainer().set(keytype, PersistentDataType.STRING, "curveddagger"); // set item type if it's needed (optional) (useful for instruments etc...)meta.getPersistentDataContainer().set(ison, PersistentDataType.INTEGER, 0); // set if item is "on" (1) or "off" (0), useful if you want to make an actionable item (flashlight, resonant crystal, instrument)
+                    //add item
+                    item.setItemMeta(meta);
+                    p.getInventory().addItem(item);
+                    return true;
 
                 /*
 
