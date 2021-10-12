@@ -1,10 +1,9 @@
 package com.github.sawors.stones.commandexecutors;
 
-import com.github.sawors.stones.Stones;
+import com.github.sawors.stones.UsefulThings.DataHolder;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -18,27 +17,7 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.ArrayList;
 
 public class SgiveCommandExecutor implements CommandExecutor {
-    static NamespacedKey keywear = new NamespacedKey(Stones.getPlugin(Stones.class), "weartype");
-    static NamespacedKey keytype = new NamespacedKey(Stones.getPlugin(Stones.class), "type");
-    static NamespacedKey keyinv = new NamespacedKey(Stones.getPlugin(Stones.class), "inventorysave");
-    static NamespacedKey keydefault = new NamespacedKey(Stones.getPlugin(Stones.class), "null");
-    static NamespacedKey ison = new NamespacedKey(Stones.getPlugin(Stones.class), "ison");
-    static NamespacedKey color = new NamespacedKey(Stones.getPlugin(Stones.class), "color");
-    public static NamespacedKey getKey(String arg){
-        switch(arg) {
-            case "weartype":
-                return keywear;
-            case "type":
-                return keytype;
-            case "inv":
-                return keyinv;
-            case "ison":
-                return ison;
-            case "color":
-                return color;
-        }
-        return keydefault;
-    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if(sender instanceof Player && args.length >= 1 && ((Player) sender).getPlayer() != null){
@@ -46,6 +25,7 @@ public class SgiveCommandExecutor implements CommandExecutor {
             ItemMeta meta = item.getItemMeta();
             ArrayList<Component> lore = new ArrayList<>();
             Player p = ((Player) sender).getPlayer();
+
             switch(args[0]){
                 case "parch":
                     item.setType(Material.PAPER);
@@ -56,10 +36,7 @@ public class SgiveCommandExecutor implements CommandExecutor {
                     meta.lore(lore);
                     meta.setUnbreakable(true);
                     meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-                    //add item
-                    item.setItemMeta(meta);
-                    p.getInventory().addItem(item);
-                    return true;
+                    break;
 
                 case "hammer":
                     item.setType(Material.STICK);
@@ -70,10 +47,7 @@ public class SgiveCommandExecutor implements CommandExecutor {
                     meta.lore(lore);
                     meta.setUnbreakable(true);
                     meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-                    //add item
-                    item.setItemMeta(meta);
-                    p.getInventory().addItem(item);
-                    return true;
+                    break;
 
                 case "ring":
                     item.setType(Material.GOLD_NUGGET);
@@ -84,11 +58,8 @@ public class SgiveCommandExecutor implements CommandExecutor {
                     meta.lore(lore);
                     meta.setUnbreakable(true);
                     meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-                    meta.getPersistentDataContainer().set(keywear, PersistentDataType.STRING, "ring");
-                    //add item
-                    item.setItemMeta(meta);
-                    p.getInventory().addItem(item);
-                    return true;
+                    meta.getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, "ring");
+                    break;
 
                 case "crystal":
                     item.setType(Material.AMETHYST_SHARD);
@@ -99,10 +70,7 @@ public class SgiveCommandExecutor implements CommandExecutor {
                     meta.lore(lore);
                     meta.setUnbreakable(true);
                     meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-                    //add item
-                    item.setItemMeta(meta);
-                    p.getInventory().addItem(item);
-                    return true;
+                    break;
 
                 case "strawhat":
                     item.setType(Material.WHEAT);
@@ -113,11 +81,8 @@ public class SgiveCommandExecutor implements CommandExecutor {
                     meta.lore(lore);
                     meta.setUnbreakable(true);
                     meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-                    meta.getPersistentDataContainer().set(keywear, PersistentDataType.STRING, "head");
-                    //add item
-                    item.setItemMeta(meta);
-                    p.getInventory().addItem(item);
-                    return true;
+                    meta.getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, "hat");
+                    break;
 
                 case "fez":
                     item.setType(Material.RED_DYE);
@@ -128,11 +93,8 @@ public class SgiveCommandExecutor implements CommandExecutor {
                     meta.lore(lore);
                     meta.setUnbreakable(true);
                     meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-                    meta.getPersistentDataContainer().set(keywear, PersistentDataType.STRING, "head");
-                    //add item
-                    item.setItemMeta(meta);
-                    p.getInventory().addItem(item);
-                    return true;
+                    meta.getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, "hat");
+                    break;
 
                 case "kirby":
                     item.setType(Material.PINK_DYE);
@@ -143,11 +105,8 @@ public class SgiveCommandExecutor implements CommandExecutor {
                     meta.lore(lore);
                     meta.setUnbreakable(true);
                     meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-                    meta.getPersistentDataContainer().set(keywear, PersistentDataType.STRING, "head");
-                    //add item
-                    item.setItemMeta(meta);
-                    p.getInventory().addItem(item);
-                    return true;
+                    meta.getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, "hat");
+                    break;
 
                 case "olapapi":
                     item.setType(Material.GREEN_DYE);
@@ -158,11 +117,8 @@ public class SgiveCommandExecutor implements CommandExecutor {
                     meta.lore(lore);
                     meta.setUnbreakable(true);
                     meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-                    meta.getPersistentDataContainer().set(keywear, PersistentDataType.STRING, "head");
-                    //add item
-                    item.setItemMeta(meta);
-                    p.getInventory().addItem(item);
-                    return true;
+                    meta.getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, "hat");
+                    break;
 
                 case "monocle":
                     item.setType(Material.GOLD_NUGGET);
@@ -173,26 +129,8 @@ public class SgiveCommandExecutor implements CommandExecutor {
                     meta.lore(lore);
                     meta.setUnbreakable(true);
                     meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-                    meta.getPersistentDataContainer().set(keywear, PersistentDataType.STRING, "head"); // if item is a wearable. Possible wearables : head, chest, legs, feet, ring
-                    //add item
-                    item.setItemMeta(meta);
-                    p.getInventory().addItem(item);
-                    return true;
-                case "flute":
-                    item.setType(Material.STICK);
-                    meta.displayName(Component.text(ChatColor.GRAY +  "Flute"));
-                    meta.setLocalizedName("flute");
-                    lore.add(Component.text(""));
-                    lore.add(Component.text(""));
-                    meta.lore(lore);
-                    meta.setUnbreakable(true);
-                    meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-                    meta.getPersistentDataContainer().set(keytype, PersistentDataType.STRING, "instrument"); // set item type if it's needed (optional) (useful for instruments etc...)
-                    meta.getPersistentDataContainer().set(ison, PersistentDataType.INTEGER, 0); // set if item is "on" (1) or "off" (0), useful if you want to make an actionable item (flashlight, resonant crystal, instrument)
-                    //add item
-                    item.setItemMeta(meta);
-                    p.getInventory().addItem(item);
-                    return true;
+                    meta.getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, "hat"); // if item is a wearable. Possible wearables : head, chest, legs, feet, ring
+                    break;
 
                 case "dice6":
                     item.setType(Material.FLINT);
@@ -203,12 +141,8 @@ public class SgiveCommandExecutor implements CommandExecutor {
                     meta.lore(lore);
                     meta.setUnbreakable(true);
                     meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-                    meta.getPersistentDataContainer().set(keytype, PersistentDataType.STRING, "dice6");
-                    //meta.getPersistentDataContainer().set(keywear, PersistentDataType.STRING, ""); // if item is a wearable. Possible wearables : head, chest, legs, feet, ring
-                    //add item
-                    item.setItemMeta(meta);
-                    p.getInventory().addItem(item);
-                    return true;
+                    meta.getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, "dice6");
+                    break;
 
                 case "iron_dagger":
                     item.setType(Material.IRON_SWORD);
@@ -219,11 +153,9 @@ public class SgiveCommandExecutor implements CommandExecutor {
                     meta.lore(lore);
                     //meta.setUnbreakable(false);
                     meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-                    meta.getPersistentDataContainer().set(keytype, PersistentDataType.STRING, "dagger"); // set item type if it's needed (optional) (useful for instruments etc...)meta.getPersistentDataContainer().set(ison, PersistentDataType.INTEGER, 0); // set if item is "on" (1) or "off" (0), useful if you want to make an actionable item (flashlight, resonant crystal, instrument)
-                    //add item
-                    item.setItemMeta(meta);
-                    p.getInventory().addItem(item);
-                    return true;
+                    meta.getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, "dagger"); // set item type if it's needed (optional) (useful for instruments etc...)meta.getPersistentDataContainer().set(ison, PersistentDataType.INTEGER, 0); // set if item is "on" (1) or "off" (0), useful if you want to make an actionable item (flashlight, resonant crystal, instrument)
+                    break;
+
                 case "iron_curved_dagger":
                     item.setType(Material.IRON_SWORD);
                     meta.displayName(Component.text(ChatColor.GRAY +  "Iron Curved Dagger"));
@@ -233,11 +165,18 @@ public class SgiveCommandExecutor implements CommandExecutor {
                     meta.lore(lore);
                     //meta.setUnbreakable(false);
                     meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-                    meta.getPersistentDataContainer().set(keytype, PersistentDataType.STRING, "curveddagger"); // set item type if it's needed (optional) (useful for instruments etc...)meta.getPersistentDataContainer().set(ison, PersistentDataType.INTEGER, 0); // set if item is "on" (1) or "off" (0), useful if you want to make an actionable item (flashlight, resonant crystal, instrument)
-                    //add item
-                    item.setItemMeta(meta);
-                    p.getInventory().addItem(item);
-                    return true;
+                    meta.getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, "curveddagger"); // set item type if it's needed (optional) (useful for instruments etc...)meta.getPersistentDataContainer().set(ison, PersistentDataType.INTEGER, 0); // set if item is "on" (1) or "off" (0), useful if you want to make an actionable item (flashlight, resonant crystal, instrument)
+                    break;
+
+                case "handcuffs":
+                    item.setType(Material.IRON_NUGGET);
+                    meta.displayName(Component.text(ChatColor.GRAY + "Handcuffs"));
+                    meta.setUnbreakable(true);
+                    meta.setLocalizedName("handcuffs");
+                    lore.add(Component.text(""));
+                    lore.add(Component.text(ChatColor.GREEN + "Right Click at someone to prevent him from using items"));
+                    meta.lore(lore);
+                    break;
 
                 /*
 
@@ -260,6 +199,9 @@ public class SgiveCommandExecutor implements CommandExecutor {
                 */
 
             }
+
+            item.setItemMeta(meta);
+            p.getInventory().addItem(item);
 
         } else if (sender instanceof Player){
             sender.sendMessage(ChatColor.RED + "- you must specify an item ! (or your 2nd argument is invalid)");

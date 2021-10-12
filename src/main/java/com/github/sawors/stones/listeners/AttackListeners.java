@@ -1,7 +1,7 @@
 package com.github.sawors.stones.listeners;
 
-import com.github.sawors.stones.UsefulThings;
-import com.github.sawors.stones.commandexecutors.SgiveCommandExecutor;
+import com.github.sawors.stones.UsefulThings.DataHolder;
+import com.github.sawors.stones.UsefulThings.UsefulThings;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -30,12 +30,12 @@ public class AttackListeners implements Listener {
             //straight daggers
             if (UsefulThings.isBehind(damager, receiver) && damager.isSneaking()) {
                 if(damager.getLocation().add(0,-0.25,0).getBlock().getType().isSolid()){
-                    if(damager.getInventory().getItemInMainHand().hasItemMeta() && damager.getInventory().getItemInMainHand().getItemMeta().getPersistentDataContainer().get(SgiveCommandExecutor.getKey("type"), PersistentDataType.STRING) != null && Objects.equals(damager.getInventory().getItemInMainHand().getItemMeta().getPersistentDataContainer().get(SgiveCommandExecutor.getKey("type"), PersistentDataType.STRING), "dagger")){
+                    if(damager.getInventory().getItemInMainHand().hasItemMeta() && damager.getInventory().getItemInMainHand().getItemMeta().getPersistentDataContainer().get(DataHolder.getItemTypeKey(), PersistentDataType.STRING) != null && Objects.equals(damager.getInventory().getItemInMainHand().getItemMeta().getPersistentDataContainer().get(DataHolder.getItemTypeKey(), PersistentDataType.STRING), "dagger")){
 
                         receiver.getWorld().spawnParticle(Particle.BLOCK_CRACK, receiver.getLocation(), (int) event.getDamage()*2, .5, receiver.getHeight(),.5 , 0.1, Material.REDSTONE_BLOCK.createBlockData());
                         receiver.addPotionEffect(potionslowheavy);
                         if (receiver.getEquipment() != null && receiver.getEquipment().getChestplate() != null && receiver.getEquipment().getChestplate().getType() != Material.AIR) {
-                            if(damager.getInventory().getItemInOffHand().hasItemMeta() && Objects.equals(damager.getInventory().getItemInOffHand().getItemMeta().getPersistentDataContainer().get(SgiveCommandExecutor.getKey("type"), PersistentDataType.STRING), "dagger")){
+                            if(damager.getInventory().getItemInOffHand().hasItemMeta() && Objects.equals(damager.getInventory().getItemInOffHand().getItemMeta().getPersistentDataContainer().get(DataHolder.getItemTypeKey(), PersistentDataType.STRING), "dagger")){
                                 receiver.damage((event.getDamage()*1.5*2)-event.getDamage());
                             } else{
                                 receiver.damage((event.getDamage()*1.5)-event.getDamage());
@@ -44,7 +44,7 @@ public class AttackListeners implements Listener {
                             receiver.getWorld().playSound(receiver.getLocation(), Sound.ITEM_SHIELD_BREAK, 1, 1);
 
                         } else{
-                            if(damager.getInventory().getItemInOffHand().hasItemMeta() && Objects.equals(damager.getInventory().getItemInOffHand().getItemMeta().getPersistentDataContainer().get(SgiveCommandExecutor.getKey("type"), PersistentDataType.STRING), "dagger")){
+                            if(damager.getInventory().getItemInOffHand().hasItemMeta() && Objects.equals(damager.getInventory().getItemInOffHand().getItemMeta().getPersistentDataContainer().get(DataHolder.getItemTypeKey(), PersistentDataType.STRING), "dagger")){
                                 receiver.damage((event.getDamage()*2*2)-event.getDamage());
                             } else{
                                 receiver.damage((event.getDamage()*2)-event.getDamage());
@@ -57,24 +57,20 @@ public class AttackListeners implements Listener {
             }
 
             //recurved daggers
-            else if (damager.getInventory().getItemInMainHand().hasItemMeta() && damager.getInventory().getItemInMainHand().getItemMeta().getPersistentDataContainer().get(SgiveCommandExecutor.getKey("type"), PersistentDataType.STRING) != null && Objects.equals(damager.getInventory().getItemInMainHand().getItemMeta().getPersistentDataContainer().get(SgiveCommandExecutor.getKey("type"), PersistentDataType.STRING), "curveddagger")){
+            else if (damager.getInventory().getItemInMainHand().hasItemMeta() && damager.getInventory().getItemInMainHand().getItemMeta().getPersistentDataContainer().get(DataHolder.getItemTypeKey(), PersistentDataType.STRING) != null && Objects.equals(damager.getInventory().getItemInMainHand().getItemMeta().getPersistentDataContainer().get(DataHolder.getItemTypeKey(), PersistentDataType.STRING), "curveddagger")){
                 double multiplier = 1;
                 if(damager.isSprinting()){
                     multiplier += 0.5;
-                    damager.sendMessage(ChatColor.GREEN + "sprint");
                 }
                 if(damager.isSneaking()){
                     multiplier -= 0.5;
-                    damager.sendMessage(ChatColor.GREEN + "sneak");
                 }
                 if(damager.isSwimming()){
                     multiplier -= 0.5;
-                    damager.sendMessage(ChatColor.GREEN + "swim");
 
                 }
                 if(damager.isJumping() || !damager.getLocation().add(0,-0.25,0).getBlock().getType().isSolid()){
                     multiplier += 0.5;
-                    damager.sendMessage(ChatColor.GREEN + "jump");
                 }
                 damager.getInventory().getItemInOffHand();
 
@@ -82,16 +78,13 @@ public class AttackListeners implements Listener {
                     if(receiver.getEquipment().getChestplate().getType() == Material.LEATHER_CHESTPLATE){
                         multiplier -= 1;
                         receiver.getWorld().playSound(receiver.getLocation(), Sound.ITEM_ARMOR_EQUIP_LEATHER, 1, .5f);
-                        damager.sendMessage(ChatColor.GREEN + "leather");
                     }else {
                         multiplier = 0;
-                        damager.sendMessage(ChatColor.GREEN + "armored");
 
                     }
                 }
-                if(damager.getInventory().getItemInOffHand().hasItemMeta() && damager.getInventory().getItemInOffHand().getItemMeta().getPersistentDataContainer().get(SgiveCommandExecutor.getKey("type"), PersistentDataType.STRING) != null && Objects.equals(damager.getInventory().getItemInOffHand().getItemMeta().getPersistentDataContainer().get(SgiveCommandExecutor.getKey("type"), PersistentDataType.STRING), "curveddagger")){
+                if(damager.getInventory().getItemInOffHand().hasItemMeta() && damager.getInventory().getItemInOffHand().getItemMeta().getPersistentDataContainer().get(DataHolder.getItemTypeKey(), PersistentDataType.STRING) != null && Objects.equals(damager.getInventory().getItemInOffHand().getItemMeta().getPersistentDataContainer().get(DataHolder.getItemTypeKey(), PersistentDataType.STRING), "curveddagger")){
                     multiplier *= 2;
-                    damager.sendMessage(ChatColor.GREEN + "offhand");
                 }
                 damager.sendMessage(ChatColor.GREEN + String.valueOf(multiplier));
                 damager.sendMessage(ChatColor.GREEN + "\n");

@@ -1,6 +1,6 @@
 package com.github.sawors.stones.commandexecutors;
 
-import com.github.sawors.stones.Stones;
+import com.github.sawors.stones.UsefulThings.DataHolder;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -13,7 +13,7 @@ public class MovementCheckListCommandExecutor implements CommandExecutor {
 
         if(sender instanceof Player) {
             sender.sendMessage(ChatColor.YELLOW + "Movement Checklist :");
-            for(Player player : Stones.getMovementCheckList()){
+            for(Player player : DataHolder.getMovementCheckList()){
                 sender.sendMessage("\n" + player.getName());
             }
             return true;

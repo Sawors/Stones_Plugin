@@ -30,3 +30,6 @@ commands:
   sit:
     description: sit where you stand
     usage: /<command>
+  handcuff:
+
+  uncuff:

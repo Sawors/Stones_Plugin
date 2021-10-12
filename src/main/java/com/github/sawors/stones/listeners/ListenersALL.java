@@ -3,9 +3,8 @@ package com.github.sawors.stones.listeners;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
-import com.github.sawors.stones.SerializeInventory;
-import com.github.sawors.stones.UsefulThings;
-import com.github.sawors.stones.commandexecutors.SgiveCommandExecutor;
+import com.github.sawors.stones.UsefulThings.DataHolder;
+import com.github.sawors.stones.UsefulThings.UsefulThings;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -16,6 +15,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
@@ -27,9 +27,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.spigotmc.event.entity.EntityDismountEvent;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.Random;
 
 public class ListenersALL implements Listener {
@@ -97,7 +95,7 @@ public class ListenersALL implements Listener {
     @EventHandler
     public void preventForbiddenCrafts(InventoryClickEvent event){
         //System.out.println("Yaaaaaa 1");
-        if(event.getCurrentItem().hasItemMeta() && event.getCurrentItem().getItemMeta().isUnbreakable()){
+        if(event.getCurrentItem() != null && event.getCurrentItem().hasItemMeta() && event.getCurrentItem().getItemMeta().isUnbreakable()){
             //System.out.println("Yaaaaaa 2");
             InventoryType itype = event.getInventory().getType();
             if(!( // A list of inventory where custom items (which are not usable in custom crafts) are forbidden
@@ -174,7 +172,7 @@ public class ListenersALL implements Listener {
 
 
    //ROLL D6
-            if(item.getItemMeta().getPersistentDataContainer().get(SgiveCommandExecutor.getKey("type"), PersistentDataType.STRING) != null && item.getItemMeta().getPersistentDataContainer().get(SgiveCommandExecutor.getKey("type"), PersistentDataType.STRING).equals("dice6")){
+            if(item.getItemMeta().getPersistentDataContainer().get(DataHolder.getItemTypeKey(), PersistentDataType.STRING) != null && item.getItemMeta().getPersistentDataContainer().get(DataHolder.getItemTypeKey(), PersistentDataType.STRING).equals("dice6")){
                 int roll = ((int) (Math.random()*6)+1);
 
                 p.sendMessage(ChatColor.YELLOW + "You roll a " + ChatColor.GOLD + "" +ChatColor.BOLD + roll);
@@ -226,7 +224,7 @@ public class ListenersALL implements Listener {
    //WEAR HAT
            if(p.isSneaking() && p.getLocation().getPitch() <= -85)
            {
-               if(item.getItemMeta().getPersistentDataContainer().get(SgiveCommandExecutor.getKey("weartype"), PersistentDataType.STRING).equals("head"))
+               if(item.getItemMeta().getPersistentDataContainer().get(DataHolder.getItemTypeKey(), PersistentDataType.STRING).equals("hat"))
                {
                    p.getInventory().setItemInMainHand(p.getInventory().getHelmet());
                    p.getInventory().setHelmet(item);
@@ -244,7 +242,7 @@ public class ListenersALL implements Listener {
             //NEVER USE ITEM HERE
 
             //"unwear" hat
-            if (p.getInventory().getItemInMainHand().getType() == Material.AIR && p.getInventory().getHelmet() != null &&  p.getInventory().getHelmet().hasItemMeta() && p.getInventory().getHelmet().getItemMeta().getPersistentDataContainer().get(SgiveCommandExecutor.getKey("weartype"), PersistentDataType.STRING).equals("head") && p.isSneaking() && p.getLocation().getPitch() >= 85) {
+            if (p.getInventory().getItemInMainHand().getType() == Material.AIR && p.getInventory().getHelmet() != null &&  p.getInventory().getHelmet().hasItemMeta() && p.getInventory().getHelmet().getItemMeta().getPersistentDataContainer().get(DataHolder.getItemTypeKey(), PersistentDataType.STRING).equals("hat") && p.isSneaking() && p.getLocation().getPitch() >= 85) {
 
                 p.getInventory().setItemInMainHand(p.getInventory().getHelmet());
                 p.getInventory().setHelmet(null);
@@ -263,7 +261,7 @@ public class ListenersALL implements Listener {
         }
 
         }// INTERACT EVENT !!
-        @EventHandler
+        /*@EventHandler
         public void onHandSwitch(PlayerInteractEvent event) throws IOException {
             Player p = event.getPlayer();
             ItemStack itemmain = event.getItem();
@@ -293,7 +291,7 @@ public class ListenersALL implements Listener {
 
 
             }
-        }
+        }*/
 
         @EventHandler
         public void onPlayerLeaveSit(EntityDismountEvent event){
@@ -315,6 +313,28 @@ public class ListenersALL implements Listener {
                 UsefulThings.extinguishItem(p.getInventory().getItem(event.getPreviousSlot()), "normal", p);
             }
         }
+
+        @EventHandler
+        public void onPlayerClickEntity(PlayerInteractEntityEvent event){
+            Player player = event.getPlayer();
+            ItemStack item = player.getInventory().getItemInMainHand();
+            if(event.getRightClicked() instanceof Player){
+                Player rightclicked = (Player) event.getRightClicked();
+                if(player.getInventory().getItemInMainHand().hasItemMeta()){
+                    switch(item.getItemMeta().getLocalizedName()){
+                        case "handcuffs":
+                            if(UsefulThings.isBehind(player, rightclicked, 45)){
+                                UsefulThings.handcuffPlayer(rightclicked);
+                                ItemStack itemtemp = player.getInventory().getItemInMainHand().clone();
+                                itemtemp.setAmount(itemtemp.getAmount()-1);
+                                player.getInventory().setItem(player.getInventory().getHeldItemSlot(), itemtemp);
+                            }
+                    }
+                }
+            }
+        }
+
+
 
 
 

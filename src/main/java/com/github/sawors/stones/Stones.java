@@ -4,17 +4,14 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.github.sawors.stones.commandexecutors.*;
 import com.github.sawors.stones.listeners.*;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.ArrayList;
 
 
 //https://www.section.io/engineering-education/minecraft-plugin-development-a-hands-on-crash-course/
 
 public final class Stones extends JavaPlugin {
 
-    static ArrayList<Player> movementchecklist = new ArrayList<>();
+
 
     @Override
     public void onEnable() {
@@ -26,6 +23,8 @@ public final class Stones extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new AnvilListeners(), this);
         getServer().getPluginManager().registerEvents(new MovementListener(), this);
         getServer().getPluginManager().registerEvents(new AttackListeners(), this);
+        getServer().getPluginManager().registerEvents(new DeathManager(), this);
+        getServer().getPluginManager().registerEvents(new ForbiddenMoveItemListener(), this);
 
         //      LOAD COMMANDS
         getServer().getPluginCommand("mark-location").setExecutor(new TowerCommandExecutor());
@@ -36,6 +35,8 @@ public final class Stones extends JavaPlugin {
         getServer().getPluginCommand("ignite").setExecutor(new IgniteCommandExecutor());
         getServer().getPluginCommand("checklist").setExecutor(new MovementCheckListCommandExecutor());
         getServer().getPluginCommand("sit").setExecutor(new SitCommandExecutor());
+        getServer().getPluginCommand("handcuff").setExecutor(new HandcuffCommandExecutor());
+        getServer().getPluginCommand("uncuff").setExecutor(new UncuffCommandExecutor());
 
         //      INITIATE PROTOCOLLIB
         ProtocolManager manager = ProtocolLibrary.getProtocolManager();
@@ -59,8 +60,7 @@ public final class Stones extends JavaPlugin {
         // Plugin shutdown logic
     }
 
-    public static ArrayList<Player> getMovementCheckList() {
-        return movementchecklist;
-    }
+
+
 
 }

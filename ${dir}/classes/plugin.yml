@@ -2,6 +2,7 @@ name: Stones
 version: '1.17.1'
 main: com.github.sawors.stones.Stones
 api-version: 1.17
+depend: [ProtocolLib]
 commands:
 
   mark-location:
@@ -19,4 +20,13 @@ commands:
     usage: /<command>
   getname:
     description: gives you informations about the item in you main hand's name
+    usage: /<command>
+  ignite:
+    description: ignite your item in hand
+    usage: /<command>
+  checklist:
+    description: shows you the movement checklist
+    usage: /<command>
+  sit:
+    description: sit where you stand
     usage: /<command>

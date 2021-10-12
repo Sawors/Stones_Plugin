@@ -1,7 +1,7 @@
 package com.github.sawors.stones.commandexecutors;
 
 
-import com.github.sawors.stones.UsefulThings;
+import com.github.sawors.stones.UsefulThings.UsefulThings;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

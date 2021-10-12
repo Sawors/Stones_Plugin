@@ -1,5 +1,6 @@
-package com.github.sawors.stones;
+package com.github.sawors.stones.UsefulThings;
 
+import com.github.sawors.stones.Stones;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -11,8 +12,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Random;
 import java.util.logging.Level;
 
@@ -304,5 +310,114 @@ public class UsefulThings {
             UsefulThings.sitEntity(entity, location);
         }
     }
+
+    public static boolean isDead(Player player){
+        return player.isInvulnerable() && player.isInvisible() && player.getHealth() <= 1;
+
+    }
+
+                            //imported
+
+    public static int getWorldDay(@NotNull World w){
+        return (int) Math.floor((double) (w.getFullTime()/24000));
+    }
+
+    public static boolean isPlayerCrawling(@NotNull Player p){
+        return p.getEyeLocation().getY() - p.getLocation().getY() <= 0.5 && !p.isGliding() && !p.isInWater() && !p.isRiptiding() && !p.isFlying() && !p.isSleeping();
+    }
+
+    // Items Stats
+
+    public static void setItemImmovable(@NotNull ItemMeta meta, boolean state){
+        if(state){
+            meta.getPersistentDataContainer().set(DataHolder.getImmovablekey(), PersistentDataType.INTEGER, 1);
+        }else{
+            meta.getPersistentDataContainer().set(DataHolder.getImmovablekey(), PersistentDataType.INTEGER, 0);
+        }
+
+    }
+
+    public static boolean isItemImmovable(ItemStack item){
+        if(item != null && item.hasItemMeta()){
+            return Objects.equals(item.getItemMeta().getPersistentDataContainer().get(DataHolder.getImmovablekey(), PersistentDataType.INTEGER), 1);
+        } else{
+            return false;
+        }
+
+    }
+
+    public static void setPlayerRole(@NotNull Player player, String role){
+        player.getPersistentDataContainer().set(DataHolder.getRoleKey(), PersistentDataType.STRING, role);
+    }
+
+    public static @Nullable String getPlayerRole(@NotNull Player player){
+        if(player.getPersistentDataContainer().get(DataHolder.getRoleKey(), PersistentDataType.STRING) != null ){
+            return player.getPersistentDataContainer().get(DataHolder.getRoleKey(), PersistentDataType.STRING);
+        } else{
+            return null;
+        }
+    }
+
+    public static void setItemType(@NotNull ItemStack item, String itemtype){
+        item.getItemMeta().getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, itemtype);
+    }
+
+    public static @Nullable String getItemType(@NotNull ItemStack item){
+        if(item.hasItemMeta() && item.getItemMeta().getPersistentDataContainer().get(DataHolder.getItemTypeKey(), PersistentDataType.STRING) != null ){
+            return item.getItemMeta().getPersistentDataContainer().get(DataHolder.getItemTypeKey(), PersistentDataType.STRING);
+        } else{
+            return null;
+        }
+    }
+
+    public static void handcuffPlayer(Player p){
+
+        ItemStack item = new ItemStack(Material.IRON_NUGGET);
+        ItemMeta meta = item.getItemMeta();
+        ArrayList<Component> lore = new ArrayList<>();
+
+        item.setType(Material.IRON_NUGGET);
+        meta.displayName(Component.text(ChatColor.GRAY + "Handcuffs"));
+        meta.setUnbreakable(true);
+        meta.setLocalizedName("handcuffsON");
+        lore.add(Component.text(""));
+        lore.add(Component.text(ChatColor.RED + "You are now handcuffed, you are prevented from :"));
+        lore.add(Component.text(ChatColor.DARK_RED + "- Changing your item in main hand"));
+        lore.add(Component.text(ChatColor.DARK_RED + "- Interacting at blocks"));
+        lore.add(Component.text(ChatColor.DARK_RED + "- Interacting with chest/furnace etc..."));
+        lore.add(Component.text(ChatColor.DARK_RED + "- Interacting with horses/donkeys/mules"));
+        lore.add(Component.text(ChatColor.DARK_RED + "- Dropping items"));
+        UsefulThings.setItemImmovable(meta, true);
+        meta.lore(lore);
+
+        item.setItemMeta(meta);
+
+        if (p.getInventory().getItemInMainHand().getType() != Material.AIR) {
+            p.getWorld().dropItemNaturally(p.getLocation(), p.getInventory().getItemInMainHand());
+        }
+
+        if (p.getInventory().getItemInOffHand().getType() != Material.AIR) {
+            p.getWorld().dropItemNaturally(p.getLocation(), p.getInventory().getItemInOffHand());
+        }
+        p.getWorld().playSound(p.getLocation(), Sound.BLOCK_ANVIL_LAND, 1, 0.75f);
+        p.getInventory().setItem(p.getInventory().getHeldItemSlot(), item);
+        p.getInventory().setItem(EquipmentSlot.OFF_HAND, item);
+    }
+
+    public static void uncuffPlayer(Player p){
+        if(p.getInventory().getItemInMainHand().hasItemMeta() && p.getInventory().getItemInOffHand().hasItemMeta()){
+            ItemMeta metamain = p.getInventory().getItemInMainHand().getItemMeta();
+            ItemMeta metaoff = p.getInventory().getItemInOffHand().getItemMeta();
+
+            if(UsefulThings.isItemImmovable(p.getInventory().getItemInMainHand()) && UsefulThings.isItemImmovable(p.getInventory().getItemInOffHand())){
+                p.getInventory().setItem(p.getInventory().getHeldItemSlot(), null);
+                p.getInventory().setItem(EquipmentSlot.OFF_HAND, null);
+                p.getWorld().playSound(p.getLocation(), Sound.BLOCK_IRON_TRAPDOOR_OPEN, 1f, 1.5f);
+            }
+        }
+
+
+    }
+
 
 }

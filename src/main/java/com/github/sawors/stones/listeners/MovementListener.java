@@ -1,7 +1,7 @@
 package com.github.sawors.stones.listeners;
 
-import com.github.sawors.stones.Stones;
-import com.github.sawors.stones.UsefulThings;
+import com.github.sawors.stones.UsefulThings.DataHolder;
+import com.github.sawors.stones.UsefulThings.UsefulThings;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.enchantments.Enchantment;
@@ -17,12 +17,14 @@ public class MovementListener implements Listener {
         Player p = event.getPlayer();
 
         //event if a player is in the checklist
-        if(Stones.getMovementCheckList().contains(p)){
+        if(DataHolder.getMovementCheckList().contains(p)){
           //based on checklist
         }
 
         //event if literally change block
         if(event.hasChangedBlock()){
+
+
             //logic
             if(p.getWorld().hasStorm()){
                 if(p.getInventory().getItemInMainHand().getEnchantments().containsKey(Enchantment.FIRE_ASPECT) || p.getInventory().getItemInOffHand().getEnchantments().containsKey(Enchantment.FIRE_ASPECT)) {
