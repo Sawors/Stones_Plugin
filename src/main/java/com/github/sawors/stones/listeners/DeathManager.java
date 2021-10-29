@@ -12,12 +12,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.*;
+import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.util.Vector;
 
@@ -38,7 +37,11 @@ public class DeathManager implements Listener {
         p.setSaturation(0);
         p.setHealth(1);
         p.setArrowsInBody(0);
-
+        if(!p.getItemOnCursor().getType().isAir()){
+            p.getWorld().dropItemNaturally(p.getLocation().add(0,2.5,0), p.getItemOnCursor());
+        }
+        p.setItemOnCursor(null);
+        p.updateInventory();
         Inventory deadinventory = Bukkit.createInventory(p, 5*9, Component.text("Dead Body"));
         if(p.getInventory().getContents().length > 0){
             deadinventory.setContents(p.getInventory().getContents());
@@ -48,30 +51,31 @@ public class DeathManager implements Listener {
 
         DataHolder.getInventoryMap().put(p.getName(), deadinventory);
 
-        ItemStack item = new ItemStack(Material.BARRIER);
-        ItemMeta meta = item.getItemMeta();
-        UsefulThings.setItemImmovable(meta, true);
-        item.setItemMeta(meta);
+
 
         p.getInventory().clear();
-        p.getInventory().setItem(4, item);
 
         p.getInventory().setHeldItemSlot(4);
-        p.showTitle(Title.title(Component.text(ChatColor.DARK_RED + "- DEAD -"), Component.text(ChatColor.DARK_GRAY + "you can still be revived")));
+        p.showTitle(Title.title(Component.text(ChatColor.RED + "- ALMOST DEAD -"), Component.text(ChatColor.DARK_GRAY + "you can still be revived")));
 
     }
 
     @EventHandler
-    public void onPlayerLifeChange(EntityRegainHealthEvent event){
+    public void onPlayerLifeRegen(EntityRegainHealthEvent event){
         if(event.getEntity() instanceof Player){
             Player p = (Player) event.getEntity();
-            if(p.getHealth() - event.getAmount() <= 1){
+            if(p.getHealth() == 1){
                 p.setInvulnerable(false);
                 p.setInvisible(false);
                 PlayerInventory playerinv = p.getInventory();
 
                 for(int i = 0; i <= 35; i++){
-                    playerinv.setItem(i, DataHolder.getInventoryMap().get(p.getName()).getItem(i));
+                    if(DataHolder.getInventoryMap().get(p.getName()).getItem(i) == null){
+                        playerinv.setItem(i, new ItemStack(Material.AIR));
+                    } else {
+                        playerinv.setItem(i, DataHolder.getInventoryMap().get(p.getName()).getItem(i));
+                    }
+
                 }
                 playerinv.setBoots(DataHolder.getInventoryMap().get(p.getName()).getItem(36));
                 playerinv.setLeggings(DataHolder.getInventoryMap().get(p.getName()).getItem(37));
@@ -104,6 +108,41 @@ public class DeathManager implements Listener {
                     clicker.openInventory(DataHolder.getInventoryMap().get(clicked.getName()));
                 }
             }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerInteractAtBlock(PlayerInteractEvent event){
+        if(UsefulThings.isDead(event.getPlayer())){
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerInteractAtVehicle(VehicleEnterEvent event){
+        if(event.getEntered() instanceof Player && UsefulThings.isDead((Player) event.getEntered())){
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerClickAtEntity(PlayerInteractEntityEvent event){
+        if(UsefulThings.isDead(event.getPlayer())){
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerDropItem(PlayerDropItemEvent event){
+        if(UsefulThings.isDead(event.getPlayer())){
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onPlayerPickupItem(PlayerAttemptPickupItemEvent event){
+        if(UsefulThings.isDead(event.getPlayer())){
+            event.setCancelled(true);
         }
     }
 }

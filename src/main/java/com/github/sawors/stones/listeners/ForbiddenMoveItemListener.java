@@ -8,11 +8,10 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 public class ForbiddenMoveItemListener implements Listener {
     Component message = Component.text(ChatColor.RED + "you cannot do that !");
@@ -24,7 +23,7 @@ public class ForbiddenMoveItemListener implements Listener {
         if(event.getCurrentItem() != null) {item = event.getCurrentItem();}
         HumanEntity p = event.getWhoClicked();
 
-        if(UsefulThings.isItemImmovable(item)){
+        if(UsefulThings.isItemImmovable(item) || (event.getSlotType() == InventoryType.SlotType.ARMOR && UsefulThings.isItemImmovable(event.getWhoClicked().getInventory().getItemInMainHand()))){
             p.sendActionBar(message);
             p.getWorld().playSound(p.getLocation(), Sound.BLOCK_NETHERITE_BLOCK_BREAK, 1f, 0.1f);
             event.setCancelled(true);
@@ -100,7 +99,6 @@ public class ForbiddenMoveItemListener implements Listener {
             //block
             if(UsefulThings.isItemImmovable(item)){
                 //event.getEntered().teleport(event.getEntered().getLocation().add(0,0.25,0));
-                p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 40,0 ));
                 p.getWorld().playSound(p.getLocation(), Sound.ITEM_ARMOR_EQUIP_CHAIN, 0.1f, 0.8f);
 
 

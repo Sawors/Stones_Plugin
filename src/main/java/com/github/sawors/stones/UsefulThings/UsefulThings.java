@@ -5,15 +5,14 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -383,7 +382,8 @@ public class UsefulThings {
         lore.add(Component.text(""));
         lore.add(Component.text(ChatColor.RED + "You are now handcuffed, you are prevented from :"));
         lore.add(Component.text(ChatColor.DARK_RED + "- Changing your item in main hand"));
-        lore.add(Component.text(ChatColor.DARK_RED + "- Interacting at blocks"));
+        lore.add(Component.text(ChatColor.DARK_RED + "- Changing your armor"));
+        lore.add(Component.text(ChatColor.DARK_RED + "- Interacting with blocks"));
         lore.add(Component.text(ChatColor.DARK_RED + "- Interacting with chest/furnace etc..."));
         lore.add(Component.text(ChatColor.DARK_RED + "- Interacting with horses/donkeys/mules"));
         lore.add(Component.text(ChatColor.DARK_RED + "- Dropping items"));
@@ -417,6 +417,25 @@ public class UsefulThings {
         }
 
 
+    }
+
+    public static void spawnEntity(Location l, String entityname, int count){
+        for(int i = 1; i<= count; i++){
+            spawnEntity(l, entityname);
+        }
+    }
+
+    public static void spawnEntity(Location l, String entityname){
+            switch(entityname){
+                case("firefly"):
+                    Bat e = (Bat) l.getBlock().getWorld().spawnEntity(l, EntityType.BAT);
+                    e.addPotionEffect(new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 100000,1, false, false));
+                    e.setInvisible(true);
+                    e.setCustomName("Fire Fly");
+                    e.getPersistentDataContainer().set(DataHolder.getSpecialentity(), PersistentDataType.INTEGER, 1);
+                    e.setSilent(true);
+
+            }
     }
 
 

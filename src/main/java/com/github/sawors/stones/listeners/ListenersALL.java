@@ -12,6 +12,10 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntityCombustEvent;
+import org.bukkit.event.entity.ItemDespawnEvent;
+import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -28,6 +32,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.spigotmc.event.entity.EntityDismountEvent;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Random;
 
 public class ListenersALL implements Listener {
@@ -165,7 +170,7 @@ public class ListenersALL implements Listener {
 
 
    //ACTIVATE RESONANT CRYSTAL
-           if(item.getItemMeta().getLocalizedName().equals("resonantcrystal") && p.isSneaking()){
+           if(Objects.equals(item.getItemMeta().getLocalizedName(), "resonantcrystal") && p.isSneaking()){
                p.playSound(p.getLocation(), "minecraft:sawors.resonantcrystal_on", 1, (float) (Math.sin(new Random().nextFloat()) / 4 + 0.9));
 
            }
@@ -224,7 +229,7 @@ public class ListenersALL implements Listener {
    //WEAR HAT
            if(p.isSneaking() && p.getLocation().getPitch() <= -85)
            {
-               if(item.getItemMeta().getPersistentDataContainer().get(DataHolder.getItemTypeKey(), PersistentDataType.STRING).equals("hat"))
+               if(Objects.equals(item.getItemMeta().getPersistentDataContainer().get(DataHolder.getItemTypeKey(), PersistentDataType.STRING), "hat"))
                {
                    p.getInventory().setItemInMainHand(p.getInventory().getHelmet());
                    p.getInventory().setHelmet(item);
@@ -243,10 +248,12 @@ public class ListenersALL implements Listener {
 
             //"unwear" hat
             if (p.getInventory().getItemInMainHand().getType() == Material.AIR && p.getInventory().getHelmet() != null &&  p.getInventory().getHelmet().hasItemMeta() && p.getInventory().getHelmet().getItemMeta().getPersistentDataContainer().get(DataHolder.getItemTypeKey(), PersistentDataType.STRING).equals("hat") && p.isSneaking() && p.getLocation().getPitch() >= 85) {
+                if(!p.getInventory().getHelmet().getItemMeta().getLocalizedName().equals("blindfold")){
+                    p.getInventory().setItemInMainHand(p.getInventory().getHelmet());
+                    p.getInventory().setHelmet(null);
+                    p.playSound(p.getLocation(), Sound.ITEM_ARMOR_EQUIP_LEATHER, 1, 1.5F);
+                }
 
-                p.getInventory().setItemInMainHand(p.getInventory().getHelmet());
-                p.getInventory().setHelmet(null);
-                p.playSound(p.getLocation(), Sound.ITEM_ARMOR_EQUIP_LEATHER, 1, 1.5F);
                       }//UNWEAR HAT
 
 
@@ -329,12 +336,77 @@ public class ListenersALL implements Listener {
                                 itemtemp.setAmount(itemtemp.getAmount()-1);
                                 player.getInventory().setItem(player.getInventory().getHeldItemSlot(), itemtemp);
                             }
+                        case "blindfold":
+                            if(UsefulThings.isBehind(player, rightclicked, 45) && rightclicked.getInventory().getHelmet() == null){
+                                ItemStack itemtemp = new ItemStack(Material.PAPER);
+                                ItemMeta meta = itemtemp.getItemMeta();
+                                ArrayList<Component> lore = new ArrayList<>();
+                                meta.displayName(Component.text(ChatColor.GRAY + "Blindfold"));
+                                meta.setLocalizedName("blindfold");
+                                lore.add(Component.text(""));
+                                lore.add(Component.text(ChatColor.GREEN + "Right-click at someone or wear it to blind the wearer"));
+                                meta.lore(lore);
+                                meta.setUnbreakable(true);
+                                meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+                                meta.getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, "hat"); // if item is a wearable. Possible wearables : head, chest, legs, feet, ring
+                                itemtemp.setItemMeta(meta);
+                                rightclicked.getInventory().setHelmet(itemtemp);
+                            }
                     }
                 }
             }
         }
 
+        @EventHandler
+    public void onPlayerBreakLogEvent(BlockBreakEvent event){
+            Player p = event.getPlayer();
+            Block b = event.getBlock();
 
+            //just in case the event is triggered by magic or else
+            if(p.getHealth() != 0){
+                if(String.valueOf(b.getType()).contains("LOG")){
+                    for(int i = 1; i<128; i++){
+                        if(String.valueOf(b.getLocation().add(0.5,i,0.5).getBlock().getType()).contains("LOG")){
+                            b.getWorld().spawnFallingBlock(b.getLocation().add(0.5,i,0.5), b.getLocation().add(0.5,i,0.5).getBlock().getBlockData());
+                            b.getLocation().add(0.5,i,0.5).getBlock().setType(Material.AIR);
+                        } else{
+                        break;
+                        }
+                    }
+                }
+            }
+
+    }
+
+    @EventHandler
+    public void onPlayerSpecialClickEvent(PlayerInteractEvent event){
+            Block b = event.getClickedBlock();
+
+    }
+
+    @EventHandler
+    public void onItemDespawn(ItemDespawnEvent event){
+        if(event.getEntity().getItemStack().getType() == Material.TORCH && Math.random() < 0.5){
+            event.getEntity().getLocation().getBlock().setType(Material.FIRE);
+        }
+    }
+
+    @EventHandler
+    public void onItemSpawn(ItemSpawnEvent event){
+        if(event.getEntity().getItemStack().getType() == Material.TORCH){
+           event.getEntity().setTicksLived(4800);
+        }
+    }
+
+    @EventHandler
+    public void onEntityBurn(EntityCombustEvent event){
+            if(event.getEntity() instanceof Item){
+                Item item = (Item) event.getEntity();
+                if(item.getItemStack().getType() == Material.GUNPOWDER){
+                    UsefulThings.spawnEntity(item.getLocation(),"firefly", item.getItemStack().getAmount());
+                }
+            }
+    }
 
 
 

@@ -177,6 +177,28 @@ public class SgiveCommandExecutor implements CommandExecutor {
                     lore.add(Component.text(ChatColor.GREEN + "Right Click at someone to prevent him from using items"));
                     meta.lore(lore);
                     break;
+                case "blindfold":
+                    item.setType(Material.PAPER);
+                    meta.displayName(Component.text(ChatColor.GRAY + "Blindfold"));
+                    meta.setLocalizedName("blindfold");
+                    lore.add(Component.text(""));
+                    lore.add(Component.text(ChatColor.GREEN + "Right-click at someone or wear it to blind the wearer"));
+                    meta.lore(lore);
+                    meta.setUnbreakable(true);
+                    meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+                    meta.getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, "hat"); // if item is a wearable. Possible wearables : head, chest, legs, feet, ring
+                    break;
+                case "bouboule":
+                    item.setType(Material.GOLD_NUGGET);
+                    meta.displayName(Component.text(ChatColor.RED + "La Bouboule"));
+                    meta.setLocalizedName("bouboule");
+                    lore.add(Component.text(""));
+                    lore.add(Component.text(ChatColor.LIGHT_PURPLE + "BAH ALORS PETIT COQUINOU !"));
+                    meta.lore(lore);
+                    meta.setUnbreakable(true);
+                    meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+                    meta.getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, "hat"); // if item is a wearable. Possible wearables : head, chest, legs, feet, ring
+                    break;
 
                 /*
 
@@ -202,6 +224,7 @@ public class SgiveCommandExecutor implements CommandExecutor {
 
             item.setItemMeta(meta);
             p.getInventory().addItem(item);
+            return true;
 
         } else if (sender instanceof Player){
             sender.sendMessage(ChatColor.RED + "- you must specify an item ! (or your 2nd argument is invalid)");

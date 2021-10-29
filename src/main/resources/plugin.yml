@@ -33,3 +33,7 @@ commands:
   handcuff:
 
   uncuff:
+
+  heal:
+
+  sspawn:
