@@ -35,7 +35,7 @@ public class DataHolder {
     }
 
     private static final NamespacedKey specialentity = new NamespacedKey(Stones.getPlugin(Stones.class), "specialentity");
-    public static NamespacedKey getSpecialentity(){
+    public static NamespacedKey getSpecialEntity(){
         return specialentity;
     }
 

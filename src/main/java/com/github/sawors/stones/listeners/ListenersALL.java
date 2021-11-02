@@ -170,7 +170,7 @@ public class ListenersALL implements Listener {
 
 
    //ACTIVATE RESONANT CRYSTAL
-           if(Objects.equals(item.getItemMeta().getLocalizedName(), "resonantcrystal") && p.isSneaking()){
+           if(item.hasItemMeta() && Objects.equals(item.getItemMeta().getLocalizedName(), "resonantcrystal") && p.isSneaking()){
                p.playSound(p.getLocation(), "minecraft:sawors.resonantcrystal_on", 1, (float) (Math.sin(new Random().nextFloat()) / 4 + 0.9));
 
            }
@@ -354,6 +354,28 @@ public class ListenersALL implements Listener {
                             }
                     }
                 }
+            } else if(event.getRightClicked() instanceof Bee && player.getInventory().getItemInMainHand().getType() == Material.GLASS_BOTTLE && event.getRightClicked().getPersistentDataContainer().get(DataHolder.getSpecialEntity(), PersistentDataType.STRING) == null){
+                Bee bee = (Bee) event.getRightClicked();
+                player.getInventory().getItemInMainHand().setAmount(player.getInventory().getItemInMainHand().getAmount()-1);
+                player.playSound(player.getLocation(), Sound.ITEM_BOTTLE_FILL, 1 ,1.25f);
+                player.getInventory().addItem(UsefulThings.getItem("bee_bottle"));
+
+                bee.remove();
+
+            } else if(event.getRightClicked() instanceof Bat && player.getInventory().getItemInMainHand().getType() == Material.GLASS_BOTTLE && event.getRightClicked().getPersistentDataContainer().get(DataHolder.getSpecialEntity(), PersistentDataType.STRING) == null){
+                Bat bat = (Bat) event.getRightClicked();
+                player.getInventory().getItemInMainHand().setAmount(player.getInventory().getItemInMainHand().getAmount()-1);
+                player.playSound(player.getLocation(), Sound.ITEM_BOTTLE_FILL, 1 ,1.25f);
+                player.getInventory().addItem(UsefulThings.getItem("bat_bottle"));
+
+                bat.remove();
+            } else if(event.getRightClicked() instanceof Bat && player.getInventory().getItemInMainHand().getType() == Material.GLASS_BOTTLE && Objects.equals(event.getRightClicked().getPersistentDataContainer().get(DataHolder.getSpecialEntity(), PersistentDataType.STRING), "firefly")){
+                Bat bat = (Bat) event.getRightClicked();
+                player.getInventory().getItemInMainHand().setAmount(player.getInventory().getItemInMainHand().getAmount()-1);
+                player.playSound(player.getLocation(), Sound.ITEM_BOTTLE_FILL, 1 ,1.25f);
+                player.getInventory().addItem(UsefulThings.getItem("firefly_bottle"));
+
+                bat.remove();
             }
         }
 
@@ -378,11 +400,6 @@ public class ListenersALL implements Listener {
 
     }
 
-    @EventHandler
-    public void onPlayerSpecialClickEvent(PlayerInteractEvent event){
-            Block b = event.getClickedBlock();
-
-    }
 
     @EventHandler
     public void onItemDespawn(ItemDespawnEvent event){
@@ -407,6 +424,7 @@ public class ListenersALL implements Listener {
                 }
             }
     }
+
 
 
 
