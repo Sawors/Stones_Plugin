@@ -3,8 +3,10 @@ package com.github.sawors.stones.listeners;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
+import com.github.sawors.stones.Stones;
 import com.github.sawors.stones.UsefulThings.DataHolder;
 import com.github.sawors.stones.UsefulThings.UsefulThings;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -13,10 +15,7 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.entity.EntityCombustEvent;
-import org.bukkit.event.entity.ItemDespawnEvent;
-import org.bukkit.event.entity.ItemSpawnEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
@@ -29,6 +28,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.spigotmc.event.entity.EntityDismountEvent;
 
 import java.util.ArrayList;
@@ -140,7 +140,7 @@ public class ListenersALL implements Listener {
                 }
         }*/
 
-        if(item != null && item.getItemMeta().isUnbreakable() && item.getItemMeta().hasLore()) {
+        if(item != null && item.hasItemMeta() && item.getItemMeta().hasLocalizedName()) {
 
 
    //add Closed Seal item
@@ -170,10 +170,62 @@ public class ListenersALL implements Listener {
 
 
    //ACTIVATE RESONANT CRYSTAL
-           if(item.hasItemMeta() && Objects.equals(item.getItemMeta().getLocalizedName(), "resonantcrystal") && p.isSneaking()){
+           if(Objects.equals(item.getItemMeta().getLocalizedName(), "resonantcrystal") && p.isSneaking()){
                p.playSound(p.getLocation(), "minecraft:sawors.resonantcrystal_on", 1, (float) (Math.sin(new Random().nextFloat()) / 4 + 0.9));
 
            }
+
+            if(Objects.equals(item.getItemMeta().getLocalizedName(), "raid_horn") && event.getAction().isRightClick() && event.getPlayer().getCooldown(Material.SHIELD) <= 0){
+                //Location soundloc = p.getLocation();
+                net.kyori.adventure.sound.Sound sound = net.kyori.adventure.sound.Sound.sound(Key.key("minecraft:sawors.raid_horn"), net.kyori.adventure.sound.Sound.Source.PLAYER, UsefulThings.getVolume(24), 1);
+
+                p.playSound(sound, net.kyori.adventure.sound.Sound.Emitter.self());
+                new BukkitRunnable(){
+
+                    final int max = 8;
+                    int countdown = max;
+
+                    @Override
+                    public void run(){
+                        
+                        if(countdown <= 0 || Bukkit.getOnlinePlayers().isEmpty()){
+                            if(!p.getWorld().getNearbyPlayers(p.getLocation(), 24).isEmpty()){
+                                for (Player player : p.getWorld().getNearbyPlayers(p.getLocation(), 24)){
+                                    player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PILLAGER_AMBIENT, 2, UsefulThings.randomPitchSimple(0.4, 1));
+                                    player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PILLAGER_AMBIENT, 2, UsefulThings.randomPitchSimple(0.4, 1));
+                                    player.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, (int) (((-p.getLocation().distance(player.getLocation())/24/1.25)+1)*30*20), 0, false, false));
+                                    player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, (int) (((-p.getLocation().distance(player.getLocation())/24/1.25)+1)*30*20), 0, false, false));
+                                    player.setCooldown(Material.SHIELD, 20*8);
+                                }
+                            }
+                            this.cancel();
+                            return;
+                        }
+                        if(countdown == max){
+                            if(event.hasItem() && event.getItem().hasItemMeta() && Objects.equals(event.getItem().getItemMeta().getLocalizedName(), "raid_horn")){
+                                p.spawnParticle(Particle.REDSTONE, p.getLocation().add(0,3.25+((float) -countdown/max),0), 4, 0.1, .25,0.1, new Particle.DustOptions(Color.fromRGB(0x45171f), 1));
+                            } else {
+                                p.getWorld().stopSound(sound);
+                                this.cancel();
+                                return;
+                            }
+                        } else {
+                            if(p.isBlocking() && event.hasItem() && event.getItem().hasItemMeta() && Objects.equals(event.getItem().getItemMeta().getLocalizedName(), "raid_horn")){
+                                p.spawnParticle(Particle.REDSTONE, p.getLocation().add(0,3.25+((float) -countdown/max),0),4, 0.1, .25,0.1, new Particle.DustOptions(Color.fromRGB(0x45171f), 1));
+                            } else {
+                                p.getWorld().stopSound(sound);
+                                this.cancel();
+                                return;
+                            }
+                        }
+
+                        countdown--;
+                    }
+
+
+
+                }.runTaskTimer(Stones.getPlugin(), 0, 10);
+            }
 
 
    //ROLL D6
@@ -421,6 +473,17 @@ public class ListenersALL implements Listener {
                 Item item = (Item) event.getEntity();
                 if(item.getItemStack().getType() == Material.GUNPOWDER){
                     UsefulThings.spawnEntity(item.getLocation(),"firefly", item.getItemStack().getAmount());
+                }
+            }
+    }
+
+    @EventHandler
+    public void onPlayerBlock(EntityDamageEvent event){
+            if(event.getEntity() instanceof Player && ((Player) event.getEntity()).isBlocking()){
+                Player p = ((Player) event.getEntity()).getPlayer();
+                if(p != null && p.getInventory().getItemInMainHand().hasItemMeta() && Objects.equals(p.getInventory().getItemInMainHand().getItemMeta().getPersistentDataContainer().get(DataHolder.getItemTypeKey(), PersistentDataType.STRING), "horn")){
+                    p.setHealth(p.getHealth()-event.getDamage());
+                    //event.setCancelled(true);
                 }
             }
     }

@@ -17,10 +17,12 @@ import org.bukkit.scheduler.BukkitTask;
 
 public final class Stones extends JavaPlugin {
 
-
+    private static Stones instance;
 
     @Override
     public void onEnable() {
+        //get plugin instance (FINALLY I FOUND HOW)
+        instance = this;
         // Plugin startup logic
         saveDefaultConfig();
         //      REGISTER EVENTS
@@ -83,6 +85,10 @@ public final class Stones extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+    }
+
+    public static Stones getPlugin(){
+        return instance;
     }
 
 

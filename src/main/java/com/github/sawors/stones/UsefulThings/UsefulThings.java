@@ -3,6 +3,7 @@ package com.github.sawors.stones.UsefulThings;
 import com.github.sawors.stones.Stones;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
+import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
@@ -641,6 +642,14 @@ public class UsefulThings {
                 meta.setUnbreakable(true);
                 meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
                 break;
+            case "raid_horn":
+                item.setType(Material.SHIELD);
+                meta.displayName(Component.text(ChatColor.GRAY + "Raid Horn"));
+                meta.setLocalizedName("raid_horn");
+                meta.setUnbreakable(true);
+                meta.getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, "horn");
+                meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+                break;
 
                 /*
 
@@ -665,6 +674,24 @@ public class UsefulThings {
         }
         item.setItemMeta(meta);
         return item;
+    }
+
+    public static float getVolume(int distance){
+        return distance*6.4f;
+    }
+
+    public static float getVolume(float basevolume, Biome biome){
+        float modifier = 1;
+        String biomename = biome.toString();
+        if(biomename.contains("MOUNTAINS") || biomename.contains("HILLS")) {
+            modifier = 2;
+        } else if(biomename.contains("OCEAN")){
+            modifier = 1.5f;
+        } else if(biomename.contains("JUNGLE") || biomename.contains("FOREST")) {
+            modifier = 0.75f;
+        }
+
+        return modifier;
     }
 
 
