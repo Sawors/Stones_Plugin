@@ -2,7 +2,6 @@ package com.github.sawors.stones.listeners;
 
 import com.github.sawors.stones.UsefulThings.DataHolder;
 import com.github.sawors.stones.UsefulThings.UsefulThings;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -86,8 +85,6 @@ public class AttackListeners implements Listener {
                 if(damager.getInventory().getItemInOffHand().hasItemMeta() && damager.getInventory().getItemInOffHand().getItemMeta().getPersistentDataContainer().get(DataHolder.getItemTypeKey(), PersistentDataType.STRING) != null && Objects.equals(damager.getInventory().getItemInOffHand().getItemMeta().getPersistentDataContainer().get(DataHolder.getItemTypeKey(), PersistentDataType.STRING), "curveddagger")){
                     multiplier *= 2;
                 }
-                damager.sendMessage(ChatColor.GREEN + String.valueOf(multiplier));
-                damager.sendMessage(ChatColor.GREEN + "\n");
                 if(multiplier > 0){
                     if(damager.hasPotionEffect(PotionEffectType.SPEED)){
                         receiver.damage(((event.getDamage()*multiplier)-event.getDamage())+(damager.getPotionEffect(PotionEffectType.SPEED).getAmplifier()*0.2*((event.getDamage()*multiplier)-event.getDamage())));
@@ -99,7 +96,7 @@ public class AttackListeners implements Listener {
                     damager.addPotionEffect(potionslowlight);
                     receiver.getWorld().playSound(receiver.getLocation(), Sound.ENTITY_COD_HURT, 1, 1.2f);
                 } else{
-                    damager.playSound(damager.getLocation(), Sound.BLOCK_ANVIL_LAND, 1, 1.25f);
+                    damager.getWorld().playSound(damager.getLocation(), Sound.BLOCK_ANVIL_LAND, 1, 1.25f);
                     receiver.addPotionEffect(potionslowlight);
                     damager.addPotionEffect(potionslowheavy);
                     event.setCancelled(true);

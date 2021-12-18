@@ -64,7 +64,7 @@ public class DeathManager implements Listener {
     public void onPlayerLifeRegen(EntityRegainHealthEvent event){
         if(event.getEntity() instanceof Player){
             Player p = (Player) event.getEntity();
-            if(p.getHealth() == 1){
+            if(p.getHealth() == 1 && p.isInvisible() && p.isInvulnerable()){
                 p.setInvulnerable(false);
                 p.setInvisible(false);
                 PlayerInventory playerinv = p.getInventory();

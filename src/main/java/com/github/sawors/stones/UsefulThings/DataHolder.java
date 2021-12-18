@@ -29,9 +29,9 @@ public class DataHolder {
         return ison;
     }
 
-    private static final NamespacedKey color = new NamespacedKey(Stones.getPlugin(Stones.class), "color");
-    public static NamespacedKey getColor(){
-        return color;
+    private static final NamespacedKey stonesitemdata = new NamespacedKey(Stones.getPlugin(Stones.class), "color");
+    public static NamespacedKey getStonesItemDataKey(){
+        return stonesitemdata;
     }
 
     private static final NamespacedKey specialentity = new NamespacedKey(Stones.getPlugin(Stones.class), "specialentity");

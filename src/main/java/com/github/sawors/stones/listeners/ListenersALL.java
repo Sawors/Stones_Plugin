@@ -3,25 +3,31 @@ package com.github.sawors.stones.listeners;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
+import com.github.sawors.stones.SerializeInventory;
 import com.github.sawors.stones.Stones;
 import com.github.sawors.stones.UsefulThings.DataHolder;
 import com.github.sawors.stones.UsefulThings.UsefulThings;
-import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.type.Chain;
+import org.bukkit.block.data.type.Door;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -29,11 +35,14 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 import org.spigotmc.event.entity.EntityDismountEvent;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Random;
+import java.util.logging.Level;
 
 public class ListenersALL implements Listener {
 
@@ -70,9 +79,8 @@ public class ListenersALL implements Listener {
     //ALL PRAISE THE XP ORB REMOVER  \i/ MAY HIS POWER CURE US OF THE DISEASE THAT CONSUME OUR WORLD \i/
     @EventHandler
     public void onXpSpawn(EntityAddToWorldEvent event){
-        Entity e = event.getEntity();
-        if(e instanceof ExperienceOrb){
-            e.remove();
+        if(event.getEntity() instanceof ExperienceOrb){
+            event.getEntity().remove();
         }
     }
 
@@ -90,9 +98,24 @@ public class ListenersALL implements Listener {
     @EventHandler
     public void onArrowHit(ProjectileHitEvent event){
         if(event.getHitBlock() != null && event.getEntity() instanceof Arrow){
+            Arrow arrow = (Arrow) event.getEntity();
             Block block = event.getHitBlock();
             block.getWorld().playSound(block.getLocation(), block.getSoundGroup().getPlaceSound(), 1f, UsefulThings.randomPitchSimple()+0.2f);
             // switch for sound
+
+
+
+            //arrow break reaction
+            if(block.getType().toString().contains("GLASS_PANE")){
+                new BukkitRunnable(){
+                    @Override
+                    public void run(){
+                        block.getWorld().playSound(block.getLocation(), Sound.BLOCK_GLASS_BREAK, 1,1.2f);
+                        block.getWorld().spawnParticle(Particle.BLOCK_CRACK, block.getX()+0.5, block.getY()+0.5, block.getZ()+0.5,16, 0, 0,0, block.getBlockData());
+                        block.breakNaturally();
+                    }
+                }.runTaskLater(Stones.getPlugin(), 1);
+            }
         }
     }
 
@@ -177,9 +200,9 @@ public class ListenersALL implements Listener {
 
             if(Objects.equals(item.getItemMeta().getLocalizedName(), "raid_horn") && event.getAction().isRightClick() && event.getPlayer().getCooldown(Material.SHIELD) <= 0){
                 //Location soundloc = p.getLocation();
-                net.kyori.adventure.sound.Sound sound = net.kyori.adventure.sound.Sound.sound(Key.key("minecraft:sawors.raid_horn"), net.kyori.adventure.sound.Sound.Source.PLAYER, UsefulThings.getVolume(24), 1);
+                net.kyori.adventure.sound.Sound sound = net.kyori.adventure.sound.Sound.sound(Sound.EVENT_RAID_HORN, net.kyori.adventure.sound.Sound.Source.PLAYER, UsefulThings.getVolume(24), 1);
 
-                p.playSound(sound, net.kyori.adventure.sound.Sound.Emitter.self());
+                p.getWorld().playSound(sound, net.kyori.adventure.sound.Sound.Emitter.self());
                 new BukkitRunnable(){
 
                     final int max = 8;
@@ -436,8 +459,15 @@ public class ListenersALL implements Listener {
             Player p = event.getPlayer();
             Block b = event.getBlock();
 
+
+
+
+
+
+
+
             //just in case the event is triggered by magic or else
-            if(p.getHealth() != 0){
+            /*if(p.getHealth() != 0){
                 if(String.valueOf(b.getType()).contains("LOG")){
                     for(int i = 1; i<128; i++){
                         if(String.valueOf(b.getLocation().add(0.5,i,0.5).getBlock().getType()).contains("LOG")){
@@ -448,7 +478,7 @@ public class ListenersALL implements Listener {
                         }
                     }
                 }
-            }
+            }*/
 
     }
 
@@ -483,7 +513,205 @@ public class ListenersALL implements Listener {
                 Player p = ((Player) event.getEntity()).getPlayer();
                 if(p != null && p.getInventory().getItemInMainHand().hasItemMeta() && Objects.equals(p.getInventory().getItemInMainHand().getItemMeta().getPersistentDataContainer().get(DataHolder.getItemTypeKey(), PersistentDataType.STRING), "horn")){
                     p.setHealth(p.getHealth()-event.getDamage());
-                    //event.setCancelled(true);
+//                    event.setCancelled(true);
+                }
+            }
+    }
+
+//    @EventHandler
+//    public void onPlayerSneak(PlayerToggleSneakEvent event){
+//            Player p = event.getPlayer();
+//            if(event.isSneaking()){
+//                p.sendMessage("sneak");
+//            } else{
+//                p.sendMessage("unsneak");
+//            }
+//    }
+
+    @EventHandler
+    public void onPlayerOpenDoor(PlayerInteractEvent event){
+            Block b = event.getClickedBlock();
+            if(b != null && b.getType().toString().contains("_DOOR") && event.getAction().isRightClick()){
+                //event.setCancelled(true);
+                Door door = (Door) b.getBlockData().clone();
+
+
+
+                //DOUBLE DOOR LOGIC
+                if(!event.useInteractedBlock().equals(Event.Result.DENY) && !event.getPlayer().isSneaking()) {
+                    Block b1;
+                    Block b2;
+                    if (door.getFacing().equals(BlockFace.NORTH) || door.getFacing().equals(BlockFace.SOUTH)) {
+                        b1 = b.getLocation().add(1, 0, 0).getBlock();
+                        b2 = b.getLocation().add(-1, 0, 0).getBlock();
+
+
+                    } else {
+                        b1 = b.getLocation().add(0, 0, 1).getBlock();
+                        b2 = b.getLocation().add(0, 0, -1).getBlock();
+                    }
+                    if (b1.getType().toString().contains("_DOOR") && ((Door) b1.getBlockData()).getHinge() != door.getHinge()) {
+                        Door d1 = (Door) b1.getBlockData().clone();
+                        if (door.isOpen()) {
+                            d1.setOpen(false);
+                            b1.getWorld().playSound(b1.getLocation().add(0.5, 0.5, 0.5), Sound.BLOCK_WOODEN_DOOR_CLOSE, 1, 1);
+                        } else {
+                            d1.setOpen(true);
+                            b1.getWorld().playSound(b1.getLocation().add(0.5, 0.5, 0.5), Sound.BLOCK_WOODEN_DOOR_OPEN, 1, 1);
+                        }
+                        b1.setBlockData(d1);
+                        b1.getState().update();
+
+                    }
+                    if (b2.getType().toString().contains("_DOOR") && ((Door) b2.getBlockData()).getHinge() != door.getHinge()) {
+                        Door d2 = (Door) b2.getBlockData().clone();
+                        if (door.isOpen()) {
+                            d2.setOpen(false);
+                            b2.getWorld().playSound(b1.getLocation().add(0.5, 0.5, 0.5), Sound.BLOCK_WOODEN_DOOR_CLOSE, 1, 1);
+                        } else {
+                            d2.setOpen(true);
+                            b2.getWorld().playSound(b1.getLocation().add(0.5, 0.5, 0.5), Sound.BLOCK_WOODEN_DOOR_OPEN, 1, 1);
+                        }
+                        b2.setBlockData(d2);
+                        b2.getState().update();
+                    }
+                }
+            }
+        if(b != null && b.getType().toString().contains("_DOOR") && event.getAction().isLeftClick() && event.getPlayer().getInventory().getItemInMainHand().getType().isAir()){
+            if(event.getPlayer().isSneaking()){
+                b.getWorld().playSound(b.getLocation().add(.5,0,.5), "minecraft:sawors.door.knock", .25f, UsefulThings.randomPitchSimple()-0.5f);
+            }else{
+                b.getWorld().playSound(b.getLocation().add(.5,0,.5), "minecraft:sawors.door.knock", 1, UsefulThings.randomPitchSimple());
+            }
+        }
+    }
+
+    @EventHandler
+    public void chainClimber(PlayerInteractEvent event){
+            Player p = event.getPlayer();
+
+            if(event.getClickedBlock() != null && event.getClickedBlock().getType() == Material.CHAIN && p.getLocation().add(0,1,0).getBlock().getType().equals(Material.CHAIN) && ((Chain) p.getLocation().add(0,1,0).getBlock().getBlockData()).getAxis().equals(Axis.Y)){
+                if(p.isSneaking()){
+                    p.setVelocity(new Vector(0,.25,0));
+                    p.getWorld().playSound(p.getLocation().add(0,1,0), Sound.BLOCK_CHAIN_STEP, .25f, 1);
+                }else{
+                    p.setVelocity(new Vector(0,.33,0));
+                    p.getWorld().playSound(p.getLocation().add(0,1,0), Sound.BLOCK_CHAIN_STEP, 1, 1);
+                }
+            }
+    }
+
+    @EventHandler
+    public void playerOpenBackpack(PlayerInteractEvent event){
+        Player p = event.getPlayer();
+
+        if(p.getInventory().getItemInMainHand().getType().equals(Material.RAW_IRON) && p.isSneaking()){
+            ItemStack mainhand = event.getPlayer().getInventory().getItemInMainHand();
+            Inventory inv = Bukkit.createInventory(event.getPlayer(), 45, Component.text("Backpack"));
+            for(int i = 0; i<45; i++){
+                inv.setItem(i, new ItemStack(Material.OAK_BOAT));
+            }
+            String s = mainhand.getItemMeta().getPersistentDataContainer().get(DataHolder.getStonesItemDataKey(), PersistentDataType.STRING);
+            p.sendMessage(s);
+            //if(mainhand.hasItemMeta() && mainhand.getItemMeta().getPersistentDataContainer().get(DataHolder.getStonesItemDataKey(), PersistentDataType.STRING) != null){
+                try{
+
+                    ItemStack[] itemlist = SerializeInventory.itemStackArrayFromBase64(s);
+                    for(int i = 0; i<45; i++){
+                        inv.setItem(i, itemlist[i]);
+                    }
+                }catch(IOException exception){
+                    Bukkit.getLogger().log(Level.WARNING, "backpack from player " + event.getPlayer().getName() + " failed to open (no data found on item or IOException)");
+                }
+
+            //}
+            event.getPlayer().openInventory(inv);
+        }
+
+    }
+
+    @EventHandler
+    public void playerCloseBackpack(InventoryCloseEvent event){
+            if(event.getPlayer().getInventory().getItemInMainHand().getType().equals(Material.RAW_IRON)){
+                ItemStack mainhand = event.getPlayer().getInventory().getItemInMainHand();
+                ItemStack[] itemlist = event.getInventory().getContents();
+
+                for(int i = 0; i<itemlist.length; i++){
+                    event.getPlayer().sendMessage("i: "+i);
+                   if(itemlist[i] == null){
+                       itemlist[i] = new ItemStack(Material.STONE);
+                   }
+                }
+
+
+//                event.getPlayer().sendMessage(Arrays.toString(itemlist));
+                String s = SerializeInventory.itemStackArrayToBase64(itemlist);
+                event.getPlayer().sendMessage(s);
+                mainhand.getItemMeta().getPersistentDataContainer().set(DataHolder.getStonesItemDataKey(), PersistentDataType.STRING, s);
+
+                //event.getPlayer().sendMessage(SerializeInventory.itemStackArrayToBase64(event.getInventory().getContents()));
+            }
+    }
+
+
+    @EventHandler
+    public void explosionEvent(EntityExplodeEvent event){
+            Entity e = event.getEntity();
+            EntityType etype= e.getType();
+
+            if(e.getType() == EntityType.PRIMED_TNT){
+
+            } else if(e.getType() == EntityType.ARMOR_STAND){
+
+            }else if(e.getType() == EntityType.CREEPER){
+
+            }else if(e.getType() == EntityType.ENDER_CRYSTAL){
+
+            }else if(e.getType() == EntityType.FIREBALL){
+
+            }else if(e.getType() == EntityType.MINECART_TNT){
+
+            }
+    }
+
+
+    @EventHandler
+    public void onPlayerBlock(PlayerInteractEvent event){
+            if(event.getAction().isRightClick()){
+                Player p = event.getPlayer();
+                if(p.getInventory().getItemInMainHand().getType() == Material.SHIELD && (p.getInventory().getItemInOffHand().getType().toString().contains("SWORD") || p.getInventory().getItemInOffHand().getType().toString().contains("AXE") || p.getInventory().getItemInOffHand().getType().toString().contains("STICK")) && p.getCooldown(Material.SHIELD) <= 0){
+                    p.getWorld().playSound(p.getLocation(), Sound.ITEM_SHIELD_BLOCK, 1 ,0.8f);
+                    p.getWorld().playSound(p.getLocation(), Sound.ITEM_SHIELD_BLOCK, 1 ,1);
+
+                    new BukkitRunnable(){
+
+                        int countdown = 2;
+                        @Override
+                        public void run() {
+                            if(countdown > 0 && p.isBlocking()){
+                                p.getWorld().playSound(p.getLocation(), Sound.ITEM_SHIELD_BLOCK, 1 ,0.8f);
+                                p.getWorld().playSound(p.getLocation(), Sound.ITEM_SHIELD_BLOCK, 1 ,1);
+                            } else{
+                                if(countdown == 1 && !p.isBlocking()){
+                                    p.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 20*2,0,false, false));
+                                    p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20*2,0,false, false));
+                                }else if(countdown == 0){
+                                    p.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 20*3,0,false, false));
+                                    p.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20*3,0,false, false));
+                                }
+                                p.setCooldown(Material.SHIELD, 20);
+
+                                this.cancel();
+                                return;
+                            }
+
+
+
+                            countdown--;
+                        }
+
+
+                    }.runTaskTimer(Stones.getPlugin(), 8, 8);
                 }
             }
     }

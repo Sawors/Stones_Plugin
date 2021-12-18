@@ -1,14 +1,10 @@
 package com.github.sawors.stones;
 
-import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
-import com.comphenix.protocol.events.ListenerPriority;
-import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.events.PacketEvent;
 import com.github.sawors.stones.commandexecutors.*;
 import com.github.sawors.stones.listeners.*;
+import com.github.sawors.stones.recipes.StonecutterRecipes;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -34,6 +30,8 @@ public final class Stones extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new DeathManager(), this);
         getServer().getPluginManager().registerEvents(new ForbiddenMoveItemListener(), this);
         getServer().getPluginManager().registerEvents(new SpecialEntityListeners(), this);
+        getServer().getPluginManager().registerEvents(new BackpackManager(), this);
+        getServer().getPluginManager().registerEvents(new StonecutterRecipes(), this);
 
         //      LOAD COMMANDS
         getServer().getPluginCommand("mark-location").setExecutor(new TowerCommandExecutor());
@@ -48,6 +46,7 @@ public final class Stones extends JavaPlugin {
         getServer().getPluginCommand("uncuff").setExecutor(new UncuffCommandExecutor());
         getServer().getPluginCommand("heal").setExecutor(new HealCommandExecutor());
         getServer().getPluginCommand("sspawn").setExecutor(new SspawnCommandExecutor());
+        getServer().getPluginCommand("stest").setExecutor(new StestCommandExecutor());
 
         //      INITIATE PROTOCOLLIB
         ProtocolManager manager = ProtocolLibrary.getProtocolManager();
@@ -56,28 +55,7 @@ public final class Stones extends JavaPlugin {
         BukkitTask task = new LoopCheckRunnable(this).runTaskTimer(this, 20, 20);
 
 
-        manager.addPacketListener(new PacketAdapter(Stones.getPlugin(Stones.class), ListenerPriority.NORMAL, PacketType.Play.Client.CHAT) {
 
-            @Override
-            public void onPacketReceiving(PacketEvent event){
-                if(event.getPacketType() == PacketType.Play.Client.CHAT && event.getPlayer().getInventory().getHelmet() != null && event.getPlayer().getInventory().getHelmet().getItemMeta().getLocalizedName().equals("bouboule")){
-                    //event.setCancelled(true);
-                    PacketContainer packet = event.getPacket();
-                    char[] message = packet.getStrings().read(0).toCharArray();
-                    char[] newmessage = message.clone();
-                    for(int i = 0; i< message.length; i++){
-                        if(Character.isAlphabetic(message[i])){
-                            if(Math.random() <= .25){
-                                newmessage[i] = 'h';
-                            } else{
-                                newmessage[i] = 'm';
-                            }
-                        }
-                    }
-                    event.getPacket().getStrings().write(0, String.valueOf(newmessage));
-                }
-            }
-        });
 
 
     }

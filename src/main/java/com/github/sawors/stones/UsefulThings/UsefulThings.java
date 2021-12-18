@@ -650,6 +650,13 @@ public class UsefulThings {
                 meta.getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, "horn");
                 meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
                 break;
+            case "iron_spear":
+                item.setType(Material.STICK);
+                meta.displayName(Component.text(ChatColor.WHITE + "Iron Spear"));
+                meta.setLocalizedName("iron_spear");
+                meta.setUnbreakable(true);
+                meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+                break;
 
                 /*
 

@@ -1,7 +1,7 @@
 name: Stones
 version: '${project.version}'
 main: com.github.sawors.stones.Stones
-api-version: 1.17
+api-version: 1.18
 depend: [ProtocolLib]
 commands:
 
@@ -31,9 +31,12 @@ commands:
     description: sit where you stand
     usage: /<command>
   handcuff:
-
+    usage: /<command>
   uncuff:
-
+    usage: /<command>
   heal:
-
+    usage: /<command>
   sspawn:
+    usage: /<command>
+  stest:
+    usage: /<command>
