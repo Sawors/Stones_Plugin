@@ -47,6 +47,7 @@ public final class Stones extends JavaPlugin {
         getServer().getPluginCommand("heal").setExecutor(new HealCommandExecutor());
         getServer().getPluginCommand("sspawn").setExecutor(new SspawnCommandExecutor());
         getServer().getPluginCommand("stest").setExecutor(new StestCommandExecutor());
+        getServer().getPluginCommand("sdebug").setExecutor(new SdebugCommandExecutor());
 
         //      INITIATE PROTOCOLLIB
         ProtocolManager manager = ProtocolLibrary.getProtocolManager();

@@ -232,6 +232,8 @@ public class UsefulThings {
         }
     }
 
+
+
     /**
      * Used to sit an entity at it's location. Conditions : entity must : be on ground, not swimming, not jumping
      * @param entity the entity to sit
@@ -465,7 +467,7 @@ public class UsefulThings {
                 item.setType(Material.GOLD_NUGGET);
                 meta.displayName(Component.text(ChatColor.GOLD + "Golden Ring"));
                 meta.setLocalizedName("ring_base_gold");
-                lore.add(Component.text(ChatColor.DARK_PURPLE + "  unique : " + ChatColor.MAGIC + (int)((Math.random()*10)-1) + (int)((Math.random()*10)-1)));
+                lore.add(Component.text(ChatColor.ITALIC + "" + ChatColor.DARK_GRAY + "unique : " + ChatColor.MAGIC + (int)((Math.random()*10)-1) + (int)((Math.random()*10)-1)));
                 lore.add(Component.text(""));
                 lore.add(Component.text(ChatColor.GOLD+ ""+ ChatColor.ITALIC +"classic, stylish, never gets old"));
                 meta.lore(lore);
@@ -521,7 +523,7 @@ public class UsefulThings {
                 meta.displayName(Component.text(ChatColor.DARK_RED + "Hola ¿Que Tal?"));
                 meta.setLocalizedName("olapapi");
                 lore.add(Component.text(""));
-                lore.add(Component.text(ChatColor.DARK_GREEN + "Hehehe, me no abla tacos"));
+                lore.add(Component.text(ChatColor.DARK_PURPLE + "Hehehe, me no abla tacos"));
                 meta.lore(lore);
                 meta.setUnbreakable(true);
                 meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
@@ -657,6 +659,19 @@ public class UsefulThings {
                 meta.setUnbreakable(true);
                 meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
                 break;
+            case "wall_bomb":
+                item.setType(Material.FIREWORK_STAR);
+                meta.displayName(Component.text(ChatColor.WHITE + "Wall Bomb"));
+                meta.setLocalizedName("wall_bomb");
+                meta.setUnbreakable(true);
+                meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+                lore.add(Component.text(ChatColor.ITALIC + "" + ChatColor.DARK_GRAY + "unique : " + ChatColor.MAGIC + (int)((Math.random()*10)-1) + (int)((Math.random()*10)-1)));
+                lore.add(Component.text(ChatColor.GRAY + "Charge : 0"));
+                lore.add(Component.text(ChatColor.GRAY + "Fuse Time : 0"));
+                int[] values = {1, 60};
+                meta.getPersistentDataContainer().set(DataHolder.getStonesItemDataKey(), PersistentDataType.INTEGER_ARRAY, values);
+                meta.lore(lore);
+                break;
 
                 /*
 
@@ -699,6 +714,23 @@ public class UsefulThings {
         }
 
         return modifier;
+    }
+
+    public static ArmorStand createDisplay(Location loc, ItemStack head){
+        ArmorStand arm = (ArmorStand) loc.getWorld().spawnEntity(loc.subtract(0,17/16f,0), EntityType.ARMOR_STAND);
+        arm.setVisible(false);
+        arm.setInvulnerable(true);
+        arm.setGravity(false);
+        arm.setDisabledSlots(EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET, EquipmentSlot.HAND, EquipmentSlot.OFF_HAND);
+        arm.getEquipment().setHelmet(head);
+
+        return arm;
+    }
+
+    public static boolean isDisplay(Entity e){
+        return e instanceof ArmorStand && !e.hasGravity() && !((ArmorStand) e).getDisabledSlots().isEmpty() && ((ArmorStand) e).isInvisible();
+        //
+
     }
 
 

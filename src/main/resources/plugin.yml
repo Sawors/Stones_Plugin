@@ -40,3 +40,5 @@ commands:
     usage: /<command>
   stest:
     usage: /<command>
+  sdebug:
+    usage: /<command>

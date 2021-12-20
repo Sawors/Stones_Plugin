@@ -9,9 +9,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class DataHolder {
-    private static final NamespacedKey rolekey = new NamespacedKey(Stones.getPlugin(Stones.class), "role");
+    public static NamespacedKey rolekey = new NamespacedKey(Stones.getPlugin(Stones.class), "role");
     public static NamespacedKey getRoleKey(){
         return rolekey;
+    }
+    public static void setRoleKey(NamespacedKey key){
+        rolekey = key;
     }
 
     private static final NamespacedKey immovablekey = new NamespacedKey((Stones.getPlugin(Stones.class)), "immovable");
