@@ -38,7 +38,9 @@ import org.bukkit.util.Vector;
 import org.spigotmc.event.entity.EntityDismountEvent;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Objects;
+import java.util.Random;
 import java.util.logging.Level;
 
 public class ListenersALL implements Listener {
@@ -657,6 +659,7 @@ public class ListenersALL implements Listener {
             Entity e = event.getEntity();
             EntityType etype= e.getType();
 
+
             if(e.getType() == EntityType.PRIMED_TNT){
 
             } else if(e.getType() == EntityType.ARMOR_STAND){
@@ -671,6 +674,7 @@ public class ListenersALL implements Listener {
 
             }
     }
+
 
 
     @EventHandler
@@ -721,58 +725,46 @@ public class ListenersALL implements Listener {
     public void onPlayerPlaceBomb(PlayerInteractEvent event){
 
 
-            if(event.getAction().isRightClick() && Objects.equals(event.getHand(), EquipmentSlot.HAND) && !event.getPlayer().getInventory().getItemInMainHand().getType().isAir() && event.getClickedBlock() != null && event.getClickedBlock().isSolid() && event.getPlayer().getInventory().getItemInMainHand().hasItemMeta() &&  event.getPlayer().getInventory().getItemInMainHand().getItemMeta().getLocalizedName().equals("wall_bomb")){
+            if(event.getAction().isRightClick() && Objects.equals(event.getHand(), EquipmentSlot.HAND) && !event.getPlayer().getInventory().getItemInMainHand().getType().isAir() && event.getClickedBlock() != null && event.getClickedBlock().isSolid() && event.getPlayer().getInventory().getItemInMainHand().hasItemMeta() &&  event.getPlayer().getInventory().getItemInMainHand().getItemMeta().getLocalizedName().equals("wall_bomb") && UsefulThings.getFaceMidLocation(event.getClickedBlock(), event.getBlockFace()).getNearbyEntities(0.05,0.05,0.05).isEmpty()){
+
+                event.setCancelled(true);
 
                 Player p = event.getPlayer();
                 Block b = event.getClickedBlock();
-                Location face = b.getLocation().clone().add(0.5,0.75,0.5);
+                Location face = UsefulThings.getFaceMidLocation(b, event.getBlockFace(), 0.01, new Vector(0,0.3,0),new Vector(0,0.3,0));
                 BlockFace blockface = event.getBlockFace();
-
-                if(blockface.equals(BlockFace.NORTH)){
-                    face = face.add(0,0,-0.51);
-                    p.sendMessage("NORTH");
-                } else if (blockface.equals(BlockFace.SOUTH)){
-                    face = face.add(0,0,0.51);
-                    p.sendMessage("SOUTH");
-                }else if(blockface.equals(BlockFace.EAST)){
-                    face = face.add(0.51,0,0);
-                    p.sendMessage("EAST");
-                }else if(blockface.equals(BlockFace.WEST)){
-                    face = face.add(-0.51,0,0);
-                    p.sendMessage("WEST");
-                }else if(blockface.equals(BlockFace.UP)){
-                    face = face.add(0,0.61,0);
-                    p.sendMessage("UP");
-                }else if(blockface.equals(BlockFace.DOWN)){
-                    face = face.add(0,-0.41,0);
-                    p.sendMessage("DOWN");
-                }
+                ItemStack playerhand = p.getInventory().getItemInMainHand();
 
                 ItemStack bomb = event.getPlayer().getInventory().getItemInMainHand().clone();
                 bomb.setAmount(1);
                 ArmorStand stand = UsefulThings.createDisplay(face, bomb);
-
                 stand.setSmall(true);
-                stand.setCustomName("_hide");
-                stand.setCustomNameVisible(false);
+                stand.setInvulnerable(false);
 
                 if(blockface.equals(BlockFace.NORTH)){
-                    stand.setHeadPose(new EulerAngle(0,3.14,0));
+                    stand.setHeadPose(new EulerAngle(0,0, Math.toRadians((Math.random()-0.5)*10)));
                 } else if (blockface.equals(BlockFace.SOUTH)){
-                    stand.setHeadPose(new EulerAngle(0,0,0));
+                    stand.setHeadPose(new EulerAngle(0,0,Math.toRadians((Math.random()-0.5)*10)));
                 }else if(blockface.equals(BlockFace.EAST)){
-                    stand.setHeadPose(new EulerAngle(0,-3.14/2,0));
+                    stand.setHeadPose(new EulerAngle(0,0,Math.toRadians((Math.random()-0.5)*10)));
                 }else if(blockface.equals(BlockFace.WEST)){
-                    stand.setHeadPose(new EulerAngle(0,3.14/2,0));
+                    stand.setHeadPose(stand.getHeadPose().add(0,0,Math.toRadians((Math.random()-0.5)*10)));
                 }else if(blockface.equals(BlockFace.UP)){
-                    stand.setHeadPose(new EulerAngle(-3.14/2,0,0));;
+                    stand.setHeadPose(new EulerAngle(-3.14/2,Math.toRadians((Math.random()-0.5)*360),0));;
                 }else if(blockface.equals(BlockFace.DOWN)){
-                    stand.setHeadPose(new EulerAngle(3.14/2,0,0));
+                    stand.setHeadPose(new EulerAngle(3.14/2,Math.toRadians((Math.random()-0.5)*360),0));
+                }
+    
+                stand.getWorld().playSound(stand.getLocation(), Sound.BLOCK_WOOD_PLACE, 0.5f, 1.25f);
+                if(event.getPlayer().getGameMode() == GameMode.SURVIVAL || event.getPlayer().getGameMode() == GameMode.ADVENTURE){
+                    playerhand.setAmount(playerhand.getAmount()-1);
                 }
 
                 //p.getInventory().getItemInMainHand().setAmount(0);
 
             }
+
+
     }
 
     @EventHandler
@@ -782,102 +774,161 @@ public class ListenersALL implements Listener {
                 ArmorStand stand = (ArmorStand) event.getRightClicked();
                 ItemStack item = stand.getEquipment().getHelmet();
                 ItemStack playerhand = event.getPlayer().getInventory().getItemInMainHand();
+    
+                if(!UsefulThings.getFaceMidLocation(stand.getLocation().add(0,0.8,0), stand, 0.5).getBlock().isSolid()){
+                    ItemStack bomb = stand.getEquipment().getHelmet().clone();
+                    stand.getWorld().playSound(stand.getLocation(), Sound.BLOCK_WOOD_BREAK, 0.5f, 1.25f);
+                    for(int i = Objects.requireNonNull(bomb.getItemMeta().getPersistentDataContainer().get(DataHolder.getStonesItemDataKey(), PersistentDataType.INTEGER_ARRAY))[0]; i > 0; i--){
+                        stand.getWorld().dropItem(UsefulThings.getFaceMidLocation(stand.getLocation().add(0, 0.8, 0), stand, -2/16f), new ItemStack(Material.GUNPOWDER));
+                    }
+                    bomb = UsefulThings.setBombCharge(bomb, 0);
+                    stand.getEquipment().setHelmet(bomb);
+                    stand.getWorld().dropItem(UsefulThings.getFaceMidLocation(stand.getLocation().add(0, 0.8, 0), stand, -2/16f), bomb);
+                    stand.remove();
+                    event.setCancelled(true);
+                    return;
+                }
+                
                 if(item.getItemMeta().getPersistentDataContainer().get(DataHolder.getStonesItemDataKey(), PersistentDataType.INTEGER_ARRAY) != null && Objects.requireNonNull(item.getItemMeta().getPersistentDataContainer().get(DataHolder.getStonesItemDataKey(), PersistentDataType.INTEGER_ARRAY)).length >=2){
                     int fuse = Objects.requireNonNull(item.getItemMeta().getPersistentDataContainer().get(DataHolder.getStonesItemDataKey(), PersistentDataType.INTEGER_ARRAY))[1];
                     int charge = Objects.requireNonNull(item.getItemMeta().getPersistentDataContainer().get(DataHolder.getStonesItemDataKey(), PersistentDataType.INTEGER_ARRAY))[0];
                     int[] data = {charge, fuse};
-                    List<Component> lore = item.getItemMeta().lore();
+                    ItemStack newbomb = item.clone();
+                    
 
                     if(playerhand.getType() == Material.GUNPOWDER && item.lore().size() != 0){
-                        event.getPlayer().sendMessage("Charge : "+data[0]);
+                        //value setting
                         if(charge >=0 && charge <3){
-                            data[0] = data[0] + 1;
-                            event.getPlayer().sendMessage(Arrays.toString(data));
-                            try{
-                                item.getItemMeta().getPersistentDataContainer().set(DataHolder.getStonesItemDataKey(), PersistentDataType.INTEGER_ARRAY, data);
-                            } catch(Exception e){
-                                event.getPlayer().sendMessage("fail");
+                            if(event.getPlayer().getGameMode() == GameMode.SURVIVAL || event.getPlayer().getGameMode() == GameMode.ADVENTURE){
+                                playerhand.setAmount(playerhand.getAmount()-1);
                             }
-
-                            event.getPlayer().sendMessage("Charge : "+Objects.requireNonNull(item.getItemMeta().getPersistentDataContainer().get(DataHolder.getStonesItemDataKey(), PersistentDataType.INTEGER_ARRAY))[0]);
-                            lore.set(1, Component.text(ChatColor.GRAY + "Charge + " + data[0]));
-                            item.lore(lore);
+                            ((ArmorStand) event.getRightClicked()).getEquipment().setHelmet(UsefulThings.setBombCharge(item, data[0]+1));
+                            stand.getWorld().playSound(stand.getLocation(), Sound.BLOCK_SAND_PLACE, .75f, 1.25f);
                         }
-
-                    } else if(playerhand.getType() == Material.STRING && item.lore().size() != 0){
-                        event.getPlayer().sendMessage("Fuse : "+data[1]);
-                        if(data[1] >=0 && data[1] <= 160){
-                            data[1] = data[1]+10;
-                            event.getPlayer().sendMessage("Fuse : "+data[1]);
-                            item.getItemMeta().getPersistentDataContainer().set(DataHolder.getStonesItemDataKey(), PersistentDataType.INTEGER_ARRAY, data);
-                            lore.set(2, Component.text(ChatColor.GRAY + "Fuse + " + (data[1]/20) + "s"));
-                            item.lore(lore);
+                        
+                        
+                    } else if(playerhand.getType().toString().contains("SHOVEL") || item.getItemMeta().getLocalizedName().contains("spoon")){
+                        //value setting
+                        if(charge >0){
+                            ((ArmorStand) event.getRightClicked()).getEquipment().setHelmet(UsefulThings.setBombCharge(item, data[0]-1));
+                            stand.getWorld().dropItem(UsefulThings.getFaceMidLocation(stand.getLocation().add(0, 0.8, 0), stand, -2/16f), new ItemStack(Material.GUNPOWDER));
+                            stand.getWorld().playSound(stand.getLocation(), Sound.BLOCK_SAND_BREAK, .75f, 1.25f);
                         }
-
-                    } else if(item.lore().size() != 0 && (playerhand.getType() == Material.FLINT_AND_STEEL || (playerhand.hasItemMeta() && playerhand.getItemMeta().getEnchants().containsKey(Enchantment.FIRE_ASPECT)))){
-                        stand.getWorld().playSound(stand.getLocation().clone().add(0,0.5,0), Sound.ITEM_FLINTANDSTEEL_USE, 1,1);
-                        ItemMeta meta = item.getItemMeta().clone();
-                        ItemStack newbomb = item.clone();
-                        meta.setLocalizedName("wall_bomb_ignited");
-                        newbomb.setItemMeta(meta);
-                        ((ArmorStand) event.getRightClicked()).getEquipment().setHelmet(newbomb);
-                        event.getPlayer().sendMessage(((ArmorStand) event.getRightClicked()).getEquipment().getHelmet().getItemMeta().getLocalizedName());
-                        stand.getWorld().playSound(stand.getLocation().clone().add(0,0.5,0), "minecraft:sawors.explosive.fusestart", 1,0.75f);
+    
+    
+                    }else if(playerhand.getType().toString().contains("SHEARS")){
+                        //value setting
+                        if(fuse >20){
+                            ((ArmorStand) event.getRightClicked()).getEquipment().setHelmet(UsefulThings.setBombFuse(item, data[1]-20));
+                            stand.getWorld().dropItem(UsefulThings.getFaceMidLocation(stand.getLocation().add(0, 0.8, 0), stand, -2/16f), new ItemStack(Material.STRING));
+                            stand.getWorld().playSound(stand.getLocation(), Sound.ENTITY_SHEEP_SHEAR, .75f, 1.25f);
+                        }
+                        //value display
+                        ArmorStand stat = UsefulThings.createDisplay(stand.getLocation().clone().add(0,1,0), new ItemStack(Material.AIR));
+                        stat.setSmall(true);
+                        if(data[1] >20){
+                            stat.setCustomName(ChatColor.GRAY + "Fuse : " + (data[1]-20)/20 + "s");
+                        } else  {
+                            stat.setCustomName(ChatColor.GRAY + "Fuse : " + data[1]/20 + "s");
+                        }
+                        stat.setCustomNameVisible(true);
                         new BukkitRunnable(){
-                            int timer = data[1];
-                            Location moveloc = stand.getLocation().clone().add(0,1+(3/16f)+(2/16f),0);
-
+        
                             @Override
                             public void run(){
-                                if(timer == 0){
+                                stat.remove();
+                            }
+                        }.runTaskLater(Stones.getPlugin(), 5);
+    
+    
+                    } else if(playerhand.getType() == Material.STRING && item.lore().size() != 0){
+                        
+                        //value setting
+                        if(data[1] >=0 && data[1] < 15*20){
+                            if(event.getPlayer().getGameMode() == GameMode.SURVIVAL || event.getPlayer().getGameMode() == GameMode.ADVENTURE){
+                                playerhand.setAmount(playerhand.getAmount()-1);
+                            }
+                            ((ArmorStand) event.getRightClicked()).getEquipment().setHelmet(UsefulThings.setBombFuse(item, data[1]+20));
+                            stand.getWorld().playSound(stand.getLocation(), Sound.BLOCK_WOOL_PLACE, .75f, 1.25f);
+                        }
+                        //value display
+                        ArmorStand stat = UsefulThings.createDisplay(stand.getLocation().clone().add(0,1,0), new ItemStack(Material.AIR));
+                        stat.setSmall(true);
+                        if(data[1] >=0 && data[1] < 15*20){
+                            stat.setCustomName(ChatColor.GRAY + "Fuse : " + (data[1]+20)/20 + "s");
+                        } else  {
+                            stat.setCustomName(ChatColor.GRAY + "Fuse : " + data[1]/20 + "s");
+                        }
+                        
+                        stat.setCustomNameVisible(true);
+                        new BukkitRunnable(){
+        
+                            @Override
+                            public void run(){
+                                stat.remove();
+                            }
+                        }.runTaskLater(Stones.getPlugin(), 5);
 
-                                    stand.getWorld().createExplosion(stand.getLocation().add(0,1,0), data[0]*2);
-                                    new BukkitRunnable(){
-                                        @Override
-                                        public void run(){
-                                            stand.getWorld().spawnParticle(Particle.SMOKE_LARGE, stand.getLocation().add(0,.5,0), 32, data[0]*.5, data[0]*.5, data[0]*.5, 0);
-                                        }
-
-                                    }.runTaskLater(Stones.getPlugin(), 10);
-                                    stand.remove();
+                    } else if(item.lore().size() != 0 && (playerhand.getType() == Material.FLINT_AND_STEEL || (playerhand.hasItemMeta() && playerhand.getItemMeta().getEnchants().containsKey(Enchantment.FIRE_ASPECT)))) {
+    
+                        if (charge > 0){
+                            stand.getWorld().playSound(stand.getLocation().clone().add(0, 0.5, 0), Sound.ITEM_FLINTANDSTEEL_USE, 1, 1);
+                            ItemMeta meta = item.getItemMeta().clone();
+                            meta.setLocalizedName("wall_bomb_ignited");
+                            newbomb.setItemMeta(meta);
+                            ((ArmorStand) event.getRightClicked()).getEquipment().setHelmet(newbomb);
+                            stand.getWorld().playSound(stand.getLocation().clone().add(0, 0.5, 0), "minecraft:sawors.explosive.fusestart", .5f, 0.75f);
+                        new BukkitRunnable() {
+                            int timer = data[1];
+                            Location moveloc = UsefulThings.getFaceMidLocation(stand.getLocation().add(0,0.8,0), stand, -1/16f).add(0, (9/16f), 0);
+    
+                            @Override
+                            public void run() {
+                                if (timer == 0) {
+    
+                                    //stand.getWorld().createExplosion(stand.getLocation().add(0,1,0), data[0]*2);
+                                    UsefulThings.ignite(stand);
                                     this.cancel();
                                     return;
                                 }
                                 Particle part;
-
-                                if(stand.getLocation().add(0,0.8,0).getBlock().getType().equals(Material.WATER)){
+        
+                                if (stand.getLocation().add(0, 0.8, 0).getBlock().getType().equals(Material.WATER)) {
                                     part = Particle.WATER_BUBBLE;
                                 } else {
                                     part = Particle.FLAME;
                                 }
-
-                                moveloc=moveloc.subtract(0,(3/16f)/data[1],0);
-
-                                for(int i = 0; i<4; i++){
-                                    stand.getWorld().spawnParticle(Particle.SMOKE_NORMAL, moveloc, 0, (Math.random()-.5)/20, .1, (Math.random()-.5)/20, 2);
-                                    stand.getWorld().spawnParticle(part, moveloc, 0, (Math.random()-.5)/20, .1, (Math.random()-.5)/20, 2);
+        
+                                moveloc = moveloc.subtract(0, (3/16f) / data[1], 0);
+        
+                                for (int i = 0; i < 4; i++) {
+                                    stand.getWorld().spawnParticle(Particle.SMOKE_NORMAL, moveloc, 0, (Math.random() - .5) / 20, .1, (Math.random() - .5) / 20, 2);
+            
+            
+                                    stand.getWorld().spawnParticle(part, moveloc, 0, (Math.random() - 0.5) / 20, .1, (Math.random() - .5) / 20, 2);
                                 }
-
-                                if(timer >= 10){
-
+        
+                                if (timer >= 10) {
+            
                                     float pitch;
-
-                                    if(stand.getLocation().add(0,0.8,0).getBlock().getType().equals(Material.WATER)){
+            
+                                    if (stand.getLocation().add(0, 0.8, 0).getBlock().getType().equals(Material.WATER)) {
                                         pitch = .5f;
                                     } else {
                                         pitch = .8f;
                                     }
-                                    float p2 = (((pitch*(data[1] - timer))/data[1])/2)+.75f;
-                                    stand.getWorld().playSound(stand.getLocation().clone().add(0,0.5,0), "minecraft:sawors.explosive.fuse", .2f, p2);
-
+                                    float p2 = (((pitch * (data[1] - timer)) / data[1]) / 2) + .75f;
+                                    stand.getWorld().playSound(stand.getLocation().clone().add(0, 0.5, 0), "minecraft:sawors.explosive.fuse", .15f, p2);
+            
                                 }
-
-
-
+                                
                                 timer--;
-                            }
-
-                        }.runTaskTimer(Stones.getPlugin(), 1,1);
+                              }
+    
+                            }.runTaskTimer(Stones.getPlugin(), 1, 1);
+                        } else{
+                            stand.getWorld().playSound(stand.getLocation().clone().add(0, 0.5, 0), Sound.ITEM_FLINTANDSTEEL_USE, .5f, 1.5f);
+                        }
                     }
                 }
 
@@ -889,21 +940,21 @@ public class ListenersALL implements Listener {
     @EventHandler
     public void onPlayerDestroyBomb(EntityDamageEvent event){
             if(event.getEntity() instanceof ArmorStand){
-                event.getEntity().getWorld().sendMessage(Component.text("triggeredv1"));
 
                 ArmorStand armorstand = (ArmorStand) event.getEntity();
 
                 if(armorstand.getEquipment().getHelmet() != null && armorstand.getEquipment().getHelmet().hasItemMeta() && armorstand.getEquipment().getHelmet().getItemMeta().getLocalizedName().equals("wall_bomb")){
-                    event.getEntity().getWorld().sendMessage(Component.text("      sexe+"));
-                    event.getEntity().getWorld().sendMessage(Component.text(armorstand.getEquipment().getHelmet().getItemMeta().getLocalizedName()));
 
-                    event.getEntity().getWorld().sendMessage(Component.text(" triggeredv2"));
                     event.setCancelled(true);
-                    event.getEntity().getWorld().sendMessage(Component.text("  triggeredv3"));
                     ItemStack bomb = armorstand.getEquipment().getHelmet().clone();
-
-
-                    armorstand.getWorld().dropItem(armorstand.getLocation(), bomb);
+                    armorstand.getWorld().playSound(armorstand.getLocation(), Sound.BLOCK_WOOD_BREAK, 0.5f, 1.25f);
+                    
+                    for(int i = Objects.requireNonNull(bomb.getItemMeta().getPersistentDataContainer().get(DataHolder.getStonesItemDataKey(), PersistentDataType.INTEGER_ARRAY))[0]; i > 0; i--){
+                        armorstand.getWorld().dropItem(UsefulThings.getFaceMidLocation(armorstand.getLocation().add(0, 0.8, 0), armorstand, -2/16f), new ItemStack(Material.GUNPOWDER));
+                    }
+                    bomb = UsefulThings.setBombCharge(bomb, 0);
+                    armorstand.getEquipment().setHelmet(bomb);
+                    armorstand.getWorld().dropItem(UsefulThings.getFaceMidLocation(armorstand.getLocation().add(0, 0.8, 0), armorstand, -2/16f), bomb);
                     armorstand.remove();
                 }
             }

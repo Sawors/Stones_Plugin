@@ -5,6 +5,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.EquipmentSlot;
@@ -14,10 +15,13 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 import java.util.logging.Level;
@@ -63,13 +67,116 @@ public class UsefulThings {
         return (float) ((new Random().nextDouble() * amplitude) + displacement);
     }
 
+    public static Location getFaceMidLocation(Location loc, BlockFace blockface, double padding, Vector verticaledit, Vector horizontaledit){
+        if(blockface.equals(BlockFace.NORTH)){
+            loc = loc.add(0,0,-0.50-padding).add(horizontaledit);
+            loc.setYaw(180);
+        } else if (blockface.equals(BlockFace.SOUTH)){
+            loc = loc.add(0,0,0.50+padding).add(horizontaledit);
+            loc.setYaw(0);
+        }else if(blockface.equals(BlockFace.EAST)){
+            loc = loc.add(0.50+padding,0,0).add(horizontaledit);
+            loc.setYaw(270);
+        }else if(blockface.equals(BlockFace.WEST)){
+            loc = loc.add(-0.50-padding,0,0).add(horizontaledit);
+            loc.setYaw(90);
+        }else if(blockface.equals(BlockFace.UP)){
+            loc = loc.add(0,0.50+padding,0).add(verticaledit);
+            loc.setPitch(-90);
+        }else if(blockface.equals(BlockFace.DOWN)){
+            loc = loc.add(0,-0.50-padding,0).add(verticaledit);
+            loc.setPitch(90);
+
+        }
+        return loc;
+    }
+    public static Location getFaceMidLocation(Block block, BlockFace blockface, double padding, Vector verticaledit, Vector horizontaledit){
+        return getFaceMidLocation(block.getLocation().add(0.5,0.5,0.5), blockface, padding, verticaledit, horizontaledit);
+    }
+    public static Location getFaceMidLocation(Block block, BlockFace blockface){
+        return getFaceMidLocation(block.getLocation().add(0.5,0.5,0.5), blockface, 0.0, new Vector(0,0,0), new Vector(0,0,0));
+    }
+    public static Location getFaceMidLocation(Location loc, BlockFace blockface){
+        return getFaceMidLocation(loc, blockface, 0.0, new Vector(0,0,0), new Vector(0,0,0));
+    }
+    
+    public static Location getFaceMidLocation(Location loc, Entity e, double padding){
+        loc=loc.clone();
+        float yaw = e.getLocation().getYaw();
+        BlockFace face = BlockFace.NORTH;
+        if(yaw >-45 && yaw <=45){
+            loc.setZ(loc.getZ()+0.5);
+        } else if(yaw >45 && yaw <=135){
+            face = BlockFace.EAST;
+            loc.setX(loc.getX()-0.5);
+        } else if(yaw >135 && yaw <=225){
+            face = BlockFace.SOUTH;
+            loc.setZ(loc.getZ()-0.5);
+        } else if(yaw >225 && yaw <=315){
+            face = BlockFace.WEST;
+            loc.setX(loc.getX()+0.5);
+        }
+        
+        if(e.getLocation().getPitch() > 10){
+            loc.setY(loc.getY()+0.5);
+        } else if(e.getLocation().getPitch() < -10){
+            loc.setY(loc.getY()-0.5);
+        }
+        
+        Block b = loc.getBlock();
+        
+        return getFaceMidLocation(b, face, padding, new Vector(0,0,0), new Vector(0,0,0));
+    }
+    
+    public static Location getFaceMidLocation(Entity e, double padding){
+        Location loc = e.getLocation().clone();
+        return getFaceMidLocation(loc, e, padding);
+    }
+
+
+
+
+    /**
+     * Extinguish the item provided (removes Fire Aspect enchant or any flame-related attribute (torches to unlit torches for example))
+     * @param item the item to extinguish (MUST BE PROVIDED YOU GENIUS)
+     * @param reason why did the item has been extinguished. Possible values are : "water" for water bases extinguish; "normal" for normal; "fake" to just play particles and not actually extinguish the item (in rain for instance)
+     * @param player a player where the sound effects and particles will be played
+     */
+    public static void extinguishItem(@NotNull ItemStack item, String reason, Player player){
+        if(item.getEnchantments().containsKey(Enchantment.FIRE_ASPECT)){
+            if(reason != null && player != null) {
+                switch (reason) {
+                    case "normal":
+                        player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_EXTINGUISH_FIRE, 1F, randomPitchSimple());
+                        player.getWorld().spawnParticle(Particle.SMOKE_NORMAL, player.getLocation().add(0,1,0), 16, 0.5, 0.5, 0.5, 0.01);
+                        break;
+                    case "water":
+                        player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_EXTINGUISH_FIRE, 0.8F, randomPitchSimple()-0.2f);
+                        player.playSound(player.getLocation(), Sound.BLOCK_BUBBLE_COLUMN_BUBBLE_POP, 1, randomPitchSimple());
+                        player.getWorld().spawnParticle(Particle.BUBBLE_COLUMN_UP, player.getLocation().add(0,1,0), 16, 0.5, 1, 0.5, 0.01);
+                        break;
+                    case "hehehe":
+                        player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, randomPitchSimple()*2);
+                        break;
+                    case "fake":
+                        player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_EXTINGUISH_FIRE, 0.1F, randomPitchSimple() + 0.1f);
+                        player.getWorld().spawnParticle(Particle.SMOKE_NORMAL, player.getLocation().add(0,1,0), 8, 0.25, 0.5, 0.25, 0.01);
+                        return;
+                                 }
+                item.removeEnchantment(Enchantment.FIRE_ASPECT);
+
+            }
+        }
+    }
+
+
     /**
      * Adds the Fire Aspect enchant to the specified item (must be a sword or a "fireaspectable" item (I don't know any except swords)
      * @param item the item to enchant (MUST BE PROVIDED YOU GENIUS)
      * @param level how high you want the enchant. Possible values are : 1; 2; 0 to add 1 to the existing enchant (if lv = 0 makes lv = 1); -1 to remove enchant
      * @param player a player where the sound effects and particles will be played (can be null normally (pro code))
      */
-    public static void igniteItem(@NotNull ItemStack item, int level, Player player){
+    public static void ignite(@NotNull ItemStack item, int level, Player player){
         try{
             if((!item.getEnchantments().containsKey(Enchantment.FIRE_ASPECT)) && level == 1){
                 item.addEnchantment(Enchantment.FIRE_ASPECT, level);
@@ -116,38 +223,96 @@ public class UsefulThings {
         }
     }
 
-    /**
-     * Extinguish the item provided (removes Fire Aspect enchant or any flame-related attribute (torches to unlit torches for example))
-     * @param item the item to extinguish (MUST BE PROVIDED YOU GENIUS)
-     * @param reason why did the item has been extinguished. Possible values are : "water" for water bases extinguish; "normal" for normal; "fake" to just play particles and not actually extinguish the item (in rain for instance)
-     * @param player a player where the sound effects and particles will be played
-     */
-    public static void extinguishItem(@NotNull ItemStack item, String reason, Player player){
-        if(item.getEnchantments().containsKey(Enchantment.FIRE_ASPECT)){
-            if(reason != null && player != null) {
-                switch (reason) {
-                    case "normal":
-                        player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_EXTINGUISH_FIRE, 1F, randomPitchSimple());
-                        player.getWorld().spawnParticle(Particle.SMOKE_NORMAL, player.getLocation().add(0,1,0), 16, 0.5, 0.5, 0.5, 0.01);
-                        break;
-                    case "water":
-                        player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_EXTINGUISH_FIRE, 0.8F, randomPitchSimple()-0.2f);
-                        player.playSound(player.getLocation(), Sound.BLOCK_BUBBLE_COLUMN_BUBBLE_POP, 1, randomPitchSimple());
-                        player.getWorld().spawnParticle(Particle.BUBBLE_COLUMN_UP, player.getLocation().add(0,1,0), 16, 0.5, 1, 0.5, 0.01);
-                        break;
-                    case "hehehe":
-                        player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, randomPitchSimple()*2);
-                        break;
-                    case "fake":
-                        player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_EXTINGUISH_FIRE, 0.1F, randomPitchSimple() + 0.1f);
-                        player.getWorld().spawnParticle(Particle.SMOKE_NORMAL, player.getLocation().add(0,1,0), 8, 0.25, 0.5, 0.25, 0.01);
-                        return;
-                                 }
-                item.removeEnchantment(Enchantment.FIRE_ASPECT);
-
+    public static void ignite(Entity entity, float multiplier){
+        if(entity instanceof ArmorStand) {
+            int charge = 0;
+            float power = 0;
+            ArmorStand stand = (ArmorStand) entity;
+    
+    
+            // wall bomb case
+            if (((ArmorStand) entity).getEquipment().getHelmet() != null && ((ArmorStand) entity).getEquipment().getHelmet().getType() == Material.FIREWORK_STAR && ((ArmorStand) entity).getEquipment().getHelmet().hasItemMeta() && ((ArmorStand) entity).getEquipment().getHelmet().getItemMeta().getLocalizedName().contains("wall_bomb")) {
+                charge = Objects.requireNonNull(stand.getEquipment().getHelmet().getItemMeta().getPersistentDataContainer().get(DataHolder.getStonesItemDataKey(), PersistentDataType.INTEGER_ARRAY))[0];
+                power = (float) ((-0.25*Math.pow(charge, 2) + 3*charge)*multiplier);
+                if(!UsefulThings.getFaceMidLocation(stand.getLocation().add(0,0.8,0), stand, 0.5).getBlock().isSolid()){
+                    ItemStack bomb = stand.getEquipment().getHelmet().clone();
+                    stand.getWorld().playSound(stand.getLocation(), Sound.BLOCK_WOOD_BREAK, 0.5f, 1.25f);
+                    for(int i = Objects.requireNonNull(bomb.getItemMeta().getPersistentDataContainer().get(DataHolder.getStonesItemDataKey(), PersistentDataType.INTEGER_ARRAY))[0]; i > 0; i--){
+                        stand.getWorld().dropItem(UsefulThings.getFaceMidLocation(stand.getLocation().add(0, 0.8, 0), stand, -2/16f), new ItemStack(Material.GUNPOWDER));
+                    }
+                    bomb = UsefulThings.setBombCharge(bomb, 0);
+                    stand.getEquipment().setHelmet(bomb);
+                    stand.getWorld().dropItem(UsefulThings.getFaceMidLocation(stand.getLocation().add(0, 0.8, 0), stand, -2/16f), bomb);
+                    for (Entity e : UsefulThings.getFaceMidLocation(stand.getLocation().add(0, 0.8, 0), stand, 0.5).getNearbyEntities(charge * 4, charge * 4, charge * 4)) {
+        
+                        if (e instanceof ArmorStand) {
+                            if (((ArmorStand) e).getEquipment().getHelmet() != null && ((ArmorStand) e).getEquipment().getHelmet().hasItemMeta() && ((ArmorStand) e).getEquipment().getHelmet().getItemMeta().getLocalizedName().contains("_bomb")) {
+                                if(!UsefulThings.getFaceMidLocation(stand.getLocation().add(0,0.8,0), stand, 0.5).getBlock().isSolid()){
+                                    ItemStack bomb2 = stand.getEquipment().getHelmet().clone();
+                                    stand.getWorld().playSound(stand.getLocation(), Sound.BLOCK_WOOD_BREAK, 0.5f, 1.25f);
+                                    for(int i = Objects.requireNonNull(bomb2.getItemMeta().getPersistentDataContainer().get(DataHolder.getStonesItemDataKey(), PersistentDataType.INTEGER_ARRAY))[0]; i > 0; i--){
+                                        stand.getWorld().dropItem(UsefulThings.getFaceMidLocation(stand.getLocation().add(0, 0.8, 0), stand, -2/16f), new ItemStack(Material.GUNPOWDER));
+                                    }
+                                    bomb2 = UsefulThings.setBombCharge(bomb2, 0);
+                                    stand.getEquipment().setHelmet(bomb2);
+                                    stand.getWorld().dropItem(UsefulThings.getFaceMidLocation(stand.getLocation().add(0, 0.8, 0), stand, -2/16f), bomb2);
+                                    stand.remove();
+                                    return;
+                                }
+                            }
+                        } else {
+                            break;
+                        }
+                    }
+                    stand.remove();
+                    return;
+                }
+            }
+    
+            if (charge > 0) {
+                
+                final int finalcharge = charge;
+                new BukkitRunnable() {
+            
+                    @Override
+                    public void run() {
+                        stand.getWorld().spawnParticle(Particle.SMOKE_LARGE, stand.getLocation().add(0, .5, 0), 32, finalcharge * .5, finalcharge * .5, finalcharge * .5, 0);
+                    }
+                }.runTaskLater(Stones.getPlugin(), 10);
+                
+        
+                new BukkitRunnable() {
+            
+                    @Override
+                    public void run() {
+                        for (Entity e : UsefulThings.getFaceMidLocation(stand.getLocation().add(0, 0.8, 0), stand, 0.5).getNearbyEntities(finalcharge * 1.5, finalcharge * 1.5, finalcharge * 1.5)) {
+                    
+                            if (e instanceof ArmorStand) {
+                                if (((ArmorStand) e).getEquipment().getHelmet() != null && ((ArmorStand) e).getEquipment().getHelmet().hasItemMeta() && ((ArmorStand) e).getEquipment().getHelmet().getItemMeta().getLocalizedName().contains("_bomb")) {
+                                    UsefulThings.ignite(e);
+                                }
+                            } else {
+                                break;
+                            }
+                    
+                    
+                        }
+                    }
+                }.runTaskLater(Stones.getPlugin(), 4);
+        
+        stand.getWorld().createExplosion(stand, UsefulThings.getFaceMidLocation(stand.getLocation().add(0, 0.8, 0), stand, 0.5), power , false);
+                
+                stand.remove();
+        
             }
         }
+
+    };
+
+    public static void ignite(Entity e){
+        UsefulThings.ignite(e, 1);
     }
+
 
     public static String getBlockMaterialCategory(@NotNull Block block){
         String blockname = block.getType().toString();
@@ -665,10 +830,10 @@ public class UsefulThings {
                 meta.setLocalizedName("wall_bomb");
                 meta.setUnbreakable(true);
                 meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-                lore.add(Component.text(ChatColor.ITALIC + "" + ChatColor.DARK_GRAY + "unique : " + ChatColor.MAGIC + (int)((Math.random()*10)-1) + (int)((Math.random()*10)-1)));
+                lore.add(Component.text(""));
                 lore.add(Component.text(ChatColor.GRAY + "Charge : 0"));
-                lore.add(Component.text(ChatColor.GRAY + "Fuse Time : 0"));
-                int[] values = {1, 60};
+                lore.add(Component.text(ChatColor.GRAY + "Fuse : 1s"));
+                int[] values = {0, 20};
                 meta.getPersistentDataContainer().set(DataHolder.getStonesItemDataKey(), PersistentDataType.INTEGER_ARRAY, values);
                 meta.lore(lore);
                 break;
@@ -723,6 +888,8 @@ public class UsefulThings {
         arm.setGravity(false);
         arm.setDisabledSlots(EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET, EquipmentSlot.HAND, EquipmentSlot.OFF_HAND);
         arm.getEquipment().setHelmet(head);
+        arm.setCustomName("_hide");
+        arm.setCustomNameVisible(false);
 
         return arm;
     }
@@ -731,6 +898,41 @@ public class UsefulThings {
         return e instanceof ArmorStand && !e.hasGravity() && !((ArmorStand) e).getDisabledSlots().isEmpty() && ((ArmorStand) e).isInvisible();
         //
 
+    }
+    
+    public static ItemStack setBombCharge(ItemStack item, int amount){
+        ItemMeta meta = item.getItemMeta();
+        item = item.clone();
+        List<Component> lore = meta.lore();
+        lore.set(1, Component.text(ChatColor.GRAY + "Charge : " + amount));
+        meta.lore(lore);
+        int[] data = meta.getPersistentDataContainer().get(DataHolder.getStonesItemDataKey(), PersistentDataType.INTEGER_ARRAY);
+        if(data != null){
+            if(data.length >= 2){
+                data[0] = amount;
+            }
+            meta.getPersistentDataContainer().set(DataHolder.getStonesItemDataKey(), PersistentDataType.INTEGER_ARRAY, data);
+        }
+        
+        item.setItemMeta(meta);
+        return item;
+    }
+    public static ItemStack setBombFuse(ItemStack item, int amount){
+        item = item.clone();
+        ItemMeta meta = item.getItemMeta();
+        List<Component> lore = meta.lore();
+        lore.set(2, Component.text(ChatColor.GRAY + "Fuse : " + (amount/20f) + "s"));
+        meta.lore(lore);
+        int[] data = meta.getPersistentDataContainer().get(DataHolder.getStonesItemDataKey(), PersistentDataType.INTEGER_ARRAY);
+        if(data != null){
+            if(data.length >= 2){
+                data[1] = amount;
+            }
+            meta.getPersistentDataContainer().set(DataHolder.getStonesItemDataKey(), PersistentDataType.INTEGER_ARRAY, data);
+        }
+    
+        item.setItemMeta(meta);
+        return item;
     }
 
 

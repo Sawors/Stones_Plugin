@@ -18,7 +18,7 @@ public class IgniteCommandExecutor implements CommandExecutor {
             ItemStack item = p.getInventory().getItemInMainHand();
             if (args.length == 0) {args = new String[1]; args[0] = "0";}
             int i = Integer.parseInt(args[0]);
-            UsefulThings.igniteItem(item, i, p);
+            UsefulThings.ignite(item, i, p);
             return true;
         }
         return false;
