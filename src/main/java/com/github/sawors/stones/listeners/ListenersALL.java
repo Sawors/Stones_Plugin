@@ -11,6 +11,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.Jukebox;
 import org.bukkit.block.data.type.Chain;
 import org.bukkit.block.data.type.Door;
 import org.bukkit.enchantments.Enchantment;
@@ -959,6 +960,58 @@ public class ListenersALL implements Listener {
                 }
             }
 
+    }
+    
+    @EventHandler
+    public void onPlayerUsesJukebox(PlayerInteractEvent event){
+            if(event.getClickedBlock() != null && event.getClickedBlock().getType() == Material.JUKEBOX && event.getAction().isRightClick()){
+                Block b = event.getClickedBlock();
+                Jukebox j = (Jukebox) b.getState();
+                Location midloc = b.getLocation().clone().add(0.5,0.5,0.5);
+                Location uploc = b.getLocation().clone().add(0.5,2,0.5);
+                Player p = event.getPlayer();
+                
+                ItemStack disk;
+                
+                if(p.getInventory().getItemInMainHand().getType().toString().contains("MUSIC_DISC")){
+                    disk = p.getInventory().getItemInMainHand().clone();
+                } else if(p.getInventory().getItemInOffHand().getType().toString().contains("MUSIC_DISC")){
+                    disk = p.getInventory().getItemInOffHand().clone();
+                } else {
+                    disk = new ItemStack(Material.AIR);
+                }
+                
+                if(j.isPlaying()){
+                    for(Entity e : uploc.add(0,0.1,0).getNearbyEntities(0.1,0.25,0.1)){
+                        if(e instanceof ArmorStand && ((ArmorStand) e).getEquipment().getHelmet() != null && ((ArmorStand) e).getEquipment().getHelmet().getType().toString().contains("MUSIC_DISC")){
+                            e.remove();
+                        }
+                    }
+                } else if(disk.getType() != Material.AIR){
+                    ArmorStand display = UsefulThings.createDisplay(uploc, disk);
+                    display.setSmall(true);
+                    new BukkitRunnable(){
+                        
+                        int timer = 3600;
+                        
+                        @Override
+                        public void run(){
+                            if(!display.getLocation().getNearbyEntities(0.1,0.1,0.1).contains(display) || timer <= 0){
+                                this.cancel();
+                                return;
+                            } else{
+                                display.setRotation(display.getLocation().getYaw()+3, 0);
+                                timer--;
+                            }
+                        }
+                        
+                    }.runTaskTimer(Stones.getPlugin(), 0, 1);
+                }
+                
+                
+                
+                
+            }
     }
 
 
