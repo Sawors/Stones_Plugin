@@ -219,7 +219,7 @@ public class ListenersALL implements Listener {
                                     player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PILLAGER_AMBIENT, 2, UsefulThings.randomPitchSimple(0.4, 1));
                                     player.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, (int) (((-p.getLocation().distance(player.getLocation())/24/1.25)+1)*30*20), 0, false, false));
                                     player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, (int) (((-p.getLocation().distance(player.getLocation())/24/1.25)+1)*30*20), 0, false, false));
-                                    player.setCooldown(Material.SHIELD, 20*8);
+                                    p.setCooldown(Material.SHIELD, 20*8);
                                 }
                             }
                             this.cancel();
@@ -250,7 +250,10 @@ public class ListenersALL implements Listener {
 
                 }.runTaskTimer(Stones.getPlugin(), 0, 10);
             }
-
+    
+            if(Objects.equals(item.getItemMeta().getLocalizedName(), "oak_flute") && event.getAction().isRightClick() && event.getPlayer().getCooldown(Material.SHIELD) <= 0) {
+                UsefulThings.playMusic(Objects.requireNonNull(item.getItemMeta().getPersistentDataContainer().get(DataHolder.getStonesItemDataKey(), PersistentDataType.STRING)), p, true, 2);
+            }
 
    //ROLL D6
             if(item.getItemMeta().getPersistentDataContainer().get(DataHolder.getItemTypeKey(), PersistentDataType.STRING) != null && item.getItemMeta().getPersistentDataContainer().get(DataHolder.getItemTypeKey(), PersistentDataType.STRING).equals("dice6")){
@@ -982,26 +985,34 @@ public class ListenersALL implements Listener {
                 }
                 
                 if(j.isPlaying()){
-                    for(Entity e : uploc.add(0,0.1,0).getNearbyEntities(0.1,0.25,0.1)){
-                        if(e instanceof ArmorStand && ((ArmorStand) e).getEquipment().getHelmet() != null && ((ArmorStand) e).getEquipment().getHelmet().getType().toString().contains("MUSIC_DISC")){
-                            e.remove();
+                    if((p.isSneaking() && p.getInventory().getItemInMainHand().getType().equals(Material.AIR)) || (!p.isSneaking())){
+                        for(Entity e : uploc.add(0,0.1,0).getNearbyEntities(0.1,0.25,0.1)){
+                            if(e instanceof ArmorStand && ((ArmorStand) e).getEquipment().getHelmet() != null && ((ArmorStand) e).getEquipment().getHelmet().getType().toString().contains("MUSIC_DISC")){
+                                e.remove();
+                            }
                         }
                     }
+                    
                 } else if(disk.getType() != Material.AIR){
                     ArmorStand display = UsefulThings.createDisplay(uploc, disk);
                     display.setSmall(true);
                     new BukkitRunnable(){
                         
                         int timer = 3600;
-                        
+                        Location blockloc = b.getLocation().clone();
                         @Override
                         public void run(){
-                            if(!display.getLocation().getNearbyEntities(0.1,0.1,0.1).contains(display) || timer <= 0){
+                            
+                            if(timer <= 0){
                                 this.cancel();
-                                return;
                             } else{
-                                display.setRotation(display.getLocation().getYaw()+3, 0);
+                                if(blockloc.getBlock().getType() != Material.JUKEBOX){
+                                    display.remove();
+                                    this.cancel();
+                                }
+                                display.setRotation(display.getLocation().getYaw()+2, 0);
                                 timer--;
+                                
                             }
                         }
                         
@@ -1011,6 +1022,17 @@ public class ListenersALL implements Listener {
                 
                 
                 
+            }
+    }
+    
+    @EventHandler
+    public void onPlayerBreakJukebox(BlockBreakEvent event){
+            if(event.getBlock().getType() == Material.JUKEBOX){
+                for(Entity e : event.getBlock().getLocation().add(0.5,1.1,0.5).getNearbyEntities(0.1,0.25,0.1)){
+                    if(e instanceof ArmorStand && ((ArmorStand) e).getEquipment().getHelmet() != null && ((ArmorStand) e).getEquipment().getHelmet().getType().toString().contains("MUSIC_DISC")){
+                        e.remove();
+                    }
+                }
             }
     }
 

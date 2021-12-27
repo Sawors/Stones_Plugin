@@ -42,3 +42,5 @@ commands:
     usage: /<command>
   sdebug:
     usage: /<command>
+  playmusic:
+    usage: /<command> <song>

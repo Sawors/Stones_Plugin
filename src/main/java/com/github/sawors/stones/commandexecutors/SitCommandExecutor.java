@@ -13,7 +13,7 @@ public class SitCommandExecutor implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args){
-        if(sender instanceof Player ){
+        if(sender instanceof Player && !((Player) sender).isInsideVehicle()){
             LivingEntity p = ((Player) sender).getPlayer();
             if(p != null && args.length == 0){
                 UsefulThings.sitEntity(p);

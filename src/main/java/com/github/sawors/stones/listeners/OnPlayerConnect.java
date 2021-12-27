@@ -1,5 +1,6 @@
 package com.github.sawors.stones.listeners;
 
+import com.github.sawors.stones.Stones;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,6 +22,10 @@ public class OnPlayerConnect implements Listener {
             //Sawors    f96b1fab-2391-4c41-b6aa-56e6e91950fd
 
             //p.setResourcePack("", "");
+        }
+        
+        if(!Stones.getHideNameTeam().getEntries().contains(p.getName())){
+            Stones.getHideNameTeam().addEntry(p.getName());
         }
     }
 }
