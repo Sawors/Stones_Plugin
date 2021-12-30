@@ -41,40 +41,11 @@ import org.spigotmc.event.entity.EntityDismountEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Random;
 import java.util.logging.Level;
 
 public class ListenersALL implements Listener {
 
     ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
-
-  /*  @EventHandler
-    public void onPlayerMove(PlayerMoveEvent event){
-        Player p = event.getPlayer();
-
-        Block b = p.getLocation().getBlock().getRelative(BlockFace.DOWN);
-
-        if(b.getType() == Material.GRASS_BLOCK){
-            World w = p.getWorld();
-
-            w.createExplosion(p.getLocation(), 5);
-        }
-    }*/
-
-    /*@EventHandler
-    public void onMobSpawn(CreatureSpawnEvent event){
-        LivingEntity entity = event.getEntity();
-        World w = event.getEntity().getWorld();
-        w.spawnParticle(Particle.FLAME, event.getLocation(), 10);
-
-        if(entity instanceof Cow){
-            entity.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 400,1));
-        }
-    }*/
-
-
-
-
 
     //ALL PRAISE THE XP ORB REMOVER  \i/ MAY HIS POWER CURE US OF THE DISEASE THAT CONSUME OUR WORLD \i/
     @EventHandler
@@ -150,235 +121,155 @@ public class ListenersALL implements Listener {
     }
 
     @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent event){
+    public void onPlayerInteract(PlayerInteractEvent event) {
         Player p = event.getPlayer();
-        ItemStack item = event.getItem();
+        ItemStack item = p.getInventory().getItemInMainHand();
         Block b = event.getClickedBlock();
-        /*
-        if(item != null && item.getType() == Material.RAW_GOLD && b != null){
-            Location b2 = b.getLocation().clone();
-            //p.sendMessage("");
-                for (float i = 0; i <= 0.9; i += 0.05) {
-                    b2.getWorld().spawnParticle(Particle.SMALL_FLAME, b2.clone().add(0.5, ((-3 * Math.pow(i - 0.5, 2)) + 0.75) + 1, i+0.5), 1, 0, 0, 0, 0);
-                    //p.sendMessage("(" + (Math.round(bLoca.getZ() * 1000)/1000) + ";" + (Math.round(bLoca.getY() * 1000)/1000) + ")");
-                }
-        }*/
-
-        if(item != null && item.hasItemMeta() && item.getItemMeta().hasLocalizedName()) {
-
-
-   //add Closed Seal item
-           if (item.getItemMeta().getLocalizedName().equals("blankparchment") && p.isSneaking()) {
-              item.setAmount(item.getAmount()-1);
-              ItemStack newitem = new ItemStack(Material.PAPER);
-              ItemMeta meta = newitem.getItemMeta();
-              meta.displayName(Component.text(ChatColor.DARK_PURPLE + "Signed Parchment"));
-              meta.setLocalizedName("signedparchment");
-              ArrayList<Component> lore = new ArrayList<>();
-              lore.add(Component.text(""));
-              lore.add(Component.text(ChatColor.GOLD + "" + "This is signed in the name of :"));
-              if(p.getCustomName() != null) {
-                  lore.add(Component.text(ChatColor.DARK_PURPLE + "" + ChatColor.ITALIC + p.getCustomName()));
-              } else{
-                  lore.add(Component.text(ChatColor.DARK_PURPLE + "" + ChatColor.ITALIC + p.getName()));
-              }
-              meta.lore(lore);
-              meta.setUnbreakable(true);
-              meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-              newitem.setItemMeta(meta);
-              p.getInventory().addItem(newitem);
-              p.getWorld().playSound(p.getLocation(), Sound.BLOCK_WOOD_PLACE, 2, 1);
-              p.getWorld().playSound(p.getLocation(), Sound.ENTITY_COD_FLOP, 1, 1);
-              p.getWorld().spawnParticle(Particle.ENCHANTMENT_TABLE, p.getLocation(), 12);
-           }
-
-
-   //ACTIVATE RESONANT CRYSTAL
-           if(Objects.equals(item.getItemMeta().getLocalizedName(), "resonantcrystal") && p.isSneaking()){
-               p.playSound(p.getLocation(), "minecraft:sawors.resonantcrystal_on", 1, (float) (Math.sin(new Random().nextFloat()) / 4 + 0.9));
-
-           }
-
-            if(Objects.equals(item.getItemMeta().getLocalizedName(), "raid_horn") && event.getAction().isRightClick() && event.getPlayer().getCooldown(Material.SHIELD) <= 0){
+    
+        if (item.hasItemMeta() && item.getItemMeta().hasLocalizedName()) {
+            String locname = item.getItemMeta().getLocalizedName();
+        
+            //add Closed Seal item
+            if (Objects.equals(locname, "raid_horn") && event.getAction().isRightClick() && event.getPlayer().getCooldown(Material.SHIELD) <= 0) {
                 //Location soundloc = p.getLocation();
                 net.kyori.adventure.sound.Sound sound = net.kyori.adventure.sound.Sound.sound(Sound.EVENT_RAID_HORN, net.kyori.adventure.sound.Sound.Source.PLAYER, UsefulThings.getVolume(24), 1);
-
+    
                 p.getWorld().playSound(sound, net.kyori.adventure.sound.Sound.Emitter.self());
-                new BukkitRunnable(){
-
+                new BukkitRunnable() {
+    
                     final int max = 8;
                     int countdown = max;
-
+    
                     @Override
-                    public void run(){
-                        
-                        if(countdown <= 0 || Bukkit.getOnlinePlayers().isEmpty()){
-                            if(!p.getWorld().getNearbyPlayers(p.getLocation(), 24).isEmpty()){
-                                for (Player player : p.getWorld().getNearbyPlayers(p.getLocation(), 24)){
+                    public void run() {
+        
+                        if (countdown <= 0 || Bukkit.getOnlinePlayers().isEmpty()) {
+                            if (!p.getWorld().getNearbyPlayers(p.getLocation(), 24).isEmpty()) {
+                                for (Player player : p.getWorld().getNearbyPlayers(p.getLocation(), 24)) {
                                     player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PILLAGER_AMBIENT, 2, UsefulThings.randomPitchSimple(0.4, 1));
                                     player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PILLAGER_AMBIENT, 2, UsefulThings.randomPitchSimple(0.4, 1));
-                                    player.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, (int) (((-p.getLocation().distance(player.getLocation())/24/1.25)+1)*30*20), 0, false, false));
-                                    player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, (int) (((-p.getLocation().distance(player.getLocation())/24/1.25)+1)*30*20), 0, false, false));
-                                    p.setCooldown(Material.SHIELD, 20*8);
+                                    player.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, (int) (((-p.getLocation().distance(player.getLocation()) / 24 / 1.25) + 1) * 30 * 20), 0, false, false));
+                                    player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, (int) (((-p.getLocation().distance(player.getLocation()) / 24 / 1.25) + 1) * 30 * 20), 0, false, false));
+                                    p.setCooldown(Material.SHIELD, 20 * 8);
                                 }
                             }
                             this.cancel();
                             return;
                         }
-                        if(countdown == max){
-                            if(event.hasItem() && event.getItem().hasItemMeta() && Objects.equals(event.getItem().getItemMeta().getLocalizedName(), "raid_horn")){
-                                p.spawnParticle(Particle.REDSTONE, p.getLocation().add(0,3.25+((float) -countdown/max),0), 4, 0.1, .25,0.1, new Particle.DustOptions(Color.fromRGB(0x45171f), 1));
+                        if (countdown == max) {
+                            if (event.hasItem() && event.getItem().hasItemMeta() && Objects.equals(event.getItem().getItemMeta().getLocalizedName(), "raid_horn")) {
+                                p.spawnParticle(Particle.REDSTONE, p.getLocation().add(0, 3.25 + ((float) -countdown / max), 0), 4, 0.1, .25, 0.1, new Particle.DustOptions(Color.fromRGB(0x45171f), 1));
                             } else {
                                 p.getWorld().stopSound(sound);
                                 this.cancel();
                                 return;
                             }
                         } else {
-                            if(p.isBlocking() && event.hasItem() && event.getItem().hasItemMeta() && Objects.equals(event.getItem().getItemMeta().getLocalizedName(), "raid_horn")){
-                                p.spawnParticle(Particle.REDSTONE, p.getLocation().add(0,3.25+((float) -countdown/max),0),4, 0.1, .25,0.1, new Particle.DustOptions(Color.fromRGB(0x45171f), 1));
+                            if (p.isBlocking() && event.hasItem() && event.getItem().hasItemMeta() && Objects.equals(event.getItem().getItemMeta().getLocalizedName(), "raid_horn")) {
+                                p.spawnParticle(Particle.REDSTONE, p.getLocation().add(0, 3.25 + ((float) -countdown / max), 0), 4, 0.1, .25, 0.1, new Particle.DustOptions(Color.fromRGB(0x45171f), 1));
                             } else {
                                 p.getWorld().stopSound(sound);
                                 this.cancel();
                                 return;
                             }
                         }
-
+        
                         countdown--;
                     }
-
-
-
+    
+    
                 }.runTaskTimer(Stones.getPlugin(), 0, 10);
             }
-    
-            if(Objects.equals(item.getItemMeta().getLocalizedName(), "oak_flute") && event.getAction().isRightClick() && event.getPlayer().getCooldown(Material.SHIELD) <= 0) {
-                UsefulThings.playMusic(Objects.requireNonNull(item.getItemMeta().getPersistentDataContainer().get(DataHolder.getStonesItemDataKey(), PersistentDataType.STRING)), p, true, 2);
-            }
-
-   //ROLL D6
-            if(item.getItemMeta().getPersistentDataContainer().get(DataHolder.getItemTypeKey(), PersistentDataType.STRING) != null && item.getItemMeta().getPersistentDataContainer().get(DataHolder.getItemTypeKey(), PersistentDataType.STRING).equals("dice6")){
-                int roll = ((int) (Math.random()*6)+1);
-
-                p.sendMessage(ChatColor.YELLOW + "You roll a " + ChatColor.GOLD + "" +ChatColor.BOLD + roll);
-
-
-                /*int a1 = 0;
-                int a2 = 0;
-                int a3 = 0;
-                int a4 = 0;
-                int a5 = 0;
-                int a6 = 0;
-                int astrange = 0;
-                int tests = 100000;
-
-
-                for(int i = 0; i<=tests; i++){
-                    int a = (int) (Math.random()*6)+1;
-                    switch(a){
-                        case 1:
-                            a1++;
-                            break;
-                        case 2:
-                            a2++;
-                            break;
-                        case 3:
-                            a3++;
-                            break;
-                        case 4:
-                            a4++;
-                            break;
-                        case 5:
-                            a5++;
-                            break;
-                        case 6:
-                            a6++;
-                            break;
-                        default:
-                            astrange++;
-                            break;
-
+        
+            if(event.getAction().isRightClick() && item.getType().equals(Material.SHIELD) && event.getPlayer().getCooldown(Material.SHIELD) <= 0 && Objects.equals(item.getItemMeta().getPersistentDataContainer().get(DataHolder.getItemTypeKey(), PersistentDataType.STRING), "instrument")){
+                String music = "";
+                Sound sound = null;
+                String soundstr = "";
+                if(locname.contains("_flute")){
+                    sound = Sound.BLOCK_NOTE_BLOCK_FLUTE;
+                } else if(locname.contains("_lyre")){
+                    sound = Sound.BLOCK_NOTE_BLOCK_HARP;
+                } else if(locname.contains("_guitar")){
+                    sound = Sound.BLOCK_NOTE_BLOCK_GUITAR;
+                } else if(locname.contains("_banjo")){
+                    sound = Sound.BLOCK_NOTE_BLOCK_BANJO;
+                } else if(locname.contains("_doublebass")){
+                    soundstr = "minecraft:sawors.instrument.doublebass";
+                } else if(locname.contains("_harp")){
+                    soundstr = "minecraft:sawors.instrument.harp";
+                } else if(locname.contains("_koto")){
+                    soundstr = "minecraft:sawors.instrument.koto";
+                } else if(locname.contains("_oud")){
+                    soundstr = "minecraft:sawors.instrument.oud";
+                } else if(locname.contains("_panflute")){
+                    soundstr = "minecraft:sawors.instrument.panflute";
+                } else if(locname.contains("_sitar")){
+                    soundstr = "minecraft:sawors.instrument.sitar";
+                }
+                
+                
+                if(p.getInventory().getItemInOffHand().getType().equals(Material.PAPER) && p.getInventory().getItemInOffHand().hasItemMeta() && p.getInventory().getItemInOffHand().getItemMeta().getLocalizedName().equals("music_parchment") && p.getInventory().getItemInOffHand().getItemMeta().getPersistentDataContainer().get(DataHolder.getStonesItemDataKey(), PersistentDataType.STRING) != null){
+                    music = p.getInventory().getItemInOffHand().getItemMeta().getPersistentDataContainer().get(DataHolder.getStonesItemDataKey(), PersistentDataType.STRING);
+                }
+                
+                
+                if(music != null && music.length() > 0){
+                    if(sound != null){
+                        UsefulThings.playMusic(music, p, true, 2, sound);
+                    } else if(soundstr.length() != 0){
+                        UsefulThings.playMusic(music, p, true, 2, soundstr);
+                    } else{
+                        UsefulThings.playMusic(music, p, true, 2, Sound.ENTITY_VILLAGER_YES);
+                    }
+                } else {
+                    p.sendActionBar(Component.text(ChatColor.RED + "no music selected"));
+                    float[] pitch = {(-p.getLocation().getPitch()/180)+1};
+                    if(sound != null){
+                        UsefulThings.playMusic(pitch, p, true, 2, sound);
+                    } else if(soundstr.length() != 0){
+                        UsefulThings.playMusic(pitch, p, true, 2, soundstr);
+                    } else{
+                        UsefulThings.playMusic(pitch, p, true, 2, Sound.ENTITY_VILLAGER_YES);
                     }
                 }
-                int atot = a1 + a2 + a3 + a4 + a5 + a6;
-                p.sendMessage("\n" + "1 : " + ((a1*100)/atot) + "%" +"\n" + "2 : " + ((a2*100)/atot) + "%" + "\n" + "3 : " + ((a3*100)/atot) + "%"  +"\n" + "4 : " + ((a4*100)/atot) + "%"  +"\n" + "5 : " + ((a5*100)/atot) + "%"  +"\n" + "6 : " + ((a6*100)/atot) + "%" +"\n" + "target : " + ((1F/6)*100) + "%" +"\n" + "out of bounds : " + astrange +"\n" + "tests : " + tests);
-                   */
+                
             }
-
-
-   //WEAR HAT
-           if(p.isSneaking() && p.getLocation().getPitch() <= -85)
-           {
-               if(Objects.equals(item.getItemMeta().getPersistentDataContainer().get(DataHolder.getItemTypeKey(), PersistentDataType.STRING), "hat"))
-               {
-                   p.getInventory().setItemInMainHand(p.getInventory().getHelmet());
-                   p.getInventory().setHelmet(item);
-                   p.playSound(p.getLocation(), Sound.ITEM_ARMOR_EQUIP_LEATHER, 1, 1);
-               }
-
-
-           }
-
-
-
-
-
-            } else if (item == null) {
-            //NEVER USE ITEM HERE
-
+            
+        
+            if (locname.contains("dice") && item.getItemMeta().getPersistentDataContainer().get(DataHolder.getItemTypeKey(), PersistentDataType.STRING) != null && item.getItemMeta().getPersistentDataContainer().get(DataHolder.getItemTypeKey(), PersistentDataType.STRING).equals("dice6")) {
+                int roll = ((int) (Math.random() * 6) + 1);
+    
+                p.sendMessage(ChatColor.YELLOW + "You roll a " + ChatColor.GOLD + "" + ChatColor.BOLD + roll);
+            }
+        
+            
+            
+            
+            
+            //WEAR HAT
+            if (p.getLocation().getPitch() <= -85 && b == null) {
+                    if (Objects.equals(item.getItemMeta().getPersistentDataContainer().get(DataHolder.getItemTypeKey(), PersistentDataType.STRING), "hat")) {
+                        p.getInventory().setItemInMainHand(p.getInventory().getHelmet());
+                        p.getInventory().setHelmet(item);
+                        p.playSound(p.getLocation(), Sound.ITEM_ARMOR_EQUIP_LEATHER, 1, 1);
+                    }
+            }
+        
+        } else if (item.getType() == Material.AIR) {
             //"unwear" hat
-            if (p.getInventory().getItemInMainHand().getType() == Material.AIR && p.getInventory().getHelmet() != null &&  p.getInventory().getHelmet().hasItemMeta() && p.getInventory().getHelmet().getItemMeta().getPersistentDataContainer().get(DataHolder.getItemTypeKey(), PersistentDataType.STRING).equals("hat") && p.isSneaking() && p.getLocation().getPitch() >= 85) {
-                if(!p.getInventory().getHelmet().getItemMeta().getLocalizedName().equals("blindfold")){
+            if (p.getInventory().getItemInMainHand().getType() == Material.AIR && p.getInventory().getHelmet() != null && p.getInventory().getHelmet().hasItemMeta() && p.getInventory().getHelmet().getItemMeta().getPersistentDataContainer().get(DataHolder.getItemTypeKey(), PersistentDataType.STRING).equals("hat") && p.isSneaking() && p.getLocation().getPitch() >= 85) {
+                if (!p.getInventory().getHelmet().getItemMeta().getLocalizedName().equals("blindfold")) {
                     p.getInventory().setItemInMainHand(p.getInventory().getHelmet());
                     p.getInventory().setHelmet(null);
                     p.playSound(p.getLocation(), Sound.ITEM_ARMOR_EQUIP_LEATHER, 1, 1.5F);
                 }
-
-                      }//UNWEAR HAT
-
-
-
-
-                }// ITEM == null
-        if(event.getClickedBlock() != null) // CHECK FOR BLOCK REGARDLESS OF THE ITEM
-        {
-            if(UsefulThings.isEternalFire(event.getClickedBlock())){
-                p.sendMessage(ChatColor.DARK_PURPLE + "yes it is");
+        
             }
         }
-
-        }// INTERACT EVENT !!
-        /*@EventHandler
-        public void onHandSwitch(PlayerInteractEvent event) throws IOException {
-            Player p = event.getPlayer();
-            ItemStack itemmain = event.getItem();
-            ItemStack itemoff = p.getInventory().getItemInOffHand();
-
-
-
-            if(itemmain != null && itemmain.hasItemMeta() && Objects.equals(itemmain.getItemMeta().getPersistentDataContainer().get(SgiveCommandExecutor.getKey("type"), PersistentDataType.STRING), "instrument")){
-                ItemMeta itemmainmeta = itemmain.getItemMeta().clone();
-                ItemStack[] hotbarsave = {p.getInventory().getItem(0), p.getInventory().getItem(1), p.getInventory().getItem(2), p.getInventory().getItem(3), p.getInventory().getItem(4), p.getInventory().getItem(5), p.getInventory().getItem(6), p.getInventory().getItem(7), p.getInventory().getItem(8)};
-                String ss = SerializeInventory.itemStackArrayToBase64(hotbarsave);
-
-                if(Objects.equals(itemmain.getItemMeta().getPersistentDataContainer().get(SgiveCommandExecutor.getKey("ison"), PersistentDataType.INTEGER), 0)) {
-
-                        //ItemStack[] neo = SerializeInventory.itemStackArrayFromBase64(ss);
-                        itemmainmeta.getPersistentDataContainer().set(SgiveCommandExecutor.getKey("inv"), PersistentDataType.STRING, ss);
-                        itemmainmeta.getPersistentDataContainer().set(SgiveCommandExecutor.getKey("ison"), PersistentDataType.INTEGER, 1);
-                        itemmain.setItemMeta(itemmainmeta);
-                        for (int i = 0; i <= 7; i++) {
-                            p.getInventory().addItem(new ItemStack(Material.NOTE_BLOCK));
-                        }
-                        p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_YES, 1, 1);
-                        p.sendMessage("case goodswitch");
-                    } else if (Objects.equals(itemmain.getItemMeta().getPersistentDataContainer().get(SgiveCommandExecutor.getKey("ison"), PersistentDataType.INTEGER), 1)){
-                    p.sendMessage("it is effectively on");
-                }
-
-
-            }
-        }*/
-
+    }
+    
+    
+    
         @EventHandler
         public void onPlayerLeaveSit(EntityDismountEvent event){
         if(event.getEntity() instanceof Player && event.getDismounted() instanceof ArmorStand){

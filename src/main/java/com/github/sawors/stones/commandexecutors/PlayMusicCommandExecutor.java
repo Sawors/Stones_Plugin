@@ -2,6 +2,7 @@ package com.github.sawors.stones.commandexecutors;
 
 import com.github.sawors.stones.UsefulThings.UsefulThings;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -20,7 +21,7 @@ public class PlayMusicCommandExecutor implements CommandExecutor {
                 if(Integer.parseInt(String.valueOf(args[2].toCharArray()[0])) != 0){
                     speed = Integer.parseInt(String.valueOf(args[2].toCharArray()[0]));
                 }
-                UsefulThings.playMusic(args[0], Bukkit.getPlayer(args[1]), false, speed);
+                UsefulThings.playMusic(args[0], Bukkit.getPlayer(args[1]), false, speed, Sound.BLOCK_NOTE_BLOCK_HARP);
                 return true;
             } else {
                 UsefulThings.playMusic(args[0], ((Player) sender).getPlayer());

@@ -376,7 +376,7 @@ public class UsefulThings {
      */
     public static void sitEntity(LivingEntity entity){
         if(entity.getLocation().subtract(0,0.1,0).getBlock().isSolid() && !entity.isJumping() && !entity.isSwimming()){
-            ArmorStand e = (ArmorStand) entity.getWorld().spawnEntity(entity.getLocation().subtract(0,0.9,0), EntityType.ARMOR_STAND);
+            ArmorStand e = (ArmorStand) entity.getWorld().spawnEntity(entity.getLocation().subtract(0,1,0), EntityType.ARMOR_STAND);
             e.setGravity(false);
             e.setVisible(false);
             e.setInvulnerable(true);
@@ -406,7 +406,7 @@ public class UsefulThings {
      */
     public static void sitEntity(LivingEntity entity, boolean forcesit){
         if(forcesit){
-            ArmorStand e = (ArmorStand) entity.getWorld().spawnEntity(entity.getLocation().subtract(0,0.9,0), EntityType.ARMOR_STAND);
+            ArmorStand e = (ArmorStand) entity.getWorld().spawnEntity(entity.getLocation().subtract(0,1,0), EntityType.ARMOR_STAND);
             e.setGravity(false);
             e.setVisible(false);
             e.setInvulnerable(true);
@@ -431,7 +431,7 @@ public class UsefulThings {
      */
     public static void sitEntity(LivingEntity entity, Location location){
         if(entity.getLocation().subtract(0,0.1,0).getBlock().isSolid() && !entity.isJumping() && !entity.isSwimming()){
-            ArmorStand e = (ArmorStand) entity.getWorld().spawnEntity(location.subtract(0,0.9,0), EntityType.ARMOR_STAND);
+            ArmorStand e = (ArmorStand) entity.getWorld().spawnEntity(location.subtract(0,1,0), EntityType.ARMOR_STAND);
             e.setGravity(false);
             e.setVisible(false);
             e.setInvulnerable(true);
@@ -460,7 +460,7 @@ public class UsefulThings {
      */
     public static void sitEntity(LivingEntity entity, Location location, boolean forcesit){
         if(forcesit){
-            ArmorStand e = (ArmorStand) entity.getWorld().spawnEntity(location.subtract(0,0.9,0), EntityType.ARMOR_STAND);
+            ArmorStand e = (ArmorStand) entity.getWorld().spawnEntity(location.subtract(0,1,0), EntityType.ARMOR_STAND);
             e.setGravity(false);
             e.setVisible(false);
             e.setInvulnerable(true);
@@ -617,6 +617,23 @@ public class UsefulThings {
                 meta.setLocalizedName("blankparchment");
                 lore.add(Component.text(""));
                 lore.add(Component.text(ChatColor.GOLD +"To sign it, crouch and use"));
+                meta.lore(lore);
+                meta.setUnbreakable(true);
+                meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+                break;
+            case "music_parchment":
+                item.setType(Material.PAPER);
+                meta.displayName(Component.text(ChatColor.WHITE + "Music Parchment"));
+                meta.setLocalizedName("music_parchment");
+                // LOTR : kp0000000000nn000000nnnnpg000000000000000000uuwwx0000000wwuuss000000uuwwru0000000000ds000000rb00pk0000000000nb000000kknnkp000000000000000000uuw0xa0000000wwuuks000000uu00pw0000000000ww
+                // NGGYU : gillp00p00n00000gilin00n00l00ki00gilil000n0k00igg00n000lz
+                // THE SHIRE : ikm000p000m000kki000000000k000p000r000u0t00000p0m00000nmk00000ikm000p000mk00i00ki000000000m000p000r00000p000m000k0000000k000000iki
+                
+                
+                String notes = "gillp00p00n00000gilin00n00l00ki00gilil000n0k00igg00n000lz";
+                meta.getPersistentDataContainer().set(DataHolder.getStonesItemDataKey(), PersistentDataType.STRING, notes);
+                lore = UsefulThings.noteToLore("Concerning Hobbits", notes.toCharArray(),10);
+                lore.add(Component.text(""));
                 meta.lore(lore);
                 meta.setUnbreakable(true);
                 meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
@@ -837,23 +854,156 @@ public class UsefulThings {
                 meta.getPersistentDataContainer().set(DataHolder.getStonesItemDataKey(), PersistentDataType.INTEGER_ARRAY, values);
                 meta.lore(lore);
                 break;
-            case "flute":
+            case "oak_flute":
                 item.setType(Material.SHIELD);
                 meta.displayName(Component.text(ChatColor.WHITE + "Oak Flute"));
                 meta.setLocalizedName("oak_flute");
                 meta.setUnbreakable(true);
-                String notes = "gillp00p00n00000gilin00n00l00ki00gilil000n0k00igg00n000lz";
-                meta.getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, "horn");
-                meta.getPersistentDataContainer().set(DataHolder.getStonesItemDataKey(), PersistentDataType.STRING, notes);
+                meta.getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, "instrument");
+                meta.getPersistentDataContainer().set(DataHolder.getStonesItemDataKey(), PersistentDataType.STRING, "");
                 //00g00i00l00l00p0000p0000n0000000g00i00l00i00n0000n0000l0000k00i0000g00i00l00i00l00000n000k0000i00g000g0000n00000lz
-                lore = noteToLore(notes.toCharArray(), 10);
-                lore.add(0, Component.text(""));
+                lore.add(Component.text(""));
+                lore.add(Component.text(ChatColor.GRAY +""+ ChatColor.ITALIC +"No music to be played"));
                 lore.add(Component.text(""));
                 
                 meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
                 meta.lore(lore);
                 break;
-
+            case "oak_lyre":
+                item.setType(Material.SHIELD);
+                meta.displayName(Component.text(ChatColor.WHITE + "Oak Lyre"));
+                meta.setLocalizedName("oak_lyre");
+                meta.setUnbreakable(true);
+                meta.getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, "instrument");
+                meta.getPersistentDataContainer().set(DataHolder.getStonesItemDataKey(), PersistentDataType.STRING, "");
+                //00g00i00l00l00p0000p0000n0000000g00i00l00i00n0000n0000l0000k00i0000g00i00l00i00l00000n000k0000i00g000g0000n00000lz
+                lore.add(Component.text(""));
+                lore.add(Component.text(ChatColor.GRAY +""+ ChatColor.ITALIC +"No music to be played"));
+                lore.add(Component.text(""));
+        
+                meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+                meta.lore(lore);
+                break;
+            case "oak_guitar":
+                item.setType(Material.SHIELD);
+                meta.displayName(Component.text(ChatColor.WHITE + "Oak Guitar"));
+                meta.setLocalizedName("oak_guitar");
+                meta.setUnbreakable(true);
+                meta.getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, "instrument");
+                meta.getPersistentDataContainer().set(DataHolder.getStonesItemDataKey(), PersistentDataType.STRING, "");
+                //00g00i00l00l00p0000p0000n0000000g00i00l00i00n0000n0000l0000k00i0000g00i00l00i00l00000n000k0000i00g000g0000n00000lz
+                lore.add(Component.text(""));
+                lore.add(Component.text(ChatColor.GRAY +""+ ChatColor.ITALIC +"No music to be played"));
+                lore.add(Component.text(""));
+        
+                meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+                meta.lore(lore);
+                break;
+            case "oak_doublebass":
+                item.setType(Material.SHIELD);
+                meta.displayName(Component.text(ChatColor.WHITE + "Oak Double-Bass"));
+                meta.setLocalizedName(itemname);
+                meta.setUnbreakable(true);
+                meta.getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, "instrument");
+                meta.getPersistentDataContainer().set(DataHolder.getStonesItemDataKey(), PersistentDataType.STRING, "");
+                //00g00i00l00l00p0000p0000n0000000g00i00l00i00n0000n0000l0000k00i0000g00i00l00i00l00000n000k0000i00g000g0000n00000lz
+                lore.add(Component.text(""));
+                lore.add(Component.text(ChatColor.GRAY +""+ ChatColor.ITALIC +"No music to be played"));
+                lore.add(Component.text(""));
+        
+                meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+                meta.lore(lore);
+                break;
+            case "oak_harp":
+                item.setType(Material.SHIELD);
+                meta.displayName(Component.text(ChatColor.WHITE + "Oak Harp"));
+                meta.setLocalizedName(itemname);
+                meta.setUnbreakable(true);
+                meta.getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, "instrument");
+                meta.getPersistentDataContainer().set(DataHolder.getStonesItemDataKey(), PersistentDataType.STRING, "");
+                //00g00i00l00l00p0000p0000n0000000g00i00l00i00n0000n0000l0000k00i0000g00i00l00i00l00000n000k0000i00g000g0000n00000lz
+                lore.add(Component.text(""));
+                lore.add(Component.text(ChatColor.GRAY +""+ ChatColor.ITALIC +"No music to be played"));
+                lore.add(Component.text(""));
+        
+                meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+                meta.lore(lore);
+                break;
+            case "oak_koto":
+                item.setType(Material.SHIELD);
+                meta.displayName(Component.text(ChatColor.WHITE + "Oak Koto"));
+                meta.setLocalizedName(itemname);
+                meta.setUnbreakable(true);
+                meta.getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, "instrument");
+                meta.getPersistentDataContainer().set(DataHolder.getStonesItemDataKey(), PersistentDataType.STRING, "");
+                //00g00i00l00l00p0000p0000n0000000g00i00l00i00n0000n0000l0000k00i0000g00i00l00i00l00000n000k0000i00g000g0000n00000lz
+                lore.add(Component.text(""));
+                lore.add(Component.text(ChatColor.GRAY +""+ ChatColor.ITALIC +"No music to be played"));
+                lore.add(Component.text(""));
+        
+                meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+                meta.lore(lore);
+                break;
+            case "oak_oud":
+                item.setType(Material.SHIELD);
+                meta.displayName(Component.text(ChatColor.WHITE + "Oak Oud"));
+                meta.setLocalizedName(itemname);
+                meta.setUnbreakable(true);
+                meta.getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, "instrument");
+                meta.getPersistentDataContainer().set(DataHolder.getStonesItemDataKey(), PersistentDataType.STRING, "");
+                //00g00i00l00l00p0000p0000n0000000g00i00l00i00n0000n0000l0000k00i0000g00i00l00i00l00000n000k0000i00g000g0000n00000lz
+                lore.add(Component.text(""));
+                lore.add(Component.text(ChatColor.GRAY +""+ ChatColor.ITALIC +"No music to be played"));
+                lore.add(Component.text(""));
+        
+                meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+                meta.lore(lore);
+                break;
+            case "oak_panflute":
+                item.setType(Material.SHIELD);
+                meta.displayName(Component.text(ChatColor.WHITE + "Oak Pan Flute"));
+                meta.setLocalizedName("oak_panflute");
+                meta.setUnbreakable(true);
+                meta.getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, "instrument");
+                meta.getPersistentDataContainer().set(DataHolder.getStonesItemDataKey(), PersistentDataType.STRING, "");
+                //00g00i00l00l00p0000p0000n0000000g00i00l00i00n0000n0000l0000k00i0000g00i00l00i00l00000n000k0000i00g000g0000n00000lz
+                lore.add(Component.text(""));
+                lore.add(Component.text(ChatColor.GRAY +""+ ChatColor.ITALIC +"No music to be played"));
+                lore.add(Component.text(""));
+        
+                meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+                meta.lore(lore);
+                break;
+            case "oak_sitar":
+                item.setType(Material.SHIELD);
+                meta.displayName(Component.text(ChatColor.WHITE + "Oak Sitar"));
+                meta.setLocalizedName(itemname);
+                meta.setUnbreakable(true);
+                meta.getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, "instrument");
+                meta.getPersistentDataContainer().set(DataHolder.getStonesItemDataKey(), PersistentDataType.STRING, "");
+                //00g00i00l00l00p0000p0000n0000000g00i00l00i00n0000n0000l0000k00i0000g00i00l00i00l00000n000k0000i00g000g0000n00000lz
+                lore.add(Component.text(""));
+                lore.add(Component.text(ChatColor.GRAY +""+ ChatColor.ITALIC +"No music to be played"));
+                lore.add(Component.text(""));
+        
+                meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+                meta.lore(lore);
+                break;
+            case "oak_banjo":
+                item.setType(Material.SHIELD);
+                meta.displayName(Component.text(ChatColor.WHITE + "Oak Banjo"));
+                meta.setLocalizedName(itemname);
+                meta.setUnbreakable(true);
+                meta.getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, "instrument");
+                meta.getPersistentDataContainer().set(DataHolder.getStonesItemDataKey(), PersistentDataType.STRING, "");
+                //00g00i00l00l00p0000p0000n0000000g00i00l00i00n0000n0000l0000k00i0000g00i00l00i00l00000n000k0000i00g000g0000n00000lz
+                lore.add(Component.text(""));
+                lore.add(Component.text(ChatColor.GRAY +""+ ChatColor.ITALIC +"No music to be played"));
+                lore.add(Component.text(""));
+        
+                meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+                meta.lore(lore);
+                break;
                 /*
 
                 case "":
@@ -1141,9 +1291,24 @@ public class UsefulThings {
         return colors;
     }
     
-    public static ArrayList<Component> noteToLore(char[] note, int linelength){
-    
+    public static ArrayList<Component> noteToLore(String title, char[] note, int linelength){
+        
         ArrayList<Component> lore = new ArrayList<>();
+        if(title.length() > 1){
+            char[] titlechar = title.toCharArray();
+            StringBuilder linetitle = new StringBuilder();
+            int titlelength = linelength + linelength + 3;
+    
+            lore.add(Component.text(""));
+            linetitle.append("   ");
+            for(int i0=0; i0<titlelength; i0++){
+                if(titlechar.length > i0){
+                    linetitle.append(titlechar[i0]);
+                }
+            }
+            lore.add(Component.text(ChatColor.GOLD + ""+linetitle));
+            lore.add(Component.text(""));
+        }
         
         for(int i = 1; i<=(note.length/linelength)+1; i++){
             StringBuilder line = new StringBuilder();
@@ -1152,7 +1317,6 @@ public class UsefulThings {
                     line.append(Character.toUpperCase(note[i2 * i]));
                 }
                 line.append(" ");
-    
             }
             
             lore.add(Component.text(ChatColor.GOLD + " "+i+"    "+ChatColor.BLUE+line+" "));
@@ -1160,33 +1324,11 @@ public class UsefulThings {
         return lore;
     }
     
-    public static void playMusic(String note, Location loc){
-        char[] notes = note.toCharArray();
-        float[] pitch = UsefulThings.noteToPitch(notes);
-        new BukkitRunnable(){
-            int timer = 0;
-        
-            @Override
-            public void run(){
-                if(timer >= 128 || pitch[timer] < 0){
-                    this.cancel();
-                    return;
-                }
-                if(pitch[timer] > 0){
-                    loc.getWorld().playSound(loc.clone().add(0,1.5,0), Sound.BLOCK_NOTE_BLOCK_FLUTE, 1, pitch[timer]);
-                        loc.getWorld().spawnParticle(Particle.NOTE, loc.clone().add(0,1+pitch[timer],0), 1,.1,0,.1,pitch[timer]/10);
-                   
-                        loc.getWorld().spawnParticle(Particle.NOTE, loc.clone().add(0,1.5+pitch[timer],0), 1,.1,0,.1,pitch[timer]/10);
-                }
-                timer++;
-            }
-        }.runTaskTimer(Stones.getPlugin(), 0,2);
-    
+    public static ArrayList<Component> noteToLore(char[] note, int linelength){
+        return noteToLore("", note, linelength);
     }
     
-    public static void playMusic(String note, Player p, boolean shouldhold, int speed){
-        char[] notes = note.toCharArray();
-        float[] pitch = UsefulThings.noteToPitch(notes);
+    public static void playMusic(float[] pitch, Player p, boolean shouldhold, int speed, Sound sound){
         if(speed <= 0){
             return;
         }
@@ -1195,11 +1337,7 @@ public class UsefulThings {
             
             @Override
             public void run(){
-                if(!p.isBlocking() && shouldhold && timer > 2){
-                    this.cancel();
-                    return;
-                }
-                if(timer >= 128 || pitch[timer] < 0){
+                if((timer >= pitch.length) || (!p.isBlocking() && shouldhold && timer > 2) || (timer >= 512 || pitch[timer] < 0)) {
                     this.cancel();
                     return;
                 }
@@ -1208,7 +1346,7 @@ public class UsefulThings {
                     if(p.isSneaking()){
                         loc = loc.subtract(0,0.5,0);
                     }
-                    loc.getWorld().playSound(loc.clone().add(0,1.5,0), Sound.BLOCK_NOTE_BLOCK_FLUTE, 1, pitch[timer]);
+                    loc.getWorld().playSound(loc.clone().add(0,1.5,0), sound, 1, pitch[timer]);
                     loc.getWorld().spawnParticle(Particle.NOTE, loc.clone().add(0,1.5+pitch[timer],0), 1,.1,0,.1,pitch[timer]/10);
                 }
                 timer++;
@@ -1217,8 +1355,47 @@ public class UsefulThings {
         
     }
     
+    public static void playMusic(String note, Player p, boolean shouldhold, int speed, Sound sound){
+        char[] notes = note.toCharArray();
+        float[] pitch = UsefulThings.noteToPitch(notes);
+        playMusic(pitch, p, shouldhold, speed, sound);
+    }
+    
     public static void playMusic(String note, Player p){
-        playMusic(note, p, false, 2);
+        playMusic(note, p, false, 2, Sound.BLOCK_NOTE_BLOCK_HARP);
+    }
+    
+    public static void playMusic(float[] pitch, Player p, boolean shouldhold, int speed, String sound){
+        if(speed <= 0){
+            return;
+        }
+        new BukkitRunnable(){
+            int timer = 0;
+            
+            @Override
+            public void run(){
+                if((timer >= pitch.length) || (!p.isBlocking() && shouldhold && timer > 2) || (timer >= 1800 || pitch[timer] < 0)) {
+                    this.cancel();
+                    return;
+                }
+                if(pitch[timer] > 0){
+                    Location loc = p.getLocation();
+                    if(p.isSneaking()){
+                        loc = loc.subtract(0,0.5,0);
+                    }
+                    loc.getWorld().playSound(loc.clone().add(0,1.5,0), sound, 1, pitch[timer]);
+                    loc.getWorld().spawnParticle(Particle.NOTE, loc.clone().add(0,1.5+pitch[timer],0), 1,.1,0,.1,pitch[timer]/10);
+                }
+                timer++;
+            }
+        }.runTaskTimer(Stones.getPlugin(), 0,speed);
+        
+    }
+    
+    public static void playMusic(String note, Player p, boolean shouldhold, int speed, String sound){
+        char[] notes = note.toCharArray();
+        float[] pitch = UsefulThings.noteToPitch(notes);
+        playMusic(pitch, p, shouldhold, speed, sound);
     }
 
 
