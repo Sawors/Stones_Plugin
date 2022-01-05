@@ -3,6 +3,7 @@ package com.github.sawors.stones;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.github.sawors.stones.commandexecutors.*;
+import com.github.sawors.stones.features.StonesBooks;
 import com.github.sawors.stones.listeners.*;
 import com.github.sawors.stones.recipes.StonecutterRecipes;
 import org.bukkit.Bukkit;
@@ -11,13 +12,16 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
+import java.util.ArrayList;
+import java.util.Objects;
+import java.util.UUID;
 
-//https://www.section.io/engineering-education/minecraft-plugin-development-a-hands-on-crash-course/
 
 public final class Stones extends JavaPlugin {
 
     private static Stones instance;
     private static Team t;
+    private static ArrayList<UUID> removelist = new ArrayList<>();
 
     @Override
     public void onEnable() {
@@ -25,6 +29,8 @@ public final class Stones extends JavaPlugin {
         instance = this;
         // Plugin startup logic
         saveDefaultConfig();
+        saveResource("documentation/how-to-create-music.txt", true);
+        saveResource("documentation/how-to-write-books.txt", true);
         //      REGISTER EVENTS
         getServer().getPluginManager().registerEvents(new ListenersALL(), this);
         getServer().getPluginManager().registerEvents(new OnPlayerConnect(), this);
@@ -37,6 +43,7 @@ public final class Stones extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new BackpackManager(), this);
         getServer().getPluginManager().registerEvents(new StonecutterRecipes(), this);
         getServer().getPluginManager().registerEvents(new FishingListeners(), this);
+        getServer().getPluginManager().registerEvents(new StonesBooks(), this);
 
         //      LOAD COMMANDS
         getServer().getPluginCommand("mark-location").setExecutor(new TowerCommandExecutor());
@@ -73,6 +80,8 @@ public final class Stones extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+        triggerRemoveList();
+        
     }
 
     public static Stones getPlugin(){
@@ -81,6 +90,31 @@ public final class Stones extends JavaPlugin {
     
     public static Team getHideNameTeam(){
         return t;
+    }
+    
+    public static ArrayList<UUID> getRemoveList(){
+        return removelist;
+    }
+    
+    public static void addToRemoveList(UUID id){
+        removelist.add(id);
+    }
+    
+    public static void removeFromRemoveList(UUID id){
+        if(!removelist.isEmpty()){
+            removelist.removeIf(i -> i == id);
+        }
+    }
+    
+    public static void triggerRemoveList(){
+        if(!removelist.isEmpty()){
+            for(UUID id : removelist){
+                if(Bukkit.getEntity(id) != null){
+                    Objects.requireNonNull(Bukkit.getEntity(id)).remove();
+                }
+            }
+            removelist.clear();
+        }
     }
 
 

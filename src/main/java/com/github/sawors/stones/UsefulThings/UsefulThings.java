@@ -8,6 +8,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -20,10 +21,7 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 import java.util.logging.Level;
 
 public class UsefulThings {
@@ -605,7 +603,8 @@ public class UsefulThings {
 
             }
     }
-
+    
+    @SuppressWarnings("deprecation")
     public static ItemStack getItem(String itemname){
         ItemStack item = new ItemStack(Material.PAPER);
         ItemMeta meta = item.getItemMeta();
@@ -613,7 +612,7 @@ public class UsefulThings {
         switch(itemname){
             case "parch":
                 item.setType(Material.PAPER);
-                meta.displayName(Component.text(ChatColor.WHITE + "Blank Parchment"));
+                meta.displayName(Component.translatable(ChatColor.WHITE + "Blank Parchment"));
                 meta.setLocalizedName("blankparchment");
                 lore.add(Component.text(""));
                 lore.add(Component.text(ChatColor.GOLD +"To sign it, crouch and use"));
@@ -623,7 +622,7 @@ public class UsefulThings {
                 break;
             case "music_parchment":
                 item.setType(Material.PAPER);
-                meta.displayName(Component.text(ChatColor.WHITE + "Music Parchment"));
+                meta.displayName(Component.translatable(ChatColor.WHITE + "Music Parchment"));
                 meta.setLocalizedName("music_parchment");
                 // LOTR : kp0000000000nn000000nnnnpg000000000000000000uuwwx0000000wwuuss000000uuwwru0000000000ds000000rb00pk0000000000nb000000kknnkp000000000000000000uuw0xa0000000wwuuks000000uu00pw0000000000ww
                 // NGGYU : gillp00p00n00000gilin00n00l00ki00gilil000n0k00igg00n000lz
@@ -640,14 +639,14 @@ public class UsefulThings {
                 break;
             case "hammer":
                 item.setType(Material.STICK);
-                meta.displayName(Component.text(ChatColor.WHITE + "Hammer"));
+                meta.displayName(Component.translatable(ChatColor.WHITE + "Hammer"));
                 meta.setLocalizedName("hammer");
                 meta.setUnbreakable(true);
                 meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
                 break;
             case "ring":
                 item.setType(Material.GOLD_NUGGET);
-                meta.displayName(Component.text(ChatColor.GOLD + "Golden Ring"));
+                meta.displayName(Component.translatable(ChatColor.GOLD + "Golden Ring"));
                 meta.setLocalizedName("ring_base_gold");
                 lore.add(Component.text(ChatColor.ITALIC + "" + ChatColor.DARK_GRAY + "unique : " + ChatColor.MAGIC + (int)((Math.random()*10)-1) + (int)((Math.random()*10)-1)));
                 lore.add(Component.text(""));
@@ -659,7 +658,7 @@ public class UsefulThings {
                 break;
             case "crystal":
                 item.setType(Material.AMETHYST_SHARD);
-                meta.displayName(Component.text(ChatColor.LIGHT_PURPLE + "Resonant Crystal"));
+                meta.displayName(Component.translatable(ChatColor.LIGHT_PURPLE + "Resonant Crystal"));
                 meta.setLocalizedName("resonantcrystal");
                 lore.add(Component.text(""));
                 lore.add(Component.text(ChatColor.DARK_GRAY + "I MUST FIND A WAY TO CREATE CHANNELS IN LORE !"));
@@ -669,7 +668,7 @@ public class UsefulThings {
                 break;
             case "strawhat":
                 item.setType(Material.WHEAT);
-                meta.displayName(Component.text(ChatColor.YELLOW + "Straw Hat"));
+                meta.displayName(Component.translatable(ChatColor.YELLOW + "Straw Hat"));
                 meta.setLocalizedName("strawhat");
                 lore.add(Component.text(""));
                 lore.add(Component.text("Shift Click on air above your head to wear it"));
@@ -680,7 +679,7 @@ public class UsefulThings {
                 break;
             case "fez":
                 item.setType(Material.RED_DYE);
-                meta.displayName(Component.text(ChatColor.RED + "Fez"));
+                meta.displayName(Component.translatable(ChatColor.RED + "Fez"));
                 meta.setLocalizedName("fez");
                 lore.add(Component.text(""));
                 lore.add(Component.text("Greetings traveler !"));
@@ -691,7 +690,7 @@ public class UsefulThings {
                 break;
             case "kirby":
                 item.setType(Material.PINK_DYE);
-                meta.displayName(Component.text(ChatColor.LIGHT_PURPLE + "Kirby"));
+                meta.displayName(Component.translatable(ChatColor.LIGHT_PURPLE + "Kirby"));
                 meta.setLocalizedName("kirby");
                 lore.add(Component.text(""));
                 lore.add(Component.text("A very special friend"));
@@ -702,7 +701,7 @@ public class UsefulThings {
                 break;
             case "olapapi":
                 item.setType(Material.GREEN_DYE);
-                meta.displayName(Component.text(ChatColor.DARK_RED + "Hola ¿Que Tal?"));
+                meta.displayName(Component.translatable(ChatColor.DARK_RED + "Hola ¿Que Tal?"));
                 meta.setLocalizedName("olapapi");
                 lore.add(Component.text(""));
                 lore.add(Component.text(ChatColor.DARK_PURPLE + "Hehehe, me no abla tacos"));
@@ -713,7 +712,7 @@ public class UsefulThings {
                 break;
             case "monocle":
                 item.setType(Material.GOLD_NUGGET);
-                meta.displayName(Component.text(ChatColor.GOLD + "Monocle"));
+                meta.displayName(Component.translatable(ChatColor.GOLD + "Monocle"));
                 meta.setLocalizedName("monocle");
                 lore.add(Component.text(""));
                 lore.add(Component.text(ChatColor.GOLD + "" + ChatColor.ITALIC + "Oh, hello !"));
@@ -724,7 +723,7 @@ public class UsefulThings {
                 break;
             case "dice6":
                 item.setType(Material.FLINT);
-                meta.displayName(Component.text(ChatColor.GOLD + "Dice 6"));
+                meta.displayName(Component.translatable(ChatColor.GOLD + "Dice 6"));
                 meta.setLocalizedName("dice6_black");
                 lore.add(Component.text(""));
                 lore.add(Component.text(ChatColor.LIGHT_PURPLE + "1D6 yeah baby !"));
@@ -735,7 +734,7 @@ public class UsefulThings {
                 break;
             case "iron_dagger":
                 item.setType(Material.IRON_SWORD);
-                meta.displayName(Component.text(ChatColor.GRAY +  "Iron Dagger"));
+                meta.displayName(Component.translatable(ChatColor.GRAY +  "Iron Dagger"));
                 meta.setLocalizedName("daggeriron");
                 lore.add(Component.text(""));
                 lore.add(Component.text(""));
@@ -746,7 +745,7 @@ public class UsefulThings {
                 break;
             case "iron_curved_dagger":
                 item.setType(Material.IRON_SWORD);
-                meta.displayName(Component.text(ChatColor.GRAY +  "Iron Curved Dagger"));
+                meta.displayName(Component.translatable(ChatColor.GRAY +  "Iron Curved Dagger"));
                 meta.setLocalizedName("curveddaggeriron");
                 lore.add(Component.text(""));
                 lore.add(Component.text(""));
@@ -757,7 +756,7 @@ public class UsefulThings {
                 break;
             case "handcuffs":
                 item.setType(Material.IRON_NUGGET);
-                meta.displayName(Component.text(ChatColor.GRAY + "Handcuffs"));
+                meta.displayName(Component.translatable(ChatColor.GRAY + "Handcuffs"));
                 meta.setUnbreakable(true);
                 meta.setLocalizedName("handcuffs");
                 lore.add(Component.text(""));
@@ -766,7 +765,7 @@ public class UsefulThings {
                 break;
             case "blindfold":
                 item.setType(Material.PAPER);
-                meta.displayName(Component.text(ChatColor.GRAY + "Blindfold"));
+                meta.displayName(Component.translatable(ChatColor.GRAY + "Blindfold"));
                 meta.setLocalizedName("blindfold");
                 lore.add(Component.text(""));
                 lore.add(Component.text(ChatColor.GREEN + "Right-click at someone or wear it to blind the wearer"));
@@ -777,7 +776,7 @@ public class UsefulThings {
                 break;
             case "bouboule":
                 item.setType(Material.GOLD_NUGGET);
-                meta.displayName(Component.text(ChatColor.RED + "La Bouboule"));
+                meta.displayName(Component.translatable(ChatColor.RED + "La Bouboule"));
                 meta.setLocalizedName("bouboule");
                 lore.add(Component.text(""));
                 lore.add(Component.text(ChatColor.LIGHT_PURPLE + "BAH ALORS PETIT COQUINOU !"));
@@ -788,7 +787,7 @@ public class UsefulThings {
                 break;
             case "bat_bottle":
                 item.setType(Material.QUARTZ);
-                meta.displayName(Component.text(ChatColor.WHITE + "Bat in a Bottle"));
+                meta.displayName(Component.translatable(ChatColor.WHITE + "Bat in a Bottle"));
                 meta.setLocalizedName("batbottle");
                 lore.add(Component.text(""));
                 lore.add(Component.text(ChatColor.GRAY + "Right click to release it"));
@@ -798,7 +797,7 @@ public class UsefulThings {
                 break;
             case "bee_bottle":
                 item.setType(Material.QUARTZ);
-                meta.displayName(Component.text(ChatColor.WHITE + "Bee in a Bottle"));
+                meta.displayName(Component.translatable(ChatColor.WHITE + "Bee in a Bottle"));
                 meta.setLocalizedName("beebottle");
                 lore.add(Component.text(""));
                 lore.add(Component.text(ChatColor.GRAY + "Right click to release it"));
@@ -808,7 +807,7 @@ public class UsefulThings {
                 break;
             case "firefly_bottle":
                 item.setType(Material.QUARTZ);
-                meta.displayName(Component.text(ChatColor.WHITE + "Firefly in a Bottle"));
+                meta.displayName(Component.translatable(ChatColor.WHITE + "Firefly in a Bottle"));
                 meta.setLocalizedName("fireflybottle");
                 lore.add(Component.text(""));
                 lore.add(Component.text(ChatColor.GRAY + "Right click in air to release it"));
@@ -821,14 +820,14 @@ public class UsefulThings {
                 break;
             case "spoon":
                 item.setType(Material.STICK);
-                meta.displayName(Component.text(ChatColor.WHITE + "Spoon"));
+                meta.displayName(Component.translatable(ChatColor.WHITE + "Spoon"));
                 meta.setLocalizedName("spoon");
                 meta.setUnbreakable(true);
                 meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
                 break;
             case "raid_horn":
                 item.setType(Material.SHIELD);
-                meta.displayName(Component.text(ChatColor.GRAY + "Raid Horn"));
+                meta.displayName(Component.translatable(ChatColor.GRAY + "Raid Horn"));
                 meta.setLocalizedName("raid_horn");
                 meta.setUnbreakable(true);
                 meta.getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, "horn");
@@ -836,14 +835,14 @@ public class UsefulThings {
                 break;
             case "iron_spear":
                 item.setType(Material.STICK);
-                meta.displayName(Component.text(ChatColor.WHITE + "Iron Spear"));
+                meta.displayName(Component.translatable(ChatColor.WHITE + "Iron Spear"));
                 meta.setLocalizedName("iron_spear");
                 meta.setUnbreakable(true);
                 meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
                 break;
             case "wall_bomb":
                 item.setType(Material.FIREWORK_STAR);
-                meta.displayName(Component.text(ChatColor.WHITE + "Wall Bomb"));
+                meta.displayName(Component.translatable(ChatColor.WHITE + "Wall Bomb"));
                 meta.setLocalizedName("wall_bomb");
                 meta.setUnbreakable(true);
                 meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
@@ -856,7 +855,7 @@ public class UsefulThings {
                 break;
             case "oak_flute":
                 item.setType(Material.SHIELD);
-                meta.displayName(Component.text(ChatColor.WHITE + "Oak Flute"));
+                meta.displayName(Component.translatable(ChatColor.WHITE + "Oak Flute"));
                 meta.setLocalizedName("oak_flute");
                 meta.setUnbreakable(true);
                 meta.getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, "instrument");
@@ -871,7 +870,7 @@ public class UsefulThings {
                 break;
             case "oak_lyre":
                 item.setType(Material.SHIELD);
-                meta.displayName(Component.text(ChatColor.WHITE + "Oak Lyre"));
+                meta.displayName(Component.translatable(ChatColor.WHITE + "Oak Lyre"));
                 meta.setLocalizedName("oak_lyre");
                 meta.setUnbreakable(true);
                 meta.getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, "instrument");
@@ -880,13 +879,13 @@ public class UsefulThings {
                 lore.add(Component.text(""));
                 lore.add(Component.text(ChatColor.GRAY +""+ ChatColor.ITALIC +"No music to be played"));
                 lore.add(Component.text(""));
-        
+                
                 meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
                 meta.lore(lore);
                 break;
             case "oak_guitar":
                 item.setType(Material.SHIELD);
-                meta.displayName(Component.text(ChatColor.WHITE + "Oak Guitar"));
+                meta.displayName(Component.translatable(ChatColor.WHITE + "Oak Guitar"));
                 meta.setLocalizedName("oak_guitar");
                 meta.setUnbreakable(true);
                 meta.getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, "instrument");
@@ -895,13 +894,13 @@ public class UsefulThings {
                 lore.add(Component.text(""));
                 lore.add(Component.text(ChatColor.GRAY +""+ ChatColor.ITALIC +"No music to be played"));
                 lore.add(Component.text(""));
-        
+                
                 meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
                 meta.lore(lore);
                 break;
             case "oak_doublebass":
                 item.setType(Material.SHIELD);
-                meta.displayName(Component.text(ChatColor.WHITE + "Oak Double-Bass"));
+                meta.displayName(Component.translatable(ChatColor.WHITE + "Oak Double-Bass"));
                 meta.setLocalizedName(itemname);
                 meta.setUnbreakable(true);
                 meta.getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, "instrument");
@@ -910,13 +909,13 @@ public class UsefulThings {
                 lore.add(Component.text(""));
                 lore.add(Component.text(ChatColor.GRAY +""+ ChatColor.ITALIC +"No music to be played"));
                 lore.add(Component.text(""));
-        
+                
                 meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
                 meta.lore(lore);
                 break;
             case "oak_harp":
                 item.setType(Material.SHIELD);
-                meta.displayName(Component.text(ChatColor.WHITE + "Oak Harp"));
+                meta.displayName(Component.translatable(ChatColor.WHITE + "Oak Harp"));
                 meta.setLocalizedName(itemname);
                 meta.setUnbreakable(true);
                 meta.getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, "instrument");
@@ -925,13 +924,13 @@ public class UsefulThings {
                 lore.add(Component.text(""));
                 lore.add(Component.text(ChatColor.GRAY +""+ ChatColor.ITALIC +"No music to be played"));
                 lore.add(Component.text(""));
-        
+                
                 meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
                 meta.lore(lore);
                 break;
             case "oak_koto":
                 item.setType(Material.SHIELD);
-                meta.displayName(Component.text(ChatColor.WHITE + "Oak Koto"));
+                meta.displayName(Component.translatable(ChatColor.WHITE + "Oak Koto"));
                 meta.setLocalizedName(itemname);
                 meta.setUnbreakable(true);
                 meta.getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, "instrument");
@@ -940,13 +939,13 @@ public class UsefulThings {
                 lore.add(Component.text(""));
                 lore.add(Component.text(ChatColor.GRAY +""+ ChatColor.ITALIC +"No music to be played"));
                 lore.add(Component.text(""));
-        
+                
                 meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
                 meta.lore(lore);
                 break;
             case "oak_oud":
                 item.setType(Material.SHIELD);
-                meta.displayName(Component.text(ChatColor.WHITE + "Oak Oud"));
+                meta.displayName(Component.translatable(ChatColor.WHITE + "Oak Oud"));
                 meta.setLocalizedName(itemname);
                 meta.setUnbreakable(true);
                 meta.getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, "instrument");
@@ -955,14 +954,14 @@ public class UsefulThings {
                 lore.add(Component.text(""));
                 lore.add(Component.text(ChatColor.GRAY +""+ ChatColor.ITALIC +"No music to be played"));
                 lore.add(Component.text(""));
-        
+                
                 meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
                 meta.lore(lore);
                 break;
             case "oak_panflute":
                 item.setType(Material.SHIELD);
-                meta.displayName(Component.text(ChatColor.WHITE + "Oak Pan Flute"));
-                meta.setLocalizedName("oak_panflute");
+                meta.displayName(Component.translatable(ChatColor.WHITE + "Oak Pan Flute"));
+                meta.setLocalizedName(itemname);
                 meta.setUnbreakable(true);
                 meta.getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, "instrument");
                 meta.getPersistentDataContainer().set(DataHolder.getStonesItemDataKey(), PersistentDataType.STRING, "");
@@ -970,13 +969,13 @@ public class UsefulThings {
                 lore.add(Component.text(""));
                 lore.add(Component.text(ChatColor.GRAY +""+ ChatColor.ITALIC +"No music to be played"));
                 lore.add(Component.text(""));
-        
+                
                 meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
                 meta.lore(lore);
                 break;
             case "oak_sitar":
                 item.setType(Material.SHIELD);
-                meta.displayName(Component.text(ChatColor.WHITE + "Oak Sitar"));
+                meta.displayName(Component.translatable(ChatColor.WHITE + "Oak Sitar"));
                 meta.setLocalizedName(itemname);
                 meta.setUnbreakable(true);
                 meta.getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, "instrument");
@@ -985,13 +984,28 @@ public class UsefulThings {
                 lore.add(Component.text(""));
                 lore.add(Component.text(ChatColor.GRAY +""+ ChatColor.ITALIC +"No music to be played"));
                 lore.add(Component.text(""));
-        
+                
                 meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
                 meta.lore(lore);
                 break;
             case "oak_banjo":
                 item.setType(Material.SHIELD);
-                meta.displayName(Component.text(ChatColor.WHITE + "Oak Banjo"));
+                meta.displayName(Component.translatable(ChatColor.WHITE + "Oak Banjo"));
+                meta.setLocalizedName(itemname);
+                meta.setUnbreakable(true);
+                meta.getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, "instrument");
+                meta.getPersistentDataContainer().set(DataHolder.getStonesItemDataKey(), PersistentDataType.STRING, "");
+                //00g00i00l00l00p0000p0000n0000000g00i00l00i00n0000n0000l0000k00i0000g00i00l00i00l00000n000k0000i00g000g0000n00000lz
+                lore.add(Component.text(""));
+                lore.add(Component.text(ChatColor.GRAY +""+ ChatColor.ITALIC +"No music to be played"));
+                lore.add(Component.text(""));
+                
+                meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+                meta.lore(lore);
+                break;
+            case "molophone":
+                item.setType(Material.SHIELD);
+                meta.displayName(Component.translatable(ChatColor.WHITE + "Molophone"));
                 meta.setLocalizedName(itemname);
                 meta.setUnbreakable(true);
                 meta.getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, "instrument");
@@ -1004,11 +1018,96 @@ public class UsefulThings {
                 meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
                 meta.lore(lore);
                 break;
+            case "iron_sickle":
+                item.setType(Material.SHEARS);
+                meta.displayName(Component.translatable(ChatColor.WHITE + "Iron Sickle"));
+                meta.setLocalizedName(itemname);
+                break;
+            case "sickle":
+                return UsefulThings.getItem("iron_sickle");
+            case "thatch":
+                item.setType(Material.WHEAT);
+                meta.displayName(Component.translatable(ChatColor.WHITE  + "Thatch"));
+                meta.setLocalizedName(itemname);
+                break;
+            case "dandelion_head":
+                item.setType(Material.YELLOW_DYE);
+                meta.displayName(Component.translatable(ChatColor.WHITE + "Dandelion Head"));
+                meta.setLocalizedName(itemname);
+                break;
+            case "poppy_head":
+                item.setType(Material.RED_DYE);
+                meta.displayName(Component.translatable(ChatColor.WHITE + "Poppy Head"));
+                meta.setLocalizedName(itemname);
+                break;
+            case "blue_orchid_buds":
+                item.setType(Material.LIGHT_BLUE_DYE);
+                meta.displayName(Component.translatable(ChatColor.WHITE + "Blue Orchid Buds"));
+                meta.setLocalizedName(itemname);
+                break;
+            case "allium_head":
+                item.setType(Material.MAGENTA_DYE);
+                meta.displayName(Component.translatable(ChatColor.WHITE + "Allium Head"));
+                meta.setLocalizedName(itemname);
+                break;
+            case "azure_bluet_buds":
+                item.setType(Material.LIGHT_GRAY_DYE);
+                meta.displayName(Component.translatable(ChatColor.WHITE + "Azure Bluet Buds"));
+                meta.setLocalizedName(itemname);
+                break;
+            case "red_tulip_petals":
+                item.setType(Material.RED_DYE);
+                meta.displayName(Component.translatable(ChatColor.WHITE + "Red Tulip Petals"));
+                meta.setLocalizedName(itemname);
+                break;
+            case "orange_tulip_petals":
+                item.setType(Material.ORANGE_DYE);
+                meta.displayName(Component.translatable(ChatColor.WHITE + "Orange Tulip Petals"));
+                meta.setLocalizedName(itemname);
+                break;
+            case "white_tulip_petals":
+                item.setType(Material.WHITE_DYE);
+                meta.displayName(Component.translatable(ChatColor.WHITE + "White Tulip Petals"));
+                meta.setLocalizedName(itemname);
+                break;
+            case "pink_tulip_petals":
+                item.setType(Material.PINK_DYE);
+                meta.displayName(Component.translatable(ChatColor.WHITE + "Pink Tulip Petals"));
+                meta.setLocalizedName(itemname);
+                break;
+            case "oxeye_daisy_head":
+                item.setType(Material.LIGHT_GRAY_DYE);
+                meta.displayName(Component.translatable(ChatColor.WHITE + "Oxeye Daisy Head"));
+                meta.setLocalizedName(itemname);
+                break;
+            case "cornflower_head":
+                item.setType(Material.BLUE_DYE);
+                meta.displayName(Component.translatable(ChatColor.WHITE + "Cornflower Head"));
+                meta.setLocalizedName(itemname);
+                break;
+            case "lily_of_the_valley_buds":
+                item.setType(Material.WHITE_DYE);
+                meta.displayName(Component.translatable(ChatColor.WHITE + "Lily of the Valley Buds"));
+                meta.setLocalizedName(itemname);
+                break;
+            case "book_test":
+                item.setType(Material.BOOK);
+                meta.displayName(Component.translatable(ChatColor.WHITE + "Test Book"));
+                meta.setLocalizedName("book_test");
+                lore.add(0, Component.text(ChatColor.GRAY + "Close"));
+                int[] pages = {1, 16};
+                meta.getPersistentDataContainer().set(DataHolder.getStonesItemDataKey(), PersistentDataType.INTEGER_ARRAY, pages);
+                lore.add(Component.text(""));
+                lore.add(Component.text(ChatColor.GOLD + "" + pages[0]+"/"+pages[1] + " pages"));
+                meta.lore(lore);
+                break;
+                
+                
                 /*
 
                 case "":
                     item.setType();
-                    meta.displayName(Component.text(""));
+                    meta.displayName(Component.translatable(""));
                     meta.setLocalizedName("");
                     lore.add(Component.text(""));
                     lore.add(Component.text(""));
@@ -1023,7 +1122,7 @@ public class UsefulThings {
 
 
                 */
-
+            
         }
         item.setItemMeta(meta);
         return item;
@@ -1047,8 +1146,8 @@ public class UsefulThings {
         return modifier;
     }
 
-    public static ArmorStand createDisplay(Location loc, ItemStack head){
-        ArmorStand arm = (ArmorStand) loc.getWorld().spawnEntity(loc.subtract(0,17/16f,0), EntityType.ARMOR_STAND);
+    public static ArmorStand createDisplay(Location loc, ItemStack head, boolean isonlyvisual){
+        ArmorStand arm = (ArmorStand) loc.getWorld().spawnEntity(loc.subtract(0,17/16f,0), EntityType.ARMOR_STAND, CreatureSpawnEvent.SpawnReason.BREEDING);
         arm.setVisible(false);
         arm.setInvulnerable(true);
         arm.setGravity(false);
@@ -1056,8 +1155,16 @@ public class UsefulThings {
         arm.getEquipment().setHelmet(head);
         arm.setCustomName("_hide");
         arm.setCustomNameVisible(false);
+        if(isonlyvisual){
+            Stones.addToRemoveList(arm.getUniqueId());
+            arm.setCustomName("_display");
+        }
 
         return arm;
+    }
+    
+    public static ArmorStand createDisplay(Location loc, ItemStack head){
+        return createDisplay(loc, head, false);
     }
 
     public static boolean isDisplay(Entity e){
@@ -1396,6 +1503,136 @@ public class UsefulThings {
         char[] notes = note.toCharArray();
         float[] pitch = UsefulThings.noteToPitch(notes);
         playMusic(pitch, p, shouldhold, speed, sound);
+    }
+    
+    public static boolean isFlower(Block b){
+        String type = b.getType().toString().toLowerCase(Locale.ENGLISH);
+    
+        return  type.contains("tulip") ||
+                type.contains("dandelion") ||
+                type.contains("orchid") ||
+                type.contains("poppy") ||
+                type.contains("allium") ||
+                type.contains("bluet") ||
+                type.contains("daisy") ||
+                type.contains("cornflower") ||
+                type.contains("lily_of") ||
+                type.contains("sunflower") ||
+                type.contains("lilac") ||
+                type.contains("rose_bush") ||
+                type.contains("peony");
+    }
+    
+    public static boolean isShortPlant(Block b){
+        String type = b.getType().toString().toLowerCase(Locale.ENGLISH);
+        return  UsefulThings.isFlower(b) ||
+                type.contains("crimson_roots") ||
+                type.contains("warped_roots") ||
+                type.contains("nether_sprouts") ||
+                (type.contains("grass") && !type.contains("grass_block") && !type.contains("tall_grass") && !type.contains("sea_grass")) ||
+                type.contains("sapling") ||
+                (type.contains("fern") && !type.contains("tall_fern"));
+                
+    }
+    
+    public static ItemStack plantToItem(Block b, Biome biome){
+        Material type = b.getType();
+        ItemStack item = new ItemStack(Material.AIR);
+        
+        if(type.equals(Material.DANDELION)){
+            if(biome.equals(Biome.PLAINS)){
+                item.setType(Material.DANDELION);
+                item.getItemMeta().setLocalizedName("dandelion");
+            } else {
+                return item;
+            }
+        } else if(type.equals(Material.POPPY)){
+            if(biome.equals(Biome.PLAINS)){
+                item.setType(type);
+                item.getItemMeta().setLocalizedName(type.toString().toLowerCase(Locale.ENGLISH));
+            } else {
+                return item;
+            }
+        } else if(type.equals(Material.BLUE_ORCHID)){
+            if(biome.equals(Biome.PLAINS)){
+                item.setType(type);
+                item.getItemMeta().setLocalizedName(type.toString().toLowerCase(Locale.ENGLISH));
+            } else {
+                return item;
+            }
+        } else if(type.equals(Material.ALLIUM)){
+            if(biome.equals(Biome.PLAINS)){
+                item.setType(type);
+                item.getItemMeta().setLocalizedName(type.toString().toLowerCase(Locale.ENGLISH));
+            } else {
+                return item;
+            }
+        } else if(type.equals(Material.AZURE_BLUET)){
+            if(biome.equals(Biome.PLAINS)){
+                item.setType(type);
+                item.getItemMeta().setLocalizedName(type.toString().toLowerCase(Locale.ENGLISH));
+            } else {
+                return item;
+            }
+        } else if(type.equals(Material.RED_TULIP)){
+            if(biome.equals(Biome.PLAINS)){
+                item.setType(type);
+                item.getItemMeta().setLocalizedName(type.toString().toLowerCase(Locale.ENGLISH));
+            } else {
+                return item;
+            }
+        } else if(type.equals(Material.ORANGE_TULIP)){
+            if(biome.equals(Biome.PLAINS)){
+                item.setType(type);
+                item.getItemMeta().setLocalizedName(type.toString().toLowerCase(Locale.ENGLISH));
+            } else {
+                return item;
+            }
+        } else if(type.equals(Material.WHITE_TULIP)){
+            if(biome.equals(Biome.PLAINS)){
+                item.setType(type);
+                item.getItemMeta().setLocalizedName(type.toString().toLowerCase(Locale.ENGLISH));
+            } else {
+                return item;
+            }
+        } else if(type.equals(Material.PINK_TULIP)){
+            if(biome.equals(Biome.PLAINS)){
+                item.setType(type);
+                item.getItemMeta().setLocalizedName(type.toString().toLowerCase(Locale.ENGLISH));
+            } else {
+                return item;
+            }
+        } else if(type.equals(Material.OXEYE_DAISY)){
+            if(biome.equals(Biome.PLAINS)){
+                item.setType(type);
+                item.getItemMeta().setLocalizedName(type.toString().toLowerCase(Locale.ENGLISH));
+            } else {
+                return item;
+            }
+        } else if(type.equals(Material.CORNFLOWER)){
+            if(biome.equals(Biome.PLAINS)){
+                item.setType(type);
+                item.getItemMeta().setLocalizedName(type.toString().toLowerCase(Locale.ENGLISH));
+            } else {
+                return item;
+            }
+        } else if(type.equals(Material.LILY_OF_THE_VALLEY)){
+            if(biome.equals(Biome.PLAINS)){
+                item.setType(type);
+                item.getItemMeta().setLocalizedName(type.toString().toLowerCase(Locale.ENGLISH));
+            } else {
+                return item;
+            }
+        } else if(type.equals(Material.GRASS)){
+                item.setType(type);
+                item.getItemMeta().setLocalizedName(type.toString().toLowerCase(Locale.ENGLISH));
+        }
+        return item;
+        
+    }
+    
+    public static ItemStack plantToItem(Block b){
+        return UsefulThings.plantToItem(b, b.getBiome());
     }
 
 

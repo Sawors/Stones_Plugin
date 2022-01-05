@@ -1,0 +1,22 @@
+
+This is a very basic introduction on how to write music sheets for the plugin.
+
+the main source of information is the wiki : https://github.com/Sawors/Stones_Plugin/wiki
+
+
+
+
+notes :
+    In Minecraft, a Noteblock can have 25 different pitches (how high a note is).
+    Here, each pitch value a vanilla Noteblock has is translated in a letter
+
+    in "clicks" on the noteblock (pitch):
+        a->y = 0->24 click(s)
+        z = stop (almost useless, the music stops automatically at the end of the sheet anyway)
+
+    to make "blank" notes, or recreate repeater delay, you can use 0 to mark 1 repeater tick
+        0 = 1 repeater tick
+
+
+    a finished song looks like this :
+        gillp00p00n00000gilin00n00l00ki00gilil000n0k00igg00n000l

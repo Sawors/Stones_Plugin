@@ -7,6 +7,7 @@ import com.github.sawors.stones.SerializeInventory;
 import com.github.sawors.stones.Stones;
 import com.github.sawors.stones.UsefulThings.DataHolder;
 import com.github.sawors.stones.UsefulThings.UsefulThings;
+import com.github.sawors.stones.recipes.Recipes;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -18,8 +19,10 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -205,6 +208,8 @@ public class ListenersALL implements Listener {
                     soundstr = "minecraft:sawors.instrument.panflute";
                 } else if(locname.contains("_sitar")){
                     soundstr = "minecraft:sawors.instrument.sitar";
+                } else if(locname.contains("molophone")){
+                    soundstr = "minecraft:sawors.instrument.molophone";
                 }
                 
                 
@@ -926,7 +931,193 @@ public class ListenersALL implements Listener {
                 }
             }
     }
-
+    
+    @EventHandler
+    public void onWoodBurn(BlockBurnEvent event){
+        double rnd = Math.random();
+        String bname = event.getBlock().getType().toString();
+        Block b = event.getBlock();
+        if(b.getType().toString().contains("CRIMSON_")){
+            event.setCancelled(true);
+        }
+        if(b.getLocation().subtract(0,1,0).getBlock().getType().isSolid() ){
+            String data = b.getBlockData().getAsString();
+            if(bname.contains("_LOG")){
+    
+                b.getWorld().sendMessage(Component.text(b.getMetadata("minecraft").toString()));
+                event.setCancelled(true);
+                b.setType(Material.CRIMSON_STEM);
+            } else if(bname.contains("_SLAB")){
+                event.setCancelled(true);
+                b.setType(Material.CRIMSON_SLAB);
+                b.getBlockData().merge(Bukkit.createBlockData(data));
+            } else if(bname.contains("_STAIRS")){
+                event.setCancelled(true);
+                b.setType(Material.CRIMSON_STAIRS);
+            } else if(bname.contains("_PLANKS")){
+                event.setCancelled(true);
+                b.setType(Material.CRIMSON_PLANKS);
+            } else if(bname.contains("_DOOR")){
+                event.setCancelled(true);
+                b.setType(Material.CRIMSON_DOOR);
+                b.getBlockData().merge(Bukkit.createBlockData(data));
+            } else if(bname.contains("_FENCE") && !bname.contains("FENCE_")){
+                event.setCancelled(true);
+                b.setType(Material.CRIMSON_FENCE);
+            }
+        }
+    }
+    
+    
+    @EventHandler
+    public void onPlayerCutPlant(PlayerInteractEvent event){
+        if(event.getClickedBlock() != null && !event.getClickedBlock().getType().isAir()){
+            Block b = event.getClickedBlock();
+            Player p = event.getPlayer();
+            ItemStack item = p.getInventory().getItemInMainHand();
+            byte globaltimer = 5;
+            
+            if(UsefulThings.isShortPlant(b) && event.getAction().isLeftClick()){
+                for(Entity e : b.getLocation().add(0.5,1,0.5).getNearbyEntities(1,1,1)){
+                    if(e.getType().equals(EntityType.ARMOR_STAND)){
+                        event.setCancelled(true);
+                        return;
+                    }
+                }
+            }
+            
+            
+            if(UsefulThings.isFlower(b.getLocation().add(0,1,0).getBlock()) && b.isSolid() && (b.getType().toString().contains("DIRT") || b.getType().toString().contains("GRASS_") || b.getType().toString().contains("PODZOL")) && event.getAction().isRightClick() && item.getType().toString().contains("SHOVEL")){
+                Location mid = b.getLocation();
+                mid.setX(b.getLocation().add(0,1,0).getBlock().getBoundingBox().getCenter().getX());
+                mid.setY(b.getLocation().add(0,1,0).getBlock().getBoundingBox().getCenter().getY() +13/16f);
+                mid.setZ(b.getLocation().add(0,1,0).getBlock().getBoundingBox().getCenter().getZ());
+                for(Entity e : mid.getNearbyEntities(.5,.5,.5)){
+                    if(e.getType().equals(EntityType.ARMOR_STAND)){
+                        return;
+                    }
+                }
+                event.setCancelled(true);
+                p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, (int) ((globaltimer-1)/0.2), 2, false, false));
+                ArmorStand stand2 = UsefulThings.createDisplay(mid.add((p.getLocation().getX() - b.getBoundingBox().getCenter().getX())/10,-2/16f,(p.getLocation().getZ()-b.getBoundingBox().getCenter().getZ())/10), item.clone(), true);
+                stand2.setSmall(true);
+                stand2.setHeadPose(new EulerAngle(0, Math.toRadians(p.getLocation().getYaw()+180), 0));
+                new BukkitRunnable(){
+                    byte timer = (byte) ((globaltimer-1)/2);
+        
+        
+                    @Override
+                    public void run(){
+                        if(timer <= -1){
+                            stand2.remove();
+                            this.cancel();
+                            return;
+                        }
+                        stand2.setHeadPose(new EulerAngle(stand2.getHeadPose().getX()+Math.toRadians(10), stand2.getHeadPose().getY(), 0));
+                        b.getWorld().spawnParticle(Particle.BLOCK_DUST, mid, 8,0,0,0, 0, b.getBlockData());
+                        b.getWorld().playSound(mid, Sound.BLOCK_GRAVEL_BREAK, .5f, 1 + 1f/(4*timer));
+                        if(timer == 0){
+                            Material baseb = b.getType();
+                            b.setType(Material.DIRT);
+                            b.getWorld().spawnParticle(Particle.BLOCK_DUST, mid, 16,0,0,0, 0, b.getBlockData());
+                            b.getWorld().playSound(mid, Sound.BLOCK_GRAVEL_BREAK, .5f, 1.25f);
+                            b.setType(baseb);
+                            b.getLocation().add(0,1,0).getBlock().breakNaturally();
+                            if(b.getType().toString().contains("GRASS_")){
+                                b.setType(Material.DIRT);
+                            }
+                            
+                        }
+                        timer --;
+                    }
+                }.runTaskTimer(Stones.getPlugin(), 1, 10);
+            }
+            
+            
+            
+            
+            if(UsefulThings.isShortPlant(b) && item.hasItemMeta() && item.getItemMeta().getLocalizedName().contains("sickle")){
+    
+                Location mid = b.getLocation();
+                mid.setX(b.getBoundingBox().getCenter().getX());
+                mid.setY(b.getBoundingBox().getCenter().getY() +13/16f);
+                mid.setZ(b.getBoundingBox().getCenter().getZ());
+                
+                
+                    for(Entity e : mid.getNearbyEntities(.5,.5,.5)){
+                        if(e.getType().equals(EntityType.ARMOR_STAND)){
+                            return;
+                        }
+                    }
+                if(event.getAction().isRightClick()){
+                    
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, globaltimer+5, 2, false, false));
+    
+                    final ArmorStand stand = UsefulThings.createDisplay(mid.add((p.getLocation().getX() - b.getBoundingBox().getCenter().getX())/10,0,(p.getLocation().getZ()-b.getBoundingBox().getCenter().getZ())/10), item.clone(), true);
+                    stand.setSmall(true);
+                    Location standloc = stand.getLocation();
+                    stand.setHeadPose(new EulerAngle(0, Math.toRadians(p.getLocation().getYaw()+225), 0));
+    
+                    new BukkitRunnable(){
+                        byte timer = globaltimer;
+        
+        
+                        @Override
+                        public void run(){
+                            if(timer <= -5){
+                                stand.remove();
+                                this.cancel();
+                                return;
+                            }
+                            if(timer > 0){
+                                standloc.setYaw(standloc.getYaw()-125f/globaltimer);
+                                stand.teleport(standloc);
+                            }
+                            if(timer == 0){
+                                Material baseb = b.getType();
+                                b.setType(Material.GRASS);
+                                b.getWorld().spawnParticle(Particle.BLOCK_DUST, mid, 8,0.2,0.2,0.2, 0, b.getBlockData());
+                                b.getWorld().playSound(mid, Sound.ENTITY_SNOW_GOLEM_SHEAR, .25f, 1f);
+                                b.getWorld().playSound(mid, Sound.BLOCK_GRASS_BREAK, .5f, 1.5f);
+                                b.setType(baseb);
+                                if(!UsefulThings.plantToItem(b).getType().isAir()){
+                                    b.getWorld().dropItem(mid, Recipes.sickleCut(b));
+                                }
+                                b.setType(Material.AIR);
+                            }
+                            timer --;
+                        }
+                    }.runTaskTimer(Stones.getPlugin(), 1, 1);
+                } else {
+                    event.setCancelled(true);
+                    b.setType(Material.GRASS);
+                    b.getWorld().spawnParticle(Particle.BLOCK_DUST, mid, 8,0.2,0.2,0.2, 0, b.getBlockData());
+                    b.getWorld().dropItem(mid, UsefulThings.getItem("thatch"));
+                    b.setType(Material.AIR);
+                    
+                    
+                    
+                    
+                }
+    
+            }
+        }
+    }
+    
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void placedArmorStandsWithArms(CreatureSpawnEvent event){
+        if(event.getEntity() instanceof ArmorStand){
+            ((ArmorStand) event.getEntity()).setArms(true);
+            if(event.getSpawnReason() != CreatureSpawnEvent.SpawnReason.BREEDING){
+                
+                // AS RETARDED AS IT SEEMS, IT IS MY WAY TO PATCH INVISIBLE ARMOR STANDS FROM APPEARING FOR A FRACTION OF SECOND WHEN SPAWNED
+                // WORKS IN DUO WITH THE RESOURCE PACK (OPTIFINE)
+                
+                event.getEntity().setCustomName("Armor Stand");
+            }
+        }
+    }
+    
 
 
 
