@@ -374,18 +374,8 @@ public class UsefulThings {
      */
     public static void sitEntity(LivingEntity entity){
         if(entity.getLocation().subtract(0,0.1,0).getBlock().isSolid() && !entity.isJumping() && !entity.isSwimming()){
-            ArmorStand e = (ArmorStand) entity.getWorld().spawnEntity(entity.getLocation().subtract(0,1,0), EntityType.ARMOR_STAND);
-            e.setGravity(false);
-            e.setVisible(false);
-            e.setInvulnerable(true);
+            ArmorStand e = createDisplay(entity.getLocation().subtract(0,1,0), new ItemStack(Material.AIR));
             e.setSmall(true);
-            e.setCustomName("seat");
-            e.setCustomNameVisible(false);
-            e.addEquipmentLock(EquipmentSlot.HEAD, ArmorStand.LockType.ADDING_OR_CHANGING);
-            e.addEquipmentLock(EquipmentSlot.CHEST, ArmorStand.LockType.ADDING_OR_CHANGING);
-            e.addEquipmentLock(EquipmentSlot.LEGS, ArmorStand.LockType.ADDING_OR_CHANGING);
-            e.addEquipmentLock(EquipmentSlot.FEET, ArmorStand.LockType.ADDING_OR_CHANGING);
-
             e.addPassenger(entity);
 
         } else {
@@ -1098,7 +1088,7 @@ public class UsefulThings {
                 int[] pages = {1, 16};
                 meta.getPersistentDataContainer().set(DataHolder.getStonesItemDataKey(), PersistentDataType.INTEGER_ARRAY, pages);
                 lore.add(Component.text(""));
-                lore.add(Component.text(ChatColor.GOLD + "" + pages[0]+"/"+pages[1] + " pages"));
+                lore.add(Component.text(ChatColor.GOLD + " " + pages[0]+"/"+pages[1] + " pages"));
                 meta.lore(lore);
                 break;
                 

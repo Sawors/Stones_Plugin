@@ -1,0 +1,81 @@
+
+This is a very basic introduction on how to create books for the plugin.
+
+the main source of information is the wiki : https://github.com/Sawors/Stones_Plugin/wiki
+
+    Chapters :
+        - Intro
+        - Generator
+        - Manual Creation
+            └ File structure
+                ├ Textures
+                ├ Models
+                └ CIT
+
+
+[Intro]
+
+[Generator]
+
+[Manual Creation]
+
+
+
+    FILE STRUCTURE (RESOURCE PACK)
+
+    Replace <BOOKNAME> by the name of your book (without the <>) and <PAGENUMBER> by the page the model/cit/texture refers to (without the <>)
+
+        assets
+            └minecraft
+                ├models
+                │    └item
+                │        └books
+                │            └<BOOKNAME>
+                │               ├_close.json
+                │               └<PAGENUMBER>.json
+                ├optifine
+                │     └cit
+                │        └books
+                │            └<BOOKNAME>
+                │               ├_close.properties
+                │               └<PAGENUMBER>.properties
+                └textures
+                    └item
+                        └books
+                            └<BOOKNAME>
+                                ├_cover.png
+                                └<PAGENUMBER>.png
+
+
+
+    Exemple : for a book name The Times which has 4 double pages (8 pages) we have :
+
+        assets
+            └minecraft
+                ├models
+                │    └item
+                │        └books
+                │            └The Times
+                │               ├_close.json
+                │               ├1.json
+                │               ├2.json
+                │               ├3.json
+                │               └4.json
+                ├optifine
+                │     └cit
+                │        └books
+                │            └The Times
+                │               ├_close.properties
+                │               ├1.properties
+                │               ├2.properties
+                │               ├3.properties
+                │               └4.properties
+                └textures
+                    └item
+                        └books
+                            └The Times
+                                ├_cover.png
+                                ├1.png
+                                ├2.png
+                                ├3.png
+                                └4.png

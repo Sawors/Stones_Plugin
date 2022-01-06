@@ -32,18 +32,29 @@ public class StonesBooks implements Listener {
             ItemStack item = p.getInventory().getItemInMainHand().clone();
             item.setAmount(1);
             Location blockloc = event.getInteractionPoint().add(0,1,0);
+            blockloc.setY(blockloc.getY()+(Math.random()/100));
             /*Location blockloc = event.getClickedBlock().getLocation().add(0.5, 0, 0.5);
             blockloc.setY(event.getClickedBlock().getBoundingBox().getMaxY() + 1);*/
-            blockloc.setYaw(p.getLocation().getYaw());
+            
+            if(!(item.hasItemMeta() && item.getItemMeta().hasLocalizedName())){
+                blockloc.setYaw(p.getLocation().getYaw()-90);
+            } else {
+                blockloc.setYaw(p.getLocation().getYaw());
+            }
+            
             ArmorStand stand = UsefulThings.createDisplay(blockloc, item, false);
             stand.setSmall(true);
             stand.setCustomName("_book");
             p.getInventory().getItemInMainHand().setAmount(p.getInventory().getItemInMainHand().getAmount() - 1);
+            
+            
         } else if (event.getAction().isRightClick() && (event.getClickedBlock() == null || !event.getBlockFace().equals(BlockFace.UP)) && event.getPlayer().isSneaking() && event.getPlayer().getInventory().getItemInMainHand().getType().equals(Material.BOOK)) {
             event.setCancelled(true);
             Player p = event.getPlayer();
             ItemStack item = p.getInventory().getItemInMainHand();
             switchOpenClose(item, p);
+            
+            
         } else if(event.getPlayer().getInventory().getItemInMainHand().getType().equals(Material.BOOK) && event.getPlayer().getInventory().getItemInMainHand().hasItemMeta() && event.getPlayer().getInventory().getItemInMainHand().getItemMeta().getPersistentDataContainer().get(DataHolder.getStonesItemDataKey(), PersistentDataType.INTEGER_ARRAY) != null){
             event.setCancelled(true);
             ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
@@ -70,9 +81,17 @@ public class StonesBooks implements Listener {
     
     @EventHandler
     public void playerRetrievesBook(PlayerInteractAtEntityEvent event) {
-        if (event.getPlayer().getInventory().getItemInMainHand().getType().isAir() && (event.getPlayer().isSneaking() || event.getPlayer().isInsideVehicle()) && event.getRightClicked() instanceof ArmorStand && ((ArmorStand) event.getRightClicked()).getEquipment().getHelmet() != null && ((ArmorStand) event.getRightClicked()).getEquipment().getHelmet().getType().toString().contains("BOOK")) {
-            event.getPlayer().getInventory().setItemInMainHand(((ArmorStand) event.getRightClicked()).getEquipment().getHelmet());
-            event.getRightClicked().remove();
+        if (event.getPlayer().getInventory().getItemInMainHand().getType().isAir() && event.getRightClicked() instanceof ArmorStand && ((ArmorStand) event.getRightClicked()).getEquipment().getHelmet() != null && ((ArmorStand) event.getRightClicked()).getEquipment().getHelmet().getType().toString().contains("BOOK")) {
+            if((event.getPlayer().isSneaking() || event.getPlayer().isInsideVehicle())){
+                event.getPlayer().getInventory().setItemInMainHand(((ArmorStand) event.getRightClicked()).getEquipment().getHelmet());
+                event.getRightClicked().remove();
+            } else if(((ArmorStand) event.getRightClicked()).getEquipment().getHelmet().getType().equals(Material.BOOK)){
+                ItemStack item = ((ArmorStand) event.getRightClicked()).getEquipment().getHelmet().clone();
+                assert item != null;
+                switchOpenClose(item, event.getRightClicked());
+                ((ArmorStand) event.getRightClicked()).getEquipment().setHelmet(item);
+            }
+            
         }
     }
     
@@ -104,6 +123,8 @@ public class StonesBooks implements Listener {
     
     
     
+    
+    
     public void changePage(ItemStack book, int targetpage) {
         if (book.getType().equals(Material.BOOK) && book.hasItemMeta()) {
             ItemMeta meta = book.getItemMeta().clone();
@@ -113,7 +134,7 @@ public class StonesBooks implements Listener {
                 List<Component> lore = meta.lore();
                 data[0] = targetpage;
                 if (lore != null) {
-                    lore.set(2, Component.text(ChatColor.GOLD + "" + data[0] + "/" + data[1] + " pages"));
+                    lore.set(2, Component.text(ChatColor.GOLD + " " + data[0] + "/" + data[1] + " pages"));
                 }
                 meta.getPersistentDataContainer().set(DataHolder.getStonesItemDataKey(), PersistentDataType.INTEGER_ARRAY, data);
                 meta.lore(lore);

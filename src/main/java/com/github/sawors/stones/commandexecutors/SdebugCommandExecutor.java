@@ -59,6 +59,22 @@ public class SdebugCommandExecutor implements CommandExecutor {
                         sender.sendMessage(ChatColor.RED + "There is no display entity to remove");
                     }
                     return true;
+                case "visibility":
+                case "visi":
+                    if(sender instanceof Player && ((Player) sender).getTargetEntity(4) != null && ((Player) sender).getTargetEntity(4) instanceof ArmorStand){
+                        ArmorStand e = (ArmorStand) ((Player) sender).getTargetEntity(4);
+                        if(e!=null && e.isVisible()){
+                            e.setVisible(false);
+                            e.setCustomName("_hide");
+                            return true;
+                        } else if(e!=null && !e.isVisible()){
+                            e.setVisible(true);
+                            e.setCustomName("Armor Stand");
+                            return true;
+                        }
+                        
+                        
+                    }
             }
         }
 

@@ -13,8 +13,11 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Jukebox;
+import org.bukkit.block.data.Bisected;
 import org.bukkit.block.data.type.Chain;
 import org.bukkit.block.data.type.Door;
+import org.bukkit.block.data.type.Slab;
+import org.bukkit.block.data.type.Stairs;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.Event;
@@ -1115,6 +1118,26 @@ public class ListenersALL implements Listener {
                 
                 event.getEntity().setCustomName("Armor Stand");
             }
+        }
+    }
+    
+    @EventHandler
+    public void playerSit(PlayerInteractEvent event){
+        if(event.getClickedBlock() != null && !event.getPlayer().isSneaking() && event.getAction().isRightClick() && ((event.getClickedBlock().getType().toString().contains("STAIRS") && ((Stairs) event.getClickedBlock().getBlockData()).getShape().equals(Stairs.Shape.STRAIGHT) && ((Stairs) event.getClickedBlock().getBlockData()).getHalf().equals(Bisected.Half.BOTTOM)) || (event.getClickedBlock().getType().toString().contains("SLAB") && ((Slab) event.getClickedBlock().getBlockData()).getType().equals(Slab.Type.BOTTOM))) && event.getPlayer().getInventory().getItemInMainHand().getType().isAir()){
+            Block b = event.getClickedBlock();
+            Location loc = b.getLocation().add(0.5,0.5,0.5);
+            Player p = event.getPlayer();
+            if(
+                    loc.clone().add(1,0,0).getBlock().getType().toString().contains("TRAPDOOR") || loc.clone().add(1,0,0).getBlock().getType().toString().contains("SIGN") ||
+                    loc.clone().add(-1,0,0).getBlock().getType().toString().contains("TRAPDOOR") || loc.clone().add(1,0,0).getBlock().getType().toString().contains("SIGN") ||
+                    loc.clone().add(0,0,1).getBlock().getType().toString().contains("TRAPDOOR") || loc.clone().add(1,0,0).getBlock().getType().toString().contains("SIGN") ||
+                    loc.clone().add(0,0,-1).getBlock().getType().toString().contains("TRAPDOOR") || loc.clone().add(1,0,0).getBlock().getType().toString().contains("SIGN")
+            ){
+                loc.setYaw(p.getLocation().getYaw());
+                UsefulThings.sitEntity(p, loc);
+            }
+            
+            
         }
     }
     
