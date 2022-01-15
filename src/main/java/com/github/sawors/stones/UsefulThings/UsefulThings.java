@@ -17,6 +17,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -129,6 +130,62 @@ public class UsefulThings {
     public static Location getFaceMidLocation(Entity e, double padding){
         Location loc = e.getLocation().clone();
         return getFaceMidLocation(loc, e, padding);
+    }
+    
+    public static Vector getFaceMidVector(Block b, BlockFace face){
+        BoundingBox bounds = b.getBoundingBox();
+        Vector vec = new Vector();
+        switch(face){
+            case UP:
+                vec.setY(1);
+                break;
+            case DOWN:
+                vec.setY(-1);
+                break;
+            case EAST:
+                vec.setX(1);
+                break;
+            case WEST:
+                vec.setX(-1);
+                break;
+            case NORTH:
+                vec.setZ(-1);
+                break;
+            case SOUTH:
+                vec.setZ(1);
+                break;
+        }
+        return vec;
+    }
+    
+    public static Vector getFaceFullMidVector(Block b, BlockFace face){
+        Vector v = getFaceMidVector(b, face);
+        BoundingBox box = b.getBoundingBox();
+        switch(face){
+            case SOUTH:
+            case NORTH:
+                v.multiply(box.getMaxZ() - getBlockBoundingBoxMid(b).getZ());
+                break;
+            case WEST:
+            case EAST:
+                v.multiply(box.getMaxX() - getBlockBoundingBoxMid(b).getX());
+                break;
+            case DOWN:
+            case UP:
+                v.multiply(box.getMaxY() - getBlockBoundingBoxMid(b).getY());
+                break;
+        }
+        
+        return v;
+    }
+    
+    public static Location getBlockBoundingBoxMid(Block b){
+        Location loc = b.getLocation();
+        loc.setX(b.getBoundingBox().getCenter().getX());
+        loc.setY(b.getBoundingBox().getCenter().getY());
+        loc.setZ(b.getBoundingBox().getCenter().getZ());
+        
+        return loc;
     }
 
 
@@ -1091,6 +1148,30 @@ public class UsefulThings {
                 lore.add(Component.text(ChatColor.GOLD + " " + pages[0]+"/"+pages[1] + " pages"));
                 meta.lore(lore);
                 break;
+            case "crayon":
+            case "wood_crayon":
+                item.setType(Material.STICK);
+                meta.displayName(Component.translatable(ChatColor.WHITE + "Wood Crayon"));
+                meta.setLocalizedName("wood_crayon");
+                meta.setUnbreakable(true);
+                meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+                break;
+            case "time_skipper":
+                item.setType(Material.SHIELD);
+                meta.displayName(Component.translatable(ChatColor.WHITE + "Time Skipper"));
+                meta.setLocalizedName(itemname);
+                lore.add(Component.text(ChatColor.GRAY +""+ ChatColor.ITALIC +"Dancing in the Time Time !"));
+                meta.setUnbreakable(true);
+                meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+                meta.lore(lore);
+                break;
+            case "rope":
+                item.setType(Material.STRING);
+                meta.displayName(Component.translatable(ChatColor.WHITE + "Rope"));
+                meta.setLocalizedName(itemname);
+                meta.setUnbreakable(true);
+                meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+                break;
                 
                 
                 /*
@@ -1623,6 +1704,10 @@ public class UsefulThings {
     
     public static ItemStack plantToItem(Block b){
         return UsefulThings.plantToItem(b, b.getBiome());
+    }
+    
+    public static Vector vectorFromTo(Location loc1, Location loc2){
+        return new Vector(loc2.getX() - loc1.getX(), loc2.getY() - loc1.getY(), loc2.getZ() - loc1.getZ());
     }
 
 

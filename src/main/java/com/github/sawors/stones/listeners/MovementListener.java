@@ -21,7 +21,7 @@ public class MovementListener implements Listener {
           //based on checklist
         }
 
-        //event if literally change block
+        //event if literally changes block
         if(event.hasChangedBlock()){
 
 

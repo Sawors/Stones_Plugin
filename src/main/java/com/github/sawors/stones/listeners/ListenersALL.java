@@ -3,10 +3,11 @@ package com.github.sawors.stones.listeners;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
-import com.github.sawors.stones.SerializeInventory;
 import com.github.sawors.stones.Stones;
 import com.github.sawors.stones.UsefulThings.DataHolder;
+import com.github.sawors.stones.UsefulThings.SerializeInventory;
 import com.github.sawors.stones.UsefulThings.UsefulThings;
+import com.github.sawors.stones.features.MagicExecutor;
 import com.github.sawors.stones.recipes.Recipes;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
@@ -26,6 +27,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -1133,13 +1136,66 @@ public class ListenersALL implements Listener {
                     loc.clone().add(0,0,1).getBlock().getType().toString().contains("TRAPDOOR") || loc.clone().add(1,0,0).getBlock().getType().toString().contains("SIGN") ||
                     loc.clone().add(0,0,-1).getBlock().getType().toString().contains("TRAPDOOR") || loc.clone().add(1,0,0).getBlock().getType().toString().contains("SIGN")
             ){
-                loc.setYaw(p.getLocation().getYaw());
+                loc.setYaw(p.getLocation().getYaw()+180);
                 UsefulThings.sitEntity(p, loc);
             }
             
             
         }
     }
+    
+    @EventHandler
+    public void playerUsesCrayon(PlayerInteractEvent event){
+        if(event.getAction().isRightClick() && Objects.equals(event.getPlayer().getInventory().getItemInMainHand().getType(), Material.STICK) && event.getPlayer().getInventory().getItemInMainHand().hasItemMeta() && event.getPlayer().getInventory().getItemInMainHand().getItemMeta().getLocalizedName().contains("crayon")){
+            Block b = event.getClickedBlock();
+            Player p = event.getPlayer();
+            if(b != null){
+                if(b.getType().toString().contains("SIGN")){
+                    org.bukkit.block.Sign sign = ((org.bukkit.block.Sign) b.getState());
+                    p.openSign(sign);
+                }
+            }
+        }
+    }
+    
+    @EventHandler
+    public void playerExitSign(SignChangeEvent event){
+        Location loc = event.getBlock().getLocation().add(0.5,0.5,0.5);
+        loc.getWorld().playSound(loc, Sound.ENTITY_VILLAGER_WORK_CARTOGRAPHER, .5f, 1);
+    }
+    
+    @EventHandler(priority = EventPriority.LOW)
+    public void disableRespawnAnchors(PlayerInteractEvent event){
+        if(event.getClickedBlock() != null && event.getClickedBlock().getType().equals(Material.RESPAWN_ANCHOR) && event.getAction().isRightClick() && event.getPlayer().getInventory().getItemInMainHand().getType().equals(Material.GLOWSTONE)){
+            event.setCancelled(true);
+        }
+    }
+    
+    @EventHandler
+    public void timeSkipperUse(PlayerInteractEvent event){
+        if(event.getAction().isRightClick() && event.getPlayer().getInventory().getItemInMainHand().getType() == Material.SHIELD){
+            MagicExecutor.timeSkipper(event.getPlayer());
+        }
+    }
+    
+    @EventHandler
+    public void cancelPlayerPlaceBlock(BlockPlaceEvent event){
+        Player p = event.getPlayer();
+        ItemStack item = p.getInventory().getItemInMainHand();
+        
+        if(!item.getType().isAir() && item.hasItemMeta() && item.getItemMeta().hasLocalizedName()){
+            if(
+                    item.getItemMeta().getLocalizedName().equals("rope")
+            ){
+                event.setCancelled(true);
+            }
+        }
+    }
+    
+    
+    
+    
+    
     
 
 

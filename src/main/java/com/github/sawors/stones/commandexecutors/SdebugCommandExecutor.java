@@ -75,6 +75,14 @@ public class SdebugCommandExecutor implements CommandExecutor {
                         
                         
                     }
+                    break;
+                case "effects":
+                    if(sender instanceof Player){
+                        sender.sendMessage(Stones.effectmapGet(((Player) sender).getUniqueId()).toString());
+                        return true;
+                    } else {
+                        return false;
+                    }
             }
         }
 

@@ -1,4 +1,4 @@
-package com.github.sawors.stones;
+package com.github.sawors.stones.UsefulThings;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.util.io.BukkitObjectInputStream;

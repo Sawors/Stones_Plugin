@@ -3,16 +3,22 @@ package com.github.sawors.stones;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.github.sawors.stones.commandexecutors.*;
+import com.github.sawors.stones.features.StonesBodyParts;
 import com.github.sawors.stones.features.StonesBooks;
+import com.github.sawors.stones.features.StonesEffect;
+import com.github.sawors.stones.features.StonesWeapons;
 import com.github.sawors.stones.listeners.*;
 import com.github.sawors.stones.recipes.StonecutterRecipes;
 import org.bukkit.Bukkit;
+import org.bukkit.GameRule;
+import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -21,7 +27,6 @@ public final class Stones extends JavaPlugin {
 
     private static Stones instance;
     private static Team t;
-    private static ArrayList<UUID> removelist = new ArrayList<>();
 
     @Override
     public void onEnable() {
@@ -52,6 +57,8 @@ public final class Stones extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new StonecutterRecipes(), this);
         getServer().getPluginManager().registerEvents(new FishingListeners(), this);
         getServer().getPluginManager().registerEvents(new StonesBooks(), this);
+        getServer().getPluginManager().registerEvents(new StonesWeapons(), this);
+        getServer().getPluginManager().registerEvents(new StonesBodyParts(), this);
 
         //      LOAD COMMANDS
         getServer().getPluginCommand("mark-location").setExecutor(new TowerCommandExecutor());
@@ -74,7 +81,14 @@ public final class Stones extends JavaPlugin {
         ProtocolManager manager = ProtocolLibrary.getProtocolManager();
 
         //      RUNNABLES
-        BukkitTask task = new LoopCheckRunnable(this).runTaskTimer(this, 20, 20);
+        new BukkitRunnable(){
+            
+            @Override
+            public void run(){
+            
+            }
+            
+        }.runTaskTimer(this, 20, 80);
 
         //      SCOREBOARDS
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
@@ -82,6 +96,12 @@ public final class Stones extends JavaPlugin {
         if(t == null){
           t = scoreboard.registerNewTeam("hide_name");
           t.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
+        }
+        
+        
+        //      GAMERULES
+        for(World w : Bukkit.getWorlds()){
+            w.setGameRule(GameRule.NATURAL_REGENERATION, false);
         }
     }
 
@@ -100,20 +120,20 @@ public final class Stones extends JavaPlugin {
         return t;
     }
     
+    
+    
+    private static final ArrayList<UUID> removelist = new ArrayList<>();
     public static ArrayList<UUID> getRemoveList(){
         return removelist;
     }
-    
     public static void addToRemoveList(UUID id){
         removelist.add(id);
     }
-    
     public static void removeFromRemoveList(UUID id){
         if(!removelist.isEmpty()){
             removelist.removeIf(i -> i == id);
         }
     }
-    
     public static void triggerRemoveList(){
         if(!removelist.isEmpty()){
             for(UUID id : removelist){
@@ -124,8 +144,37 @@ public final class Stones extends JavaPlugin {
             removelist.clear();
         }
     }
-
-
-
-
+    
+    
+    private static final HashMap<UUID, ArrayList<StonesEffect>> effectmap = new HashMap<>();
+    
+    public static ArrayList<StonesEffect> effectmapGet(UUID id){
+        if(effectmap.containsKey(id)){
+            return effectmap.get(id);
+        }
+        return new ArrayList<>();
+    }
+    public static void effectmapSet(UUID id, ArrayList<StonesEffect> effects){
+        effectmap.put(id, effects);
+    }
+    public static void effectmapAdd(UUID id, StonesEffect effect){
+        if(effectmap.containsKey(id)){
+            effectmap.get(id).add(effect);
+        } else {
+            ArrayList<StonesEffect> l = new ArrayList<>();
+            l.add(effect);
+            effectmap.put(id, l);
+        }
+        
+    }
+    public static void effectmapRemove(UUID id, StonesEffect effect){
+        if(effectmap.containsKey(id)){
+            effectmap.get(id).remove(effect);
+        }
+        
+    }
+    
+    private void test(){
+    
+    }
 }
