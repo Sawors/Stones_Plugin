@@ -3,9 +3,10 @@ package com.github.sawors.stones;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.github.sawors.stones.commandexecutors.*;
+import com.github.sawors.stones.enums.StoneEffect;
 import com.github.sawors.stones.features.StonesBodyParts;
 import com.github.sawors.stones.features.StonesBooks;
-import com.github.sawors.stones.features.StonesEffect;
+import com.github.sawors.stones.features.StonesEffects;
 import com.github.sawors.stones.features.StonesWeapons;
 import com.github.sawors.stones.listeners.*;
 import com.github.sawors.stones.recipes.StonecutterRecipes;
@@ -103,6 +104,9 @@ public final class Stones extends JavaPlugin {
         for(World w : Bukkit.getWorlds()){
             w.setGameRule(GameRule.NATURAL_REGENERATION, false);
         }
+    
+    
+        StonesEffects.doEffects();
     }
 
     @Override
@@ -146,28 +150,32 @@ public final class Stones extends JavaPlugin {
     }
     
     
-    private static final HashMap<UUID, ArrayList<StonesEffect>> effectmap = new HashMap<>();
+    private static final HashMap<UUID, ArrayList<StoneEffect>> effectmap = new HashMap<>();
     
-    public static ArrayList<StonesEffect> effectmapGet(UUID id){
+    public static HashMap<UUID, ArrayList<StoneEffect>> getEffectmap(){
+        return effectmap;
+    }
+    
+    public static ArrayList<StoneEffect> effectmapGetEntry(UUID id){
         if(effectmap.containsKey(id)){
             return effectmap.get(id);
         }
         return new ArrayList<>();
     }
-    public static void effectmapSet(UUID id, ArrayList<StonesEffect> effects){
+    public static void effectmapSet(UUID id, ArrayList<StoneEffect> effects){
         effectmap.put(id, effects);
     }
-    public static void effectmapAdd(UUID id, StonesEffect effect){
+    public static void effectmapAdd(UUID id, StoneEffect effect){
         if(effectmap.containsKey(id)){
             effectmap.get(id).add(effect);
         } else {
-            ArrayList<StonesEffect> l = new ArrayList<>();
+            ArrayList<StoneEffect> l = new ArrayList<>();
             l.add(effect);
             effectmap.put(id, l);
         }
         
     }
-    public static void effectmapRemove(UUID id, StonesEffect effect){
+    public static void effectmapRemove(UUID id, StoneEffect effect){
         if(effectmap.containsKey(id)){
             effectmap.get(id).remove(effect);
         }

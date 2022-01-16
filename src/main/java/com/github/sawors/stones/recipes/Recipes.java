@@ -1,6 +1,8 @@
 package com.github.sawors.stones.recipes;
 
 import com.github.sawors.stones.UsefulThings.UsefulThings;
+import com.github.sawors.stones.enums.StoneItem;
+import com.github.sawors.stones.features.StonesItems;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
@@ -18,43 +20,43 @@ public class Recipes {
         }
         switch(type){
             case("dandelion"):
-                item = UsefulThings.getItem("dandelion_head");
+                item = StonesItems.get(StoneItem.DANDELION_HEAD);
                 break;
             case("poppy"):
-                item = UsefulThings.getItem("poppy_head");
+                item = StonesItems.get(StoneItem.POPPY_HEAD);
                 break;
             case("blue_orchid"):
-                item = UsefulThings.getItem("blue_orchid_buds");
+                item = StonesItems.get(StoneItem.BLUE_ORCHID_BUDS);
                 break;
             case("allium"):
-                item = UsefulThings.getItem("allium_head");
+                item = StonesItems.get(StoneItem.ALLIUM_HEAD);
                 break;
             case("azure_bluet"):
-                item = UsefulThings.getItem("azure_bluet_buds");
+                item = StonesItems.get(StoneItem.AZURE_BLUET_BUDS);
                 break;
             case("red_tulip"):
-                item = UsefulThings.getItem("red_tulip_petals");
+                item = StonesItems.get(StoneItem.RED_TULIP_PETALS);
                 break;
             case("orange_tulip"):
-                item = UsefulThings.getItem("orange_tulip_petals");
+                item = StonesItems.get(StoneItem.ORANGE_TULIP_PETALS);
                 break;
             case("white_tulip"):
-                item = UsefulThings.getItem("white_tulip_petals");
+                item = StonesItems.get(StoneItem.WHITE_TULIP_PETALS);
                 break;
             case("pink_tulip"):
-                item = UsefulThings.getItem("pink_tulip_petals");
+                item = StonesItems.get(StoneItem.PINK_TULIP_PETALS);
                 break;
             case("oxeye_daisy"):
-                item = UsefulThings.getItem("oxeye_daisy_head");
+                item = StonesItems.get(StoneItem.OXEYE_DAISY_HEAD);
                 break;
             case("cornflower"):
-                item = UsefulThings.getItem("cornflower_head");
+                item = StonesItems.get(StoneItem.CORNFLOWER_HEAD);
                 break;
             case("lily_of_the_valley"):
-                item = UsefulThings.getItem("lily_of_the_valley_buds");
+                item = StonesItems.get(StoneItem.LILY_OF_THE_VALLEY_BUDS);
                 break;
             case("grass"):
-                item = UsefulThings.getItem("thatch");
+                item = StonesItems.get(StoneItem.THATCH);
                 break;
         }
         return item;

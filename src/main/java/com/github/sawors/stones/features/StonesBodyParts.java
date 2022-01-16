@@ -1,7 +1,8 @@
 package com.github.sawors.stones.features;
 
 import com.github.sawors.stones.Stones;
-import com.github.sawors.stones.UsefulThings.UsefulThings;
+import com.github.sawors.stones.enums.StoneEffect;
+import com.github.sawors.stones.enums.StoneItem;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -28,9 +29,7 @@ public class StonesBodyParts implements Listener {
         Entity e = event.getRightClicked();
         Player p = event.getPlayer();
         if(e instanceof Animals && event.getHand().equals(EquipmentSlot.HAND) && !p.getInventory().getItemInMainHand().getType().isAir() && p.getInventory().getItemInMainHand().hasItemMeta() && p.getInventory().getItemInMainHand().getItemMeta().getLocalizedName().contains("rope")){
-            final int max = (int) (e.getBoundingBox().getVolume()*16.0);
-            
-            p.sendMessage(String.valueOf(max));
+            final int max = (int) (e.getBoundingBox().getVolume()*12.0);
             new BukkitRunnable(){
                 
                 private int timer = max;
@@ -69,12 +68,13 @@ public class StonesBodyParts implements Listener {
             Stones.getHideNameTeam().removeEntity(e);
             e.setSilent(false);
             ((Animals) e).removePotionEffect(PotionEffectType.SLOW);
-            p.getWorld().dropItemNaturally(e.getLocation(), UsefulThings.getItem("rope"));
+            p.getWorld().dropItemNaturally(e.getLocation(), StonesItems.get(StoneItem.ROPE));
             e.getWorld().playSound(e.getLocation(), Sound.ENTITY_SHEEP_SHEAR, .5f,1);
         }
-        if(e instanceof Animals && event.getHand().equals(EquipmentSlot.HAND) && p.isSneaking() && e.getCustomName() != null && e.getCustomName().contains("Dinnerbone") && e.isSilent() && ((Animals) e).hasPotionEffect(PotionEffectType.SLOW) && p.getPassengers().size() == 0){
+        if(e instanceof Animals && event.getHand().equals(EquipmentSlot.HAND) && p.isSneaking() && p.getInventory().getItemInMainHand().getType().isAir() && e.getCustomName() != null && e.getCustomName().contains("Dinnerbone") && e.isSilent() && ((Animals) e).hasPotionEffect(PotionEffectType.SLOW) && p.getPassengers().size() == 0){
             p.addPassenger(e);
-            Stones.effectmapAdd(event.getPlayer().getUniqueId(), StonesEffect.CARRY);
+            p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 100, 2, false ,false));
+            Stones.effectmapAdd(event.getPlayer().getUniqueId(), StoneEffect.CARRY);
         }
     }
     
@@ -83,7 +83,8 @@ public class StonesBodyParts implements Listener {
         if(event.getAction().isLeftClick() && event.getPlayer().isSneaking() && event.getClickedBlock() == null && event.getPlayer().getPassengers().size() >= 1 && event.getPlayer().getPassengers().get(event.getPlayer().getPassengers().size()-1) instanceof Animals){
             event.setCancelled(true);
             event.getPlayer().removePassenger(event.getPlayer().getPassengers().get(event.getPlayer().getPassengers().size()-1));
-            Stones.effectmapRemove(event.getPlayer().getUniqueId(), StonesEffect.CARRY);
+            event.getPlayer().removePotionEffect(PotionEffectType.SLOW);
+            Stones.effectmapRemove(event.getPlayer().getUniqueId(), StoneEffect.CARRY);
         }
     }
     @EventHandler

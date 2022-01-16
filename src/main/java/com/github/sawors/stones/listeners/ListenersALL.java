@@ -7,7 +7,9 @@ import com.github.sawors.stones.Stones;
 import com.github.sawors.stones.UsefulThings.DataHolder;
 import com.github.sawors.stones.UsefulThings.SerializeInventory;
 import com.github.sawors.stones.UsefulThings.UsefulThings;
+import com.github.sawors.stones.enums.StoneItem;
 import com.github.sawors.stones.features.MagicExecutor;
+import com.github.sawors.stones.features.StonesItems;
 import com.github.sawors.stones.recipes.Recipes;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
@@ -36,7 +38,6 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -48,7 +49,6 @@ import org.bukkit.util.Vector;
 import org.spigotmc.event.entity.EntityDismountEvent;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Objects;
 import java.util.logging.Level;
 
@@ -319,44 +319,11 @@ public class ListenersALL implements Listener {
                             }
                         case "blindfold":
                             if(UsefulThings.isBehind(player, rightclicked, 45) && rightclicked.getInventory().getHelmet() == null){
-                                ItemStack itemtemp = new ItemStack(Material.PAPER);
-                                ItemMeta meta = itemtemp.getItemMeta();
-                                ArrayList<Component> lore = new ArrayList<>();
-                                meta.displayName(Component.text(ChatColor.GRAY + "Blindfold"));
-                                meta.setLocalizedName("blindfold");
-                                lore.add(Component.text(""));
-                                lore.add(Component.text(ChatColor.GREEN + "Right-click at someone or wear it to blind the wearer"));
-                                meta.lore(lore);
-                                meta.setUnbreakable(true);
-                                meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-                                meta.getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, "hat"); // if item is a wearable. Possible wearables : head, chest, legs, feet, ring
-                                itemtemp.setItemMeta(meta);
-                                rightclicked.getInventory().setHelmet(itemtemp);
+                                rightclicked.getInventory().setHelmet(StonesItems.get(StoneItem.BLINDFOLD));
+                                
                             }
                     }
                 }
-            } else if(event.getRightClicked() instanceof Bee && player.getInventory().getItemInMainHand().getType() == Material.GLASS_BOTTLE && event.getRightClicked().getPersistentDataContainer().get(DataHolder.getSpecialEntity(), PersistentDataType.STRING) == null){
-                Bee bee = (Bee) event.getRightClicked();
-                player.getInventory().getItemInMainHand().setAmount(player.getInventory().getItemInMainHand().getAmount()-1);
-                player.playSound(player.getLocation(), Sound.ITEM_BOTTLE_FILL, 1 ,1.25f);
-                player.getInventory().addItem(UsefulThings.getItem("bee_bottle"));
-
-                bee.remove();
-
-            } else if(event.getRightClicked() instanceof Bat && player.getInventory().getItemInMainHand().getType() == Material.GLASS_BOTTLE && event.getRightClicked().getPersistentDataContainer().get(DataHolder.getSpecialEntity(), PersistentDataType.STRING) == null){
-                Bat bat = (Bat) event.getRightClicked();
-                player.getInventory().getItemInMainHand().setAmount(player.getInventory().getItemInMainHand().getAmount()-1);
-                player.playSound(player.getLocation(), Sound.ITEM_BOTTLE_FILL, 1 ,1.25f);
-                player.getInventory().addItem(UsefulThings.getItem("bat_bottle"));
-
-                bat.remove();
-            } else if(event.getRightClicked() instanceof Bat && player.getInventory().getItemInMainHand().getType() == Material.GLASS_BOTTLE && Objects.equals(event.getRightClicked().getPersistentDataContainer().get(DataHolder.getSpecialEntity(), PersistentDataType.STRING), "firefly")){
-                Bat bat = (Bat) event.getRightClicked();
-                player.getInventory().getItemInMainHand().setAmount(player.getInventory().getItemInMainHand().getAmount()-1);
-                player.playSound(player.getLocation(), Sound.ITEM_BOTTLE_FILL, 1 ,1.25f);
-                player.getInventory().addItem(UsefulThings.getItem("firefly_bottle"));
-
-                bat.remove();
             }
         }
 
@@ -1098,7 +1065,7 @@ public class ListenersALL implements Listener {
                     event.setCancelled(true);
                     b.setType(Material.GRASS);
                     b.getWorld().spawnParticle(Particle.BLOCK_DUST, mid, 8,0.2,0.2,0.2, 0, b.getBlockData());
-                    b.getWorld().dropItem(mid, UsefulThings.getItem("thatch"));
+                    b.getWorld().dropItem(mid, StonesItems.get(StoneItem.THATCH));
                     b.setType(Material.AIR);
                     
                     
