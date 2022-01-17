@@ -43,8 +43,9 @@ public final class Stones extends JavaPlugin {
         saveResource("documentation/books/template/PAGE_TEMPLATE.xcf", true);
         saveResource("documentation/books/template/PAGENUMBER.json", true);
         saveResource("documentation/books/template/PAGENUMBER.properties", true);
-    
         saveResource("documentation/music/how-to-create-music.txt", true);
+    
+        
         //      REGISTER EVENTS
         getServer().getPluginManager().registerEvents(new ListenersALL(), this);
         getServer().getPluginManager().registerEvents(new OnPlayerConnect(), this);

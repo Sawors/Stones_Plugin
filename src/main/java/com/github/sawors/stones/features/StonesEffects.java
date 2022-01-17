@@ -29,8 +29,9 @@ public class StonesEffects implements Listener {
                             for(StoneEffect effect : effectlist){
                                 switch (effect){
                                     case CARRY:
-                                        p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 80, 2, false, false));
+                                        p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 80, (int) Math.sqrt(6*p.getPassengers().get(0).getBoundingBox().getVolume()), false, false));
                                 }
+                                
                             }
                         }
                     }

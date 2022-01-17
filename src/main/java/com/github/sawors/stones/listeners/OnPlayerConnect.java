@@ -1,6 +1,7 @@
 package com.github.sawors.stones.listeners;
 
 import com.github.sawors.stones.Stones;
+import com.github.sawors.stones.UsefulThings.DataHolder;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,6 +27,10 @@ public class OnPlayerConnect implements Listener {
             p.setResourcePack("https://github.com/Sawors/Stones_ResourcePack/raw/main/rp.zip");
         }
         
+        
+        DataHolder.createDataForPlayer(p.getUniqueId());
+        
+        
         if(!Stones.getHideNameTeam().getEntries().contains(p.getName())){
             Stones.getHideNameTeam().addEntry(p.getName());
         }
@@ -33,6 +38,7 @@ public class OnPlayerConnect implements Listener {
     
     @EventHandler
     public void onLeave(PlayerQuitEvent event){
+        DataHolder.saveDataForPlayer(event.getPlayer().getUniqueId());
         event.quitMessage(null);
     }
 }
