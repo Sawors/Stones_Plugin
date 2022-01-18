@@ -29,8 +29,8 @@ public class OnPlayerConnect implements Listener {
         
         
         DataHolder.createDataForPlayer(p.getUniqueId());
-        
-        
+    
+    
         if(!Stones.getHideNameTeam().getEntries().contains(p.getName())){
             Stones.getHideNameTeam().addEntry(p.getName());
         }
@@ -38,7 +38,6 @@ public class OnPlayerConnect implements Listener {
     
     @EventHandler
     public void onLeave(PlayerQuitEvent event){
-        DataHolder.saveDataForPlayer(event.getPlayer().getUniqueId());
         event.quitMessage(null);
     }
 }

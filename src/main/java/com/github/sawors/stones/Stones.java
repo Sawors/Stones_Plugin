@@ -2,8 +2,8 @@ package com.github.sawors.stones;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
+import com.github.sawors.stones.UsefulThings.DataHolder;
 import com.github.sawors.stones.commandexecutors.*;
-import com.github.sawors.stones.enums.StoneEffect;
 import com.github.sawors.stones.features.StonesBodyParts;
 import com.github.sawors.stones.features.StonesBooks;
 import com.github.sawors.stones.features.StonesEffects;
@@ -14,14 +14,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Objects;
-import java.util.UUID;
 
 
 public final class Stones extends JavaPlugin {
@@ -83,14 +77,6 @@ public final class Stones extends JavaPlugin {
         ProtocolManager manager = ProtocolLibrary.getProtocolManager();
 
         //      RUNNABLES
-        new BukkitRunnable(){
-            
-            @Override
-            public void run(){
-            
-            }
-            
-        }.runTaskTimer(this, 20, 80);
 
         //      SCOREBOARDS
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
@@ -113,7 +99,7 @@ public final class Stones extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        triggerRemoveList();
+        DataHolder.triggerRemoveList();
         
     }
 
@@ -123,67 +109,5 @@ public final class Stones extends JavaPlugin {
     
     public static Team getHideNameTeam(){
         return t;
-    }
-    
-    
-    
-    private static final ArrayList<UUID> removelist = new ArrayList<>();
-    public static ArrayList<UUID> getRemoveList(){
-        return removelist;
-    }
-    public static void addToRemoveList(UUID id){
-        removelist.add(id);
-    }
-    public static void removeFromRemoveList(UUID id){
-        if(!removelist.isEmpty()){
-            removelist.removeIf(i -> i == id);
-        }
-    }
-    public static void triggerRemoveList(){
-        if(!removelist.isEmpty()){
-            for(UUID id : removelist){
-                if(Bukkit.getEntity(id) != null){
-                    Objects.requireNonNull(Bukkit.getEntity(id)).remove();
-                }
-            }
-            removelist.clear();
-        }
-    }
-    
-    
-    private static final HashMap<UUID, ArrayList<StoneEffect>> effectmap = new HashMap<>();
-    
-    public static HashMap<UUID, ArrayList<StoneEffect>> getEffectmap(){
-        return effectmap;
-    }
-    
-    public static ArrayList<StoneEffect> effectmapGetEntry(UUID id){
-        if(effectmap.containsKey(id)){
-            return effectmap.get(id);
-        }
-        return new ArrayList<>();
-    }
-    public static void effectmapSet(UUID id, ArrayList<StoneEffect> effects){
-        effectmap.put(id, effects);
-    }
-    public static void effectmapAdd(UUID id, StoneEffect effect){
-        if(effectmap.containsKey(id)){
-            effectmap.get(id).add(effect);
-        } else {
-            ArrayList<StoneEffect> l = new ArrayList<>();
-            l.add(effect);
-            effectmap.put(id, l);
-        }
-        
-    }
-    public static void effectmapRemove(UUID id, StoneEffect effect){
-        if(effectmap.containsKey(id)){
-            effectmap.get(id).remove(effect);
-        }
-        
-    }
-    
-    private void test(){
-    
     }
 }

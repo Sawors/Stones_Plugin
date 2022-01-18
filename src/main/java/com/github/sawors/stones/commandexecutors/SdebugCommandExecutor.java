@@ -1,6 +1,6 @@
 package com.github.sawors.stones.commandexecutors;
 
-import com.github.sawors.stones.Stones;
+import com.github.sawors.stones.UsefulThings.DataHolder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -30,8 +30,8 @@ public class SdebugCommandExecutor implements CommandExecutor {
             String arg1 = args[0];
             switch(arg1){
                 case "purge":
-                    int size = Stones.getRemoveList().size();
-                    Stones.triggerRemoveList();
+                    int size = DataHolder.getRemoveList().size();
+                    DataHolder.triggerRemoveList();
                     if(size > 1){
                         sender.sendMessage(ChatColor.GREEN + "Successfully removed " + size + " entities");
                     } else if(size == 1){
@@ -78,7 +78,7 @@ public class SdebugCommandExecutor implements CommandExecutor {
                     break;
                 case "effects":
                     if(sender instanceof Player){
-                        sender.sendMessage(Stones.effectmapGetEntry(((Player) sender).getUniqueId()).toString());
+                        sender.sendMessage(DataHolder.effectmapGetEntry(((Player) sender).getUniqueId()).toString());
                         return true;
                     } else {
                         return false;

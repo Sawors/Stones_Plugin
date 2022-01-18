@@ -679,7 +679,7 @@ public class UsefulThings {
         arm.setCustomName("_hide");
         arm.setCustomNameVisible(false);
         if(isonlyvisual){
-            Stones.addToRemoveList(arm.getUniqueId());
+            DataHolder.addToRemoveList(arm.getUniqueId());
             arm.setCustomName("_display");
         }
 
