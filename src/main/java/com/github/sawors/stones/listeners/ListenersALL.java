@@ -27,10 +27,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockBurnEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.block.*;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -952,7 +949,7 @@ public class ListenersALL implements Listener {
             
             if(UsefulThings.isShortPlant(b) && event.getAction().isLeftClick()){
                 for(Entity e : b.getLocation().add(0.5,1,0.5).getNearbyEntities(1,1,1)){
-                    if(e.getType().equals(EntityType.ARMOR_STAND)){
+                    if(e.getType().equals(EntityType.ARMOR_STAND) && e.getCustomName() != null && (e.getCustomName().toLowerCase().contains("shovel") || e.getCustomName().toLowerCase().contains("sickle"))){
                         event.setCancelled(true);
                         return;
                     }
@@ -974,6 +971,7 @@ public class ListenersALL implements Listener {
                 p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, (int) ((globaltimer-1)/0.2), 2, false, false));
                 ArmorStand stand2 = UsefulThings.createDisplay(mid.add((p.getLocation().getX() - b.getBoundingBox().getCenter().getX())/10,-2/16f,(p.getLocation().getZ()-b.getBoundingBox().getCenter().getZ())/10), item.clone(), true);
                 stand2.setSmall(true);
+                stand2.setCustomName("_shovel");
                 stand2.setHeadPose(new EulerAngle(0, Math.toRadians(p.getLocation().getYaw()+180), 0));
                 new BukkitRunnable(){
                     byte timer = (byte) ((globaltimer-1)/2);
@@ -1028,6 +1026,7 @@ public class ListenersALL implements Listener {
     
                     final ArmorStand stand = UsefulThings.createDisplay(mid.add((p.getLocation().getX() - b.getBoundingBox().getCenter().getX())/10,0,(p.getLocation().getZ()-b.getBoundingBox().getCenter().getZ())/10), item.clone(), true);
                     stand.setSmall(true);
+                    stand.setCustomName("_sickle");
                     Location standloc = stand.getLocation();
                     stand.setHeadPose(new EulerAngle(0, Math.toRadians(p.getLocation().getYaw()+225), 0));
     
@@ -1159,12 +1158,49 @@ public class ListenersALL implements Listener {
         }
     }
     
+    @EventHandler
+    public void onFireEnd(BlockFadeEvent event){
     
-    
-    
-    
-    
-
-
-
     }
+    
+    @EventHandler
+    public void setCompassNorth(PlayerChangedWorldEvent event){
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                Player p = event.getPlayer();
+                p.setCompassTarget(new Location(p.getWorld(), 0,0,-1000000));
+                p.updateInventory();
+            }
+        }.runTask(Stones.getPlugin());
+    
+    }
+    @EventHandler
+    public void setCompassNorth(PlayerJoinEvent event){
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                Player p = event.getPlayer();
+                p.setCompassTarget(new Location(p.getWorld(), 0,0,-1000000));
+                p.updateInventory();
+            }
+        }.runTask(Stones.getPlugin());
+    }
+    
+    @EventHandler
+    public void sprintBuff(PlayerToggleSprintEvent event){
+        if(event.isSprinting()){
+            event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100000,1,false,false));
+        } else {
+            if(event.getPlayer().hasPotionEffect(PotionEffectType.SPEED)){
+                event.getPlayer().removePotionEffect(PotionEffectType.SPEED);
+            }
+        }
+    }
+    
+    
+    
+    
+    
+    
+}

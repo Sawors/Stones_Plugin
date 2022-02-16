@@ -49,5 +49,9 @@ public enum StoneItem {
     BOOK_TEST,
     WOOD_CRAYON,
     TIME_SKIPPER,
-    ROPE
+    ROPE,
+    BOOK_IR,
+    BOOK_PLAYBOY,
+    SEXTANT,
+    CANNON_BALL
 }

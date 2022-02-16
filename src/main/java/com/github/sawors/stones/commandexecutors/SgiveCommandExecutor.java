@@ -1,5 +1,6 @@
 package com.github.sawors.stones.commandexecutors;
 
+import com.github.sawors.stones.enums.StoneItem;
 import com.github.sawors.stones.features.StonesItems;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
@@ -21,12 +22,25 @@ public class SgiveCommandExecutor implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if(sender instanceof Player && args.length >= 1 && ((Player) sender).getPlayer() != null){
             Player p = ((Player) sender).getPlayer();
-
-            ItemStack item = StonesItems.get(args[0]);
-            if(p != null){
-                p.getInventory().addItem(item);
+            try{
+                StoneItem itemname = StoneItem.valueOf(args[0].toUpperCase());
+                ItemStack item = StonesItems.get(itemname);
+                if(p != null){
+                    p.getInventory().addItem(item);
+                }
+                return true;
+            } catch (IllegalArgumentException exc){
+                if(p != null){
+                    p.sendMessage(ChatColor.RED + "this item does not exist in the available items");
+                }
+                return false;
             }
-            return true;
+            
+            
+            
+            
+            
+            
 
         } else if (sender instanceof Player){
             sender.sendMessage(ChatColor.RED + "- you must specify an item ! (or your 2nd argument is invalid)");

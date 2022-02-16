@@ -7,10 +7,13 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.Lectern;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -19,42 +22,66 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.util.EulerAngle;
+import org.bukkit.util.Vector;
 
 import java.util.List;
+import java.util.Objects;
 
 public class StonesBooks implements Listener {
     
     @EventHandler
     public void playerUseBook(PlayerInteractEvent event) {
-        if (event.getAction().isRightClick() && event.getClickedBlock() != null && event.getClickedBlock().isSolid() && event.getBlockFace().equals(BlockFace.UP) && (event.getPlayer().isSneaking() || event.getPlayer().isInsideVehicle()) && event.getPlayer().getInventory().getItemInMainHand().getType().toString().contains("BOOK")) {
+        //PLACE BOOK
+        if (event.getAction().isRightClick() && (event.getPlayer().isSneaking() || event.getPlayer().isInsideVehicle()) && event.getClickedBlock() != null && event.getPlayer().getInventory().getItemInMainHand().getType().toString().contains("BOOK") && (event.getClickedBlock().getType().equals(Material.LECTERN) || event.getBlockFace().equals(BlockFace.UP))) {
             event.setCancelled(true);
+            event.setUseInteractedBlock(Event.Result.DENY);
+            event.setUseItemInHand(Event.Result.DENY);
             Player p = event.getPlayer();
             ItemStack item = p.getInventory().getItemInMainHand().clone();
             item.setAmount(1);
-            Location blockloc = event.getInteractionPoint().add(0,1,0);
+            Location blockloc = event.getInteractionPoint().add(0,0.75,0);
             blockloc.setY(blockloc.getY()+(Math.random()/100));
-            /*Location blockloc = event.getClickedBlock().getLocation().add(0.5, 0, 0.5);
-            blockloc.setY(event.getClickedBlock().getBoundingBox().getMaxY() + 1);*/
+            Block b = event.getClickedBlock();
             
-            if(!(item.hasItemMeta() && item.getItemMeta().hasLocalizedName())){
-                blockloc.setYaw(p.getLocation().getYaw()-90);
-            } else {
-                blockloc.setYaw(p.getLocation().getYaw());
+            if(b.isSolid() && event.getBlockFace().equals(BlockFace.UP) && !b.getType().equals(Material.LECTERN)){
+                if(!(item.hasItemMeta() && item.getItemMeta().hasLocalizedName())){
+                    blockloc.setYaw(p.getLocation().getYaw()-90);
+                } else {
+                    blockloc.setYaw(p.getLocation().getYaw());
+                }
+            } else if (b.getType().equals(Material.LECTERN)){
+                org.bukkit.block.data.type.Lectern lectern = (org.bukkit.block.data.type.Lectern) b.getBlockData();
+                if(lectern.hasBook()){
+                    b.getWorld().dropItemNaturally(b.getLocation().add(0.5,1,0.5), Objects.requireNonNull(((Lectern) b.getState()).getInventory().getItem(0)));
+                    ((Lectern) b.getState()).getInventory().setItem(0, new ItemStack(Material.AIR));
+                }
+                blockloc = b.getLocation().add(0.5,1.5+(7/32f),0.5).add(lectern.getFacing().getDirection().multiply(0.28));
+                if(lectern.getFacing().equals(BlockFace.WEST)){
+                    blockloc.setYaw(-90);
+                } else {
+                    blockloc.setYaw((float) Math.toDegrees(lectern.getFacing().getDirection().angle(new Vector(0,0,-1))));
+                }
+                
             }
-            
+    
             ArmorStand stand = UsefulThings.createDisplay(blockloc, item, false);
+            if(b.getType().equals(Material.LECTERN)){
+                stand.setHeadPose(new EulerAngle(Math.toRadians(-22.5),0,0));
+            }
             stand.setSmall(true);
             stand.setCustomName("_book");
             p.getInventory().getItemInMainHand().setAmount(p.getInventory().getItemInMainHand().getAmount() - 1);
             
             
+        //OPEN/CLOSE BOOK on Player
         } else if (event.getAction().isRightClick() && (event.getClickedBlock() == null || !event.getBlockFace().equals(BlockFace.UP)) && event.getPlayer().isSneaking() && event.getPlayer().getInventory().getItemInMainHand().getType().equals(Material.BOOK)) {
             event.setCancelled(true);
             Player p = event.getPlayer();
             ItemStack item = p.getInventory().getItemInMainHand();
             switchOpenClose(item, p);
             
-            
+        //TURN PAGE
         } else if(event.getPlayer().getInventory().getItemInMainHand().getType().equals(Material.BOOK) && event.getPlayer().getInventory().getItemInMainHand().hasItemMeta() && event.getPlayer().getInventory().getItemInMainHand().getItemMeta().getPersistentDataContainer().get(DataHolder.getStonesItemDataKey(), PersistentDataType.INTEGER_ARRAY) != null){
             event.setCancelled(true);
             ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
@@ -85,11 +112,20 @@ public class StonesBooks implements Listener {
             if((event.getPlayer().isSneaking() || event.getPlayer().isInsideVehicle())){
                 event.getPlayer().getInventory().setItemInMainHand(((ArmorStand) event.getRightClicked()).getEquipment().getHelmet());
                 event.getRightClicked().remove();
-            } else if(((ArmorStand) event.getRightClicked()).getEquipment().getHelmet().getType().equals(Material.BOOK)){
-                ItemStack item = ((ArmorStand) event.getRightClicked()).getEquipment().getHelmet().clone();
-                assert item != null;
-                switchOpenClose(item, event.getRightClicked());
-                ((ArmorStand) event.getRightClicked()).getEquipment().setHelmet(item);
+            } else if(Objects.requireNonNull(((ArmorStand) event.getRightClicked()).getEquipment().getHelmet()).getType().equals(Material.BOOK)){
+                ArmorStand e = (ArmorStand) event.getRightClicked();
+                if(e.getLocation().subtract(0,0.5,0).getBlock().getType().equals(Material.LECTERN)){
+                    ItemStack item = Objects.requireNonNull(e.getEquipment().getHelmet()).clone();
+                    if(Objects.requireNonNull(item.getItemMeta().getPersistentDataContainer().get(DataHolder.getStonesItemDataKey(), PersistentDataType.INTEGER_ARRAY))[0] == Objects.requireNonNull(item.getItemMeta().getPersistentDataContainer().get(DataHolder.getStonesItemDataKey(), PersistentDataType.INTEGER_ARRAY))[1]){
+                        switchOpenClose(item, e);
+                    } else {
+                        addPage(item);
+                        e.getWorld().playSound(e.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, .5f, 1);
+                        event.getPlayer().sendActionBar(item.getItemMeta().lore().get(2));
+                    }
+        
+                    e.getEquipment().setHelmet(item);
+                }
             }
             
         }
@@ -101,14 +137,32 @@ public class StonesBooks implements Listener {
         Entity p = event.getDamager();
         if(e instanceof ArmorStand && ((ArmorStand) e).getEquipment().getHelmet() != null && ((ArmorStand) e).getEquipment().getHelmet().getType().toString().contains("BOOK") && e.getCustomName().contains("_book") && p instanceof Player){
             
-            Location rot = e.getLocation();
-            if(((Player) p).isSneaking()){
-                rot.setYaw(rot.getYaw()-10);
+            if(e.getLocation().subtract(0,0.5,0).getBlock().getType().equals(Material.LECTERN)){
+                ItemStack item = ((ArmorStand) e).getEquipment().getHelmet().clone();
+                if(!((Player) p).isSneaking()){
+                    if(Objects.requireNonNull(item.getItemMeta().getPersistentDataContainer().get(DataHolder.getStonesItemDataKey(), PersistentDataType.INTEGER_ARRAY))[0] == 1){
+                        switchOpenClose(item, e);
+                    } else {
+                        backPage(item);
+                        e.getWorld().playSound(e.getLocation(), Sound.ITEM_BOOK_PAGE_TURN, .5f, 1);
+                        p.sendActionBar(item.getItemMeta().lore().get(2));
+                    }
+                } else {
+                    switchOpenClose(item, e);
+                }
+                
+                ((ArmorStand) e).getEquipment().setHelmet(item);
             } else {
-                rot.setYaw(rot.getYaw()+10);
+                Location rot = e.getLocation();
+                if(((Player) p).isSneaking()){
+                    rot.setYaw(rot.getYaw()-10);
+                } else {
+                    rot.setYaw(rot.getYaw()+10);
+                }
+    
+                e.teleport(rot);
             }
             
-            e.teleport(rot);
         }
     }
     
@@ -145,13 +199,17 @@ public class StonesBooks implements Listener {
     
     public void addPage(ItemStack book) {
         if (book.getType().equals(Material.BOOK) && book.hasItemMeta() && book.getItemMeta().getPersistentDataContainer().get(DataHolder.getStonesItemDataKey(), PersistentDataType.INTEGER_ARRAY) != null) {
-            changePage(book, book.getItemMeta().getPersistentDataContainer().get(DataHolder.getStonesItemDataKey(), PersistentDataType.INTEGER_ARRAY)[0]+1);
+            if(Objects.requireNonNull(book.getItemMeta().getPersistentDataContainer().get(DataHolder.getStonesItemDataKey(), PersistentDataType.INTEGER_ARRAY))[0] < Objects.requireNonNull(book.getItemMeta().getPersistentDataContainer().get(DataHolder.getStonesItemDataKey(), PersistentDataType.INTEGER_ARRAY))[1]){
+                changePage(book, Objects.requireNonNull(book.getItemMeta().getPersistentDataContainer().get(DataHolder.getStonesItemDataKey(), PersistentDataType.INTEGER_ARRAY))[0]+1);
+            }
         }
     }
     
     public void backPage(ItemStack book) {
         if (book.getType().equals(Material.BOOK) && book.hasItemMeta() && book.getItemMeta().getPersistentDataContainer().get(DataHolder.getStonesItemDataKey(), PersistentDataType.INTEGER_ARRAY) != null) {
-            changePage(book, book.getItemMeta().getPersistentDataContainer().get(DataHolder.getStonesItemDataKey(), PersistentDataType.INTEGER_ARRAY)[0]-1);
+            if(Objects.requireNonNull(book.getItemMeta().getPersistentDataContainer().get(DataHolder.getStonesItemDataKey(), PersistentDataType.INTEGER_ARRAY))[0] > 1){
+                changePage(book, Objects.requireNonNull(book.getItemMeta().getPersistentDataContainer().get(DataHolder.getStonesItemDataKey(), PersistentDataType.INTEGER_ARRAY))[0]-1);
+            }
         }
     }
     

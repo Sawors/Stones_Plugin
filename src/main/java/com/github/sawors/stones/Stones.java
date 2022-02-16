@@ -4,10 +4,7 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.github.sawors.stones.UsefulThings.DataHolder;
 import com.github.sawors.stones.commandexecutors.*;
-import com.github.sawors.stones.features.StonesBodyParts;
-import com.github.sawors.stones.features.StonesBooks;
-import com.github.sawors.stones.features.StonesEffects;
-import com.github.sawors.stones.features.StonesWeapons;
+import com.github.sawors.stones.features.*;
 import com.github.sawors.stones.listeners.*;
 import com.github.sawors.stones.recipes.StonecutterRecipes;
 import org.bukkit.Bukkit;
@@ -55,6 +52,7 @@ public final class Stones extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new StonesBooks(), this);
         getServer().getPluginManager().registerEvents(new StonesWeapons(), this);
         getServer().getPluginManager().registerEvents(new StonesBodyParts(), this);
+        getServer().getPluginManager().registerEvents(new StonesSiege(), this);
 
         //      LOAD COMMANDS
         getServer().getPluginCommand("mark-location").setExecutor(new TowerCommandExecutor());
@@ -84,6 +82,7 @@ public final class Stones extends JavaPlugin {
         if(t == null){
           t = scoreboard.registerNewTeam("hide_name");
           t.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
+          t.setCanSeeFriendlyInvisibles(false);
         }
         
         
