@@ -1,8 +1,7 @@
-package com.github.sawors.stones.features;
+package com.github.sawors.stones.items;
 
-import com.github.sawors.stones.UsefulThings.DataHolder;
 import com.github.sawors.stones.UsefulThings.UsefulThings;
-import com.github.sawors.stones.enums.StoneItem;
+import com.github.sawors.stones.database.DataHolder;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

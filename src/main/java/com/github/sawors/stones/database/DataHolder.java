@@ -1,8 +1,7 @@
-package com.github.sawors.stones.UsefulThings;
+package com.github.sawors.stones.database;
 
 import com.github.sawors.stones.Stones;
-import com.github.sawors.stones.enums.StoneEffect;
-import com.github.sawors.stones.enums.StonePlayerData;
+import com.github.sawors.stones.effects.StoneEffect;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.YamlConfiguration;

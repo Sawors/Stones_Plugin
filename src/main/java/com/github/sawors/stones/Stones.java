@@ -2,11 +2,21 @@ package com.github.sawors.stones;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
-import com.github.sawors.stones.UsefulThings.DataHolder;
+import com.github.sawors.stones.books.StonesBooks;
+import com.github.sawors.stones.combat.AttackListeners;
 import com.github.sawors.stones.commandexecutors.*;
-import com.github.sawors.stones.features.*;
+import com.github.sawors.stones.database.DataHolder;
+import com.github.sawors.stones.death.DeathManager;
+import com.github.sawors.stones.effects.StonesEffects;
+import com.github.sawors.stones.items.HandcuffCommandExecutor;
+import com.github.sawors.stones.items.IgniteCommandExecutor;
+import com.github.sawors.stones.items.StonesWeapons;
 import com.github.sawors.stones.listeners.*;
+import com.github.sawors.stones.magic.StonesBodyParts;
+import com.github.sawors.stones.mobs.SpecialEntityListeners;
+import com.github.sawors.stones.recipes.AnvilListeners;
 import com.github.sawors.stones.recipes.StonecutterRecipes;
+import com.github.sawors.stones.siege.StonesSiege;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.World;
@@ -14,11 +24,17 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
+import java.sql.Time;
+import java.time.LocalTime;
+import java.util.UUID;
+import java.util.logging.Level;
+
 
 public final class Stones extends JavaPlugin {
 
     private static Stones instance;
     private static Team t;
+    public static ProtocolManager manager;
 
     @Override
     public void onEnable() {
@@ -46,7 +62,6 @@ public final class Stones extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new DeathManager(), this);
         getServer().getPluginManager().registerEvents(new ForbiddenMoveItemListener(), this);
         getServer().getPluginManager().registerEvents(new SpecialEntityListeners(), this);
-        getServer().getPluginManager().registerEvents(new BackpackManager(), this);
         getServer().getPluginManager().registerEvents(new StonecutterRecipes(), this);
         getServer().getPluginManager().registerEvents(new FishingListeners(), this);
         getServer().getPluginManager().registerEvents(new StonesBooks(), this);
@@ -55,8 +70,6 @@ public final class Stones extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new StonesSiege(), this);
 
         //      LOAD COMMANDS
-        getServer().getPluginCommand("mark-location").setExecutor(new TowerCommandExecutor());
-        getServer().getPluginCommand("worldspawn-mobs").setExecutor(new WorldspawnCommandExecutor());
         getServer().getPluginCommand("vvoid").setExecutor(new VvoidCommand());
         getServer().getPluginCommand("sgive").setExecutor(new SgiveCommandExecutor());
         getServer().getPluginCommand("getname").setExecutor(new NameCommandExecutor());
@@ -72,7 +85,7 @@ public final class Stones extends JavaPlugin {
         getServer().getPluginCommand("playmusic").setExecutor(new PlayMusicCommandExecutor());
 
         //      INITIATE PROTOCOLLIB
-        ProtocolManager manager = ProtocolLibrary.getProtocolManager();
+        manager = ProtocolLibrary.getProtocolManager();
 
         //      RUNNABLES
 
@@ -108,5 +121,17 @@ public final class Stones extends JavaPlugin {
     
     public static Team getHideNameTeam(){
         return t;
+    }
+    
+    public static ProtocolManager getProtocolManager(){
+        return manager;
+    }
+    
+    public static void adminLog(String msg){
+        try{
+            Bukkit.getPlayer(UUID.fromString("f96b1fab-2391-4c41-b6aa-56e6e91950fd")).sendMessage("["+ Time.valueOf(LocalTime.now()) + "] "+msg);
+        } catch (NullPointerException exception){
+            Bukkit.getLogger().log(Level.INFO, msg);
+        }
     }
 }

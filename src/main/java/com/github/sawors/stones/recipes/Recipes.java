@@ -1,8 +1,8 @@
 package com.github.sawors.stones.recipes;
 
 import com.github.sawors.stones.UsefulThings.UsefulThings;
-import com.github.sawors.stones.enums.StoneItem;
-import com.github.sawors.stones.features.StonesItems;
+import com.github.sawors.stones.items.StoneItem;
+import com.github.sawors.stones.items.StonesItems;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 

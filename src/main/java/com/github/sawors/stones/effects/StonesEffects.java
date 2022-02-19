@@ -1,12 +1,18 @@
-package com.github.sawors.stones.features;
+package com.github.sawors.stones.effects;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.events.ListenerPriority;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.events.PacketEvent;
 import com.github.sawors.stones.Stones;
-import com.github.sawors.stones.UsefulThings.DataHolder;
-import com.github.sawors.stones.enums.StoneEffect;
+import com.github.sawors.stones.database.DataHolder;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -17,6 +23,40 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class StonesEffects implements Listener {
+    
+    @EventHandler
+    public void onEnable(PluginEnableEvent event){
+        PacketAdapter muteeffect = new PacketAdapter(Stones.getPlugin(), ListenerPriority.NORMAL,
+                PacketType.Play.Server.CHAT) {
+            @Override
+            public void onPacketSending(PacketEvent event) {
+                // Item packets (id: 0x29)
+                if (event.getPacketType() == PacketType.Play.Server.CHAT && DataHolder.getEffectmap().containsKey(event.getPlayer().getUniqueId()) && DataHolder.getEffectmap().get(event.getPlayer().getUniqueId()).contains(StoneEffect.MUTED)) {
+                    event.setCancelled(true);
+                    PacketContainer packet = event.getPacket();
+                    String message = packet.getStrings().read(0);
+                    StringBuilder newmessage = new StringBuilder();
+                    for(char c : message.toCharArray()){
+                        if(Character.isAlphabetic(c)){
+                            double random = Math.random();
+                            if(random <= .5 && random > 0){
+                                newmessage.append('m');
+                            } else if(random <= .75 && random > .5){
+                                newmessage.append('h');
+                            } else {
+                                newmessage.append(c);
+                            }
+                        } else  {
+                            newmessage.append(c);
+                        }
+                    }
+                    packet.getStrings().write(0, newmessage.toString());
+                }
+            }
+        };
+        
+        Stones.getProtocolManager().addPacketListener(muteeffect);
+    }
     
     public static void doEffects(){
     

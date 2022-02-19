@@ -1,9 +1,10 @@
-package com.github.sawors.stones.features;
+package com.github.sawors.stones.magic;
 
 import com.github.sawors.stones.Stones;
-import com.github.sawors.stones.UsefulThings.DataHolder;
-import com.github.sawors.stones.enums.StoneEffect;
-import com.github.sawors.stones.enums.StoneItem;
+import com.github.sawors.stones.database.DataHolder;
+import com.github.sawors.stones.effects.StoneEffect;
+import com.github.sawors.stones.items.StoneItem;
+import com.github.sawors.stones.items.StonesItems;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;

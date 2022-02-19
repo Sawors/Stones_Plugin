@@ -1,4 +1,4 @@
-package com.github.sawors.stones.enums;
+package com.github.sawors.stones.items;
 
 public enum StoneItem {
     PARCHMENT,

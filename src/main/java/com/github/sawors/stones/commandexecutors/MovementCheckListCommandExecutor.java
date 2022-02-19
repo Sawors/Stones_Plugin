@@ -1,6 +1,6 @@
 package com.github.sawors.stones.commandexecutors;
 
-import com.github.sawors.stones.UsefulThings.DataHolder;
+import com.github.sawors.stones.database.DataHolder;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

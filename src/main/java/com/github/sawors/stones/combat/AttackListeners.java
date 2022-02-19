@@ -1,7 +1,7 @@
-package com.github.sawors.stones.listeners;
+package com.github.sawors.stones.combat;
 
-import com.github.sawors.stones.UsefulThings.DataHolder;
 import com.github.sawors.stones.UsefulThings.UsefulThings;
+import com.github.sawors.stones.database.DataHolder;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;

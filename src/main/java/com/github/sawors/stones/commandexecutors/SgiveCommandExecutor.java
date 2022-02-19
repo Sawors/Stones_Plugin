@@ -1,7 +1,7 @@
 package com.github.sawors.stones.commandexecutors;
 
-import com.github.sawors.stones.enums.StoneItem;
-import com.github.sawors.stones.features.StonesItems;
+import com.github.sawors.stones.items.StoneItem;
+import com.github.sawors.stones.items.StonesItems;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

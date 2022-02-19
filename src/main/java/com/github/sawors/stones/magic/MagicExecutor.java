@@ -1,4 +1,4 @@
-package com.github.sawors.stones.features;
+package com.github.sawors.stones.magic;
 
 import com.github.sawors.stones.Stones;
 import org.bukkit.GameRule;

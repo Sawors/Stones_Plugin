@@ -1,7 +1,7 @@
-package com.github.sawors.stones.listeners;
+package com.github.sawors.stones.death;
 
-import com.github.sawors.stones.UsefulThings.DataHolder;
 import com.github.sawors.stones.UsefulThings.UsefulThings;
+import com.github.sawors.stones.database.DataHolder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;

@@ -1,6 +1,7 @@
 package com.github.sawors.stones.UsefulThings;
 
 import com.github.sawors.stones.Stones;
+import com.github.sawors.stones.database.DataHolder;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
