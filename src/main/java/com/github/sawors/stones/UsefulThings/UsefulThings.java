@@ -1162,6 +1162,13 @@ public class UsefulThings {
     public static Vector vectorFromTo(Location loc1, Location loc2){
         return new Vector(loc2.getX() - loc1.getX(), loc2.getY() - loc1.getY(), loc2.getZ() - loc1.getZ());
     }
-
+    
+    public static java.awt.Color randomColor(){
+        return new java.awt.Color((int)(Math.random()*255),(int)(Math.random()*255),(int)(Math.random()*255));
+    }
+    public static net.md_5.bungee.api.ChatColor randomChatColor(){
+        
+        return net.md_5.bungee.api.ChatColor.of(randomColor());
+    }
 
 }

@@ -465,33 +465,13 @@ public class StonesItems {
                 break;
             case BOOK_TEST:
                 item.setType(Material.BOOK);
-                meta.displayName(Component.translatable(ChatColor.WHITE + "Test Book 2"));
-                meta.setLocalizedName("book_hey_check");
+                meta.displayName(Component.translatable(ChatColor.WHITE + "Test Book"));
+                meta.setLocalizedName("book_check");
                 lore.add(0, Component.text(ChatColor.GRAY + "Close"));
-                int[] pages = {1, 16};
+                int[] pages = {1, 1};
                 meta.getPersistentDataContainer().set(DataHolder.getStonesItemDataKey(), PersistentDataType.INTEGER_ARRAY, pages);
                 lore.add(Component.text(""));
                 lore.add(Component.text(ChatColor.GOLD + " " + pages[0]+"/"+pages[1] + " pages"));
-                break;
-            case BOOK_IR:
-                item.setType(Material.BOOK);
-                meta.displayName(Component.translatable(ChatColor.WHITE + "IR"));
-                meta.setLocalizedName("book_ir");
-                lore.add(0, Component.text(ChatColor.GRAY + "Close"));
-                int[] pages_tdt = {1, 24};
-                meta.getPersistentDataContainer().set(DataHolder.getStonesItemDataKey(), PersistentDataType.INTEGER_ARRAY, pages_tdt);
-                lore.add(Component.text(""));
-                lore.add(Component.text(ChatColor.GOLD + " " + pages_tdt[0]+"/"+pages_tdt[1] + " pages"));
-                break;
-            case BOOK_PLAYBOY:
-                item.setType(Material.BOOK);
-                meta.displayName(Component.translatable(ChatColor.WHITE + "Playboy"));
-                meta.setLocalizedName("book_playboy");
-                lore.add(0, Component.text(ChatColor.GRAY + "Close"));
-                int[] pages_playboy = {1, 58};
-                meta.getPersistentDataContainer().set(DataHolder.getStonesItemDataKey(), PersistentDataType.INTEGER_ARRAY, pages_playboy);
-                lore.add(Component.text(""));
-                lore.add(Component.text(ChatColor.GOLD + " " + pages_playboy[0]+"/"+pages_playboy[1] + " pages"));
                 break;
             case WOOD_CRAYON:
                 item.setType(Material.STICK);

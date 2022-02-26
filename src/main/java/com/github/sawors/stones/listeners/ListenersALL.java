@@ -77,7 +77,20 @@ public class ListenersALL implements Listener {
         if(event.getHitBlock() != null && event.getEntity() instanceof Arrow){
             Arrow arrow = (Arrow) event.getEntity();
             Block block = event.getHitBlock();
-            block.getWorld().playSound(block.getLocation(), block.getSoundGroup().getPlaceSound(), 1f, UsefulThings.randomPitchSimple()+0.2f);
+            if(block.getType().getBlastResistance() > 1){
+                if(Math.random() < block.getType().getBlastResistance()/10){
+                    arrow.getWorld().spawnParticle(Particle.ITEM_CRACK, arrow.getLocation(),2,.1,.1,.1,.1,new ItemStack(Material.STICK));
+                    arrow.getWorld().spawnParticle(Particle.ITEM_CRACK, arrow.getLocation(),4,.1,.1,.1,.1,new ItemStack(Material.IRON_INGOT));
+                    block.getWorld().playSound(block.getLocation(), Sound.ITEM_SHIELD_BREAK, 1f, UsefulThings.randomPitchSimple()+2f);
+                    arrow.remove();
+                } else {
+                    block.getWorld().playSound(block.getLocation(), block.getSoundGroup().getPlaceSound(), 1f, UsefulThings.randomPitchSimple()+0.5f);
+                }
+            } else {
+                arrow.getWorld().spawnParticle(Particle.BLOCK_CRACK, arrow.getLocation(),6,.1,.1,.1,.1,block.getBlockData());
+                block.getWorld().playSound(block.getLocation(), block.getSoundGroup().getPlaceSound(), 1f, UsefulThings.randomPitchSimple()+0.2f);
+            }
+            
             // switch for sound
 
 
