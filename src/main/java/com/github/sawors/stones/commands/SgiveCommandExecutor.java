@@ -1,6 +1,6 @@
-package com.github.sawors.stones.commandexecutors;
+package com.github.sawors.stones.commands;
 
-import com.github.sawors.stones.items.StoneItem;
+import com.github.sawors.stones.items.SItem;
 import com.github.sawors.stones.items.StonesItems;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
@@ -23,7 +23,7 @@ public class SgiveCommandExecutor implements CommandExecutor {
         if(sender instanceof Player && args.length >= 1 && ((Player) sender).getPlayer() != null){
             Player p = ((Player) sender).getPlayer();
             try{
-                StoneItem itemname = StoneItem.valueOf(args[0].toUpperCase());
+                SItem itemname = SItem.valueOf(args[0].toUpperCase());
                 ItemStack item = StonesItems.get(itemname);
                 if(p != null){
                     p.getInventory().addItem(item);

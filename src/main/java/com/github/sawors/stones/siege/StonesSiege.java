@@ -7,18 +7,20 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.Pair;
-import com.comphenix.protocol.wrappers.PlayerInfoData;
-import com.comphenix.protocol.wrappers.WrappedGameProfile;
+import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import com.destroystokyo.paper.event.entity.ProjectileCollideEvent;
 import com.github.sawors.stones.Stones;
 import com.github.sawors.stones.UsefulThings.UsefulThings;
-import com.github.sawors.stones.items.StoneItem;
+import com.github.sawors.stones.items.SItem;
 import com.github.sawors.stones.items.StonesItems;
 import com.github.sawors.stones.siege.weapons.Mortar;
 import com.github.sawors.stones.siege.weapons.StraightCannon;
 import io.papermc.paper.event.block.BlockPreDispenseEvent;
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.*;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -47,7 +49,7 @@ public class StonesSiege implements Listener {
     
     
     
-    private static HashMap<UUID, StoneProjectile> projectilemap = new HashMap<>();
+    private static HashMap<UUID, SProjectile> projectilemap = new HashMap<>();
     private static final ProtocolManager pmanager = Stones.getProtocolManager();
     
     @EventHandler
@@ -109,23 +111,23 @@ public class StonesSiege implements Listener {
     
     @EventHandler
     public void onProjectileHitBlock(ProjectileHitEvent event){
-        event.setCancelled(true);
         Projectile p = event.getEntity();
         
         if(containsProjectile(p.getUniqueId())){
-            StoneProjectile type = getProjectile(p.getUniqueId());
+            event.setCancelled(true);
+            SProjectile type = getProjectile(p.getUniqueId());
             Location loc = p.getLocation();
             switch(type){
                 case CANNON_BALL:
                     p.getWorld().spawnParticle(Particle.SOUL_FIRE_FLAME, p.getLocation(),4,0,0,0,0);
-                    StonesExplosions.doDirectionalExplosion(loc, 6, StoneExplosionPattern.CANNON_BALL, p.getVelocity().normalize());
+                    StonesExplosions.doDirectionalExplosion(loc, 6, SExplosionPattern.CANNON_BALL, p.getVelocity().normalize());
                     projectileEntityRemove(p);
                     break;
                 case BLANK:
                     p.getWorld().spawnParticle(Particle.SOUL_FIRE_FLAME, p.getLocation(),4,0,0,0,0);
                     p.getWorld().spawnParticle(Particle.CLOUD, p.getLocation(),128,1.5,1.5,1.5,.1);
                     p.getWorld().playSound(p.getLocation(), Sound.ENTITY_GENERIC_EXPLODE,2,.8f);
-                    p.getWorld().createExplosion(p.getLocation(), 2,false);
+                    p.getWorld().createExplosion(p.getLocation(), 2,false,false);
                     projectileEntityRemove(p);
                     break;
             }
@@ -140,7 +142,7 @@ public class StonesSiege implements Listener {
     //
     //      PROJECTILE MAP
     //
-    public static void registerProjectile(UUID id, StoneProjectile projectiletype){
+    public static void registerProjectile(UUID id, SProjectile projectiletype){
         if(!projectilemap.containsKey(id)){
             projectilemap.put(id, projectiletype);
         }
@@ -150,7 +152,7 @@ public class StonesSiege implements Listener {
         return projectilemap.containsKey(id);
     }
     
-    public static StoneProjectile getProjectile(UUID id){
+    public static SProjectile getProjectile(UUID id){
         return projectilemap.get(id);
     }
     
@@ -213,7 +215,7 @@ public class StonesSiege implements Listener {
                                     public void run() {
                                         PacketContainer equipment = new PacketContainer(PacketType.Play.Server.ENTITY_EQUIPMENT);
                                         equipment.getIntegers().write(0,spawn.getIntegers().read(0));
-                                        Pair<EnumWrappers.ItemSlot, ItemStack> pair = new Pair<>(EnumWrappers.ItemSlot.HEAD, StonesItems.get(StoneItem.CANNON_BALL));
+                                        Pair<EnumWrappers.ItemSlot, ItemStack> pair = new Pair<>(EnumWrappers.ItemSlot.HEAD, StonesItems.get(SItem.CANNON_BALL));
                                         ArrayList<Pair<EnumWrappers.ItemSlot, ItemStack>> list = new ArrayList<>();
                                         list.add(pair);
                                         equipment.getSlotStackPairLists().write(0, list);
@@ -244,21 +246,25 @@ public class StonesSiege implements Listener {
         }
     };
     
-    static PacketAdapter test2 = new PacketAdapter(Stones.getPlugin(), PacketType.Play.Server.PLAYER_INFO) {
+    static PacketAdapter test2 = new PacketAdapter(Stones.getPlugin(), PacketType.Play.Server.SPAWN_ENTITY) {
         @Override
         public void onPacketSending(PacketEvent event) {
             PacketContainer packet = event.getPacket();
             ChatColor color = UsefulThings.randomChatColor();
-            if(packet.getType() == PacketType.Play.Server.PLAYER_INFO) {
-                PlayerInfoData basedata = packet.getPlayerInfoDataLists().read(0).get(0);
-                PlayerInfoData pdata = new PlayerInfoData(WrappedGameProfile.fromOfflinePlayer(Bukkit.getOfflinePlayer(UUID.fromString("486c4ffe-667d-4be1-be4d-8acbbc3420a2"))),basedata.getLatency(), basedata.getGameMode(),basedata.getDisplayName());
-                        //packet.getPlayerInfoDataLists().read(0).get(0);
-                ArrayList<PlayerInfoData> data = new ArrayList<>();
-                data.add(pdata);
-                //Stones.adminLog(color+""+data.set(0,pdata));
-                packet.getPlayerInfoDataLists().write(0,data);
-                    //event.setCancelled(true);
-                
+            if(packet.getType() == PacketType.Play.Server.SPAWN_ENTITY) {
+                for(Entity e : event.getPlayer().getNearbyEntities(10,10,10)){
+                    PacketContainer p2 = Stones.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_METADATA);
+                    p2.getIntegers().write(0, e.getEntityId());
+                    WrappedDataWatcher watcher = new WrappedDataWatcher(); //Create data watcher, the Entity Metadata packet requires this
+                    watcher.setEntity(event.getPlayer());
+                    watcher.setObject(0, WrappedDataWatcher.Registry.get(Byte.class),(byte) (0x40)); //Set status to glowing, found on protocol page
+                    p2.getWatchableCollectionModifier().write(0, watcher.getWatchableObjects()); //Make the packet's datawatcher the one we created
+                    try{
+                        Stones.getProtocolManager().sendServerPacket(event.getPlayer(), p2);
+                    } catch (InvocationTargetException exception) {
+                        exception.printStackTrace();
+                    }
+                }
             }
         }
     };
@@ -268,6 +274,6 @@ public class StonesSiege implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public static void onEnable(PluginEnableEvent event){
         Stones.getProtocolManager().addPacketListener(blockprojectiles);
-        //Stones.getProtocolManager().addPacketListener(test2);
+        Stones.getProtocolManager().addPacketListener(test2);
     }
 }

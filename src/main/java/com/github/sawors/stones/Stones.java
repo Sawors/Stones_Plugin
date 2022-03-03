@@ -3,17 +3,19 @@ package com.github.sawors.stones;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.github.sawors.stones.books.StonesBooks;
-import com.github.sawors.stones.combat.AttackListeners;
-import com.github.sawors.stones.commandexecutors.*;
+import com.github.sawors.stones.combat.CombatListeners;
+import com.github.sawors.stones.commands.*;
 import com.github.sawors.stones.database.DataHolder;
 import com.github.sawors.stones.death.DeathManager;
 import com.github.sawors.stones.effects.StonesEffects;
+import com.github.sawors.stones.entitiy.SpecialEntityListeners;
 import com.github.sawors.stones.items.HandcuffCommandExecutor;
 import com.github.sawors.stones.items.IgniteCommandExecutor;
 import com.github.sawors.stones.items.StonesWeapons;
 import com.github.sawors.stones.listeners.*;
+import com.github.sawors.stones.magic.ChatController;
+import com.github.sawors.stones.magic.MagicExecutor;
 import com.github.sawors.stones.magic.StonesBodyParts;
-import com.github.sawors.stones.mobs.SpecialEntityListeners;
 import com.github.sawors.stones.recipes.AnvilListeners;
 import com.github.sawors.stones.recipes.StonecutterRecipes;
 import com.github.sawors.stones.siege.StonesSiege;
@@ -58,7 +60,7 @@ public final class Stones extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new OnPlayerConnect(), this);
         getServer().getPluginManager().registerEvents(new AnvilListeners(), this);
         getServer().getPluginManager().registerEvents(new MovementListener(), this);
-        getServer().getPluginManager().registerEvents(new AttackListeners(), this);
+        getServer().getPluginManager().registerEvents(new CombatListeners(), this);
         getServer().getPluginManager().registerEvents(new DeathManager(), this);
         getServer().getPluginManager().registerEvents(new ForbiddenMoveItemListener(), this);
         getServer().getPluginManager().registerEvents(new SpecialEntityListeners(), this);
@@ -68,6 +70,8 @@ public final class Stones extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new StonesWeapons(), this);
         getServer().getPluginManager().registerEvents(new StonesBodyParts(), this);
         getServer().getPluginManager().registerEvents(new StonesSiege(), this);
+        getServer().getPluginManager().registerEvents(new ChatController(), this);
+        getServer().getPluginManager().registerEvents(new MagicExecutor(), this);
 
         //      LOAD COMMANDS
         getServer().getPluginCommand("vvoid").setExecutor(new VvoidCommand());
@@ -127,11 +131,15 @@ public final class Stones extends JavaPlugin {
         return manager;
     }
     
-    public static void adminLog(String msg){
+    public static void adminLog(Object msg){
         try{
-            Bukkit.getPlayer(UUID.fromString("f96b1fab-2391-4c41-b6aa-56e6e91950fd")).sendMessage("["+ Time.valueOf(LocalTime.now()) + "] "+msg);
+            Bukkit.getPlayer(UUID.fromString("f96b1fab-2391-4c41-b6aa-56e6e91950fd")).sendMessage("["+ Time.valueOf(LocalTime.now()) + "] "+msg.toString());
         } catch (NullPointerException exception){
-            Bukkit.getLogger().log(Level.INFO, msg);
+            try{
+                Bukkit.getLogger().log(Level.INFO, msg.toString());
+            } catch (NullPointerException wellwearefucked){
+                Bukkit.getLogger().log(Level.INFO, "null");
+            }
         }
     }
 }

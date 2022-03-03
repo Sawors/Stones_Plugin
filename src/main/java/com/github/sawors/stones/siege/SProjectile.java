@@ -1,5 +1,5 @@
 package com.github.sawors.stones.siege;
 
-public enum StoneProjectile {
+public enum SProjectile {
     CANNON_BALL, BLANK
 }

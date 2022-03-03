@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class StonesItems {
  
     @SuppressWarnings("deprecation")
-    public static ItemStack get(StoneItem itemname){
+    public static ItemStack get(SItem itemname){
         ItemStack item = new ItemStack(Material.PAPER);
         ItemMeta meta = item.getItemMeta();
         ArrayList<Component> lore = new ArrayList<>();
@@ -520,7 +520,7 @@ public class StonesItems {
     }
     
     public static ItemStack get(String item){
-        return get(StoneItem.valueOf(item.toUpperCase()));
+        return get(SItem.valueOf(item.toUpperCase()));
     }
     
     

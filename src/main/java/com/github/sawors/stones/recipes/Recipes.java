@@ -1,7 +1,7 @@
 package com.github.sawors.stones.recipes;
 
 import com.github.sawors.stones.UsefulThings.UsefulThings;
-import com.github.sawors.stones.items.StoneItem;
+import com.github.sawors.stones.items.SItem;
 import com.github.sawors.stones.items.StonesItems;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
@@ -20,43 +20,43 @@ public class Recipes {
         }
         switch(type){
             case("dandelion"):
-                item = StonesItems.get(StoneItem.DANDELION_HEAD);
+                item = StonesItems.get(SItem.DANDELION_HEAD);
                 break;
             case("poppy"):
-                item = StonesItems.get(StoneItem.POPPY_HEAD);
+                item = StonesItems.get(SItem.POPPY_HEAD);
                 break;
             case("blue_orchid"):
-                item = StonesItems.get(StoneItem.BLUE_ORCHID_BUDS);
+                item = StonesItems.get(SItem.BLUE_ORCHID_BUDS);
                 break;
             case("allium"):
-                item = StonesItems.get(StoneItem.ALLIUM_HEAD);
+                item = StonesItems.get(SItem.ALLIUM_HEAD);
                 break;
             case("azure_bluet"):
-                item = StonesItems.get(StoneItem.AZURE_BLUET_BUDS);
+                item = StonesItems.get(SItem.AZURE_BLUET_BUDS);
                 break;
             case("red_tulip"):
-                item = StonesItems.get(StoneItem.RED_TULIP_PETALS);
+                item = StonesItems.get(SItem.RED_TULIP_PETALS);
                 break;
             case("orange_tulip"):
-                item = StonesItems.get(StoneItem.ORANGE_TULIP_PETALS);
+                item = StonesItems.get(SItem.ORANGE_TULIP_PETALS);
                 break;
             case("white_tulip"):
-                item = StonesItems.get(StoneItem.WHITE_TULIP_PETALS);
+                item = StonesItems.get(SItem.WHITE_TULIP_PETALS);
                 break;
             case("pink_tulip"):
-                item = StonesItems.get(StoneItem.PINK_TULIP_PETALS);
+                item = StonesItems.get(SItem.PINK_TULIP_PETALS);
                 break;
             case("oxeye_daisy"):
-                item = StonesItems.get(StoneItem.OXEYE_DAISY_HEAD);
+                item = StonesItems.get(SItem.OXEYE_DAISY_HEAD);
                 break;
             case("cornflower"):
-                item = StonesItems.get(StoneItem.CORNFLOWER_HEAD);
+                item = StonesItems.get(SItem.CORNFLOWER_HEAD);
                 break;
             case("lily_of_the_valley"):
-                item = StonesItems.get(StoneItem.LILY_OF_THE_VALLEY_BUDS);
+                item = StonesItems.get(SItem.LILY_OF_THE_VALLEY_BUDS);
                 break;
             case("grass"):
-                item = StonesItems.get(StoneItem.THATCH);
+                item = StonesItems.get(SItem.THATCH);
                 break;
         }
         return item;

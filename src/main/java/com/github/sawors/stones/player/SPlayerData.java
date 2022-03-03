@@ -1,5 +1,5 @@
-package com.github.sawors.stones.database;
+package com.github.sawors.stones.player;
 
-public enum StonePlayerData {
+public enum SPlayerData {
     INVENTORY_CONTENT, EFFECTS, DEBUFFS, LAST_SEEN, MUTATIONS, LAST_LOCATION
 }

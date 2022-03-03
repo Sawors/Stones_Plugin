@@ -7,7 +7,7 @@ import com.github.sawors.stones.Stones;
 import com.github.sawors.stones.UsefulThings.SerializeInventory;
 import com.github.sawors.stones.UsefulThings.UsefulThings;
 import com.github.sawors.stones.database.DataHolder;
-import com.github.sawors.stones.items.StoneItem;
+import com.github.sawors.stones.items.SItem;
 import com.github.sawors.stones.items.StonesItems;
 import com.github.sawors.stones.magic.MagicExecutor;
 import com.github.sawors.stones.recipes.Recipes;
@@ -329,7 +329,7 @@ public class ListenersALL implements Listener {
                             }
                         case "blindfold":
                             if(UsefulThings.isBehind(player, rightclicked, 45) && rightclicked.getInventory().getHelmet() == null){
-                                rightclicked.getInventory().setHelmet(StonesItems.get(StoneItem.BLINDFOLD));
+                                rightclicked.getInventory().setHelmet(StonesItems.get(SItem.BLINDFOLD));
                                 
                             }
                     }
@@ -1077,7 +1077,7 @@ public class ListenersALL implements Listener {
                     event.setCancelled(true);
                     b.setType(Material.GRASS);
                     b.getWorld().spawnParticle(Particle.BLOCK_DUST, mid, 8,0.2,0.2,0.2, 0, b.getBlockData());
-                    b.getWorld().dropItem(mid, StonesItems.get(StoneItem.THATCH));
+                    b.getWorld().dropItem(mid, StonesItems.get(SItem.THATCH));
                     b.setType(Material.AIR);
                     
                     
@@ -1198,17 +1198,6 @@ public class ListenersALL implements Listener {
                 p.updateInventory();
             }
         }.runTask(Stones.getPlugin());
-    }
-    
-    @EventHandler
-    public void sprintBuff(PlayerToggleSprintEvent event){
-        if(event.isSprinting()){
-            event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100000,1,false,false));
-        } else {
-            if(event.getPlayer().hasPotionEffect(PotionEffectType.SPEED)){
-                event.getPlayer().removePotionEffect(PotionEffectType.SPEED);
-            }
-        }
     }
     
     

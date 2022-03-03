@@ -2,8 +2,8 @@ package com.github.sawors.stones.magic;
 
 import com.github.sawors.stones.Stones;
 import com.github.sawors.stones.database.DataHolder;
-import com.github.sawors.stones.effects.StoneEffect;
-import com.github.sawors.stones.items.StoneItem;
+import com.github.sawors.stones.effects.SEffect;
+import com.github.sawors.stones.items.SItem;
 import com.github.sawors.stones.items.StonesItems;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -71,7 +71,7 @@ public class StonesBodyParts implements Listener {
             Stones.getHideNameTeam().removeEntity(e);
             e.setSilent(false);
             ((Animals) e).removePotionEffect(PotionEffectType.SLOW);
-            p.getWorld().dropItemNaturally(e.getLocation(), StonesItems.get(StoneItem.ROPE));
+            p.getWorld().dropItemNaturally(e.getLocation(), StonesItems.get(SItem.ROPE));
             e.getWorld().playSound(e.getLocation(), Sound.ENTITY_SHEEP_SHEAR, .5f,1);
         }
         if(e instanceof Animals && event.getHand().equals(EquipmentSlot.HAND) && p.isSneaking() && p.getInventory().getItemInMainHand().getType().isAir() && e.getCustomName() != null && e.getCustomName().contains("Dinnerbone") && e.isSilent() && ((Animals) e).hasPotionEffect(PotionEffectType.SLOW) && p.getPassengers().size() == 0 && !event.isCancelled()){
@@ -79,7 +79,7 @@ public class StonesBodyParts implements Listener {
             p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 160, (int) Math.sqrt(4*p.getPassengers().get(0).getBoundingBox().getVolume()), false ,false));
             e.setCustomName("");
             e.getPersistentDataContainer().set(DataHolder.getSpecialEntity(), PersistentDataType.STRING, "test");
-            DataHolder.effectmapAdd(event.getPlayer().getUniqueId(), StoneEffect.CARRY);
+            DataHolder.effectmapAdd(event.getPlayer().getUniqueId(), SEffect.CARRY);
         }
     }
     
@@ -89,7 +89,7 @@ public class StonesBodyParts implements Listener {
             event.setCancelled(true);
             event.getPlayer().removePassenger(event.getPlayer().getPassengers().get(event.getPlayer().getPassengers().size()-1));
             event.getPlayer().removePotionEffect(PotionEffectType.SLOW);
-            DataHolder.effectmapRemove(event.getPlayer().getUniqueId(), StoneEffect.CARRY);
+            DataHolder.effectmapRemove(event.getPlayer().getUniqueId(), SEffect.CARRY);
         }
     }
     @EventHandler

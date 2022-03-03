@@ -1,4 +1,4 @@
-package com.github.sawors.stones.mobs;
+package com.github.sawors.stones.entitiy;
 
 import com.github.sawors.stones.database.DataHolder;
 import io.papermc.paper.event.entity.EntityMoveEvent;

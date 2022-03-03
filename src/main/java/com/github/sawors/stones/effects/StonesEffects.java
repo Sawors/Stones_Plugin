@@ -31,7 +31,7 @@ public class StonesEffects implements Listener {
             @Override
             public void onPacketSending(PacketEvent event) {
                 // Item packets (id: 0x29)
-                if (event.getPacketType() == PacketType.Play.Server.CHAT && DataHolder.getEffectmap().containsKey(event.getPlayer().getUniqueId()) && DataHolder.getEffectmap().get(event.getPlayer().getUniqueId()).contains(StoneEffect.MUTED)) {
+                if (event.getPacketType() == PacketType.Play.Server.CHAT && DataHolder.getEffectmap().containsKey(event.getPlayer().getUniqueId()) && DataHolder.getEffectmap().get(event.getPlayer().getUniqueId()).contains(SEffect.MUTED)) {
                     event.setCancelled(true);
                     PacketContainer packet = event.getPacket();
                     String message = packet.getStrings().read(0);
@@ -67,9 +67,9 @@ public class StonesEffects implements Listener {
                     UUID id = (UUID) DataHolder.getEffectmap().keySet().toArray()[i];
                     if(Bukkit.getPlayer(id) != null && Objects.requireNonNull(Bukkit.getPlayer(id)).isOnline() && DataHolder.getEffectmap().containsKey(id)){
                         Player p = Bukkit.getPlayer(id);
-                        ArrayList<StoneEffect> effectlist = DataHolder.effectmapGetEntry(id);
+                        ArrayList<SEffect> effectlist = DataHolder.effectmapGetEntry(id);
                         if(effectlist.size() > 0 && p != null){
-                            for(StoneEffect effect : effectlist){
+                            for(SEffect effect : effectlist){
                                 switch (effect){
                                     case CARRY:
                                         doCarry(p);

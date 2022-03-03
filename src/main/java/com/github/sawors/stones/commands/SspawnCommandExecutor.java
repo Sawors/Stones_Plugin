@@ -1,4 +1,4 @@
-package com.github.sawors.stones.commandexecutors;
+package com.github.sawors.stones.commands;
 
 import com.github.sawors.stones.UsefulThings.UsefulThings;
 import org.bukkit.command.Command;

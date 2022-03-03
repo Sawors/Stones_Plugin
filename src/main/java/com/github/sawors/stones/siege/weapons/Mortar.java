@@ -1,8 +1,8 @@
 package com.github.sawors.stones.siege.weapons;
 
 import com.github.sawors.stones.Stones;
+import com.github.sawors.stones.siege.SProjectile;
 import com.github.sawors.stones.siege.SiegeUnit;
-import com.github.sawors.stones.siege.StoneProjectile;
 import com.github.sawors.stones.siege.StonesSiege;
 import net.kyori.adventure.key.Key;
 import org.bukkit.*;
@@ -19,11 +19,11 @@ public class Mortar implements SiegeUnit {
     Block core;
     Vector direction;
     Location cannonend;
-    StoneProjectile projectile = StoneProjectile.BLANK;
+    SProjectile projectile = SProjectile.BLANK;
     int cannonlength;
     int power = 4;
     
-    Mortar(Block core, Location cannonend, Vector direction, StoneProjectile projectile) {
+    Mortar(Block core, Location cannonend, Vector direction, SProjectile projectile) {
         this.core = core;
         this.cannonend = cannonend;
         this.direction = direction;

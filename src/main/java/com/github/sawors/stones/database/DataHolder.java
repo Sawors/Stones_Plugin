@@ -1,7 +1,8 @@
 package com.github.sawors.stones.database;
 
 import com.github.sawors.stones.Stones;
-import com.github.sawors.stones.effects.StoneEffect;
+import com.github.sawors.stones.effects.SEffect;
+import com.github.sawors.stones.player.SPlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -19,7 +20,7 @@ import java.util.*;
 import java.util.logging.Level;
 
 public class DataHolder {
-    public static final HashMap<UUID, ArrayList<StoneEffect>> effectmap = new HashMap<>();
+    public static final HashMap<UUID, ArrayList<SEffect>> effectmap = new HashMap<>();
     public static final ArrayList<UUID> removelist = new ArrayList<>();
     public static NamespacedKey rolekey = new NamespacedKey(Stones.getPlugin(Stones.class), "role");
     public static NamespacedKey getRoleKey(){
@@ -75,19 +76,19 @@ public class DataHolder {
         if(p != null){
             try{
                 if(!file.exists()){
-                    config.createSection(StonePlayerData.INVENTORY_CONTENT.toString());
-                    config.createSection(StonePlayerData.EFFECTS.toString());
-                    config.createSection(StonePlayerData.DEBUFFS.toString());
-                    config.createSection(StonePlayerData.LAST_SEEN.toString());
-                    config.createSection(StonePlayerData.MUTATIONS.toString());
-                    config.createSection(StonePlayerData.LAST_LOCATION.toString());
+                    config.createSection(SPlayerData.INVENTORY_CONTENT.toString());
+                    config.createSection(SPlayerData.EFFECTS.toString());
+                    config.createSection(SPlayerData.DEBUFFS.toString());
+                    config.createSection(SPlayerData.LAST_SEEN.toString());
+                    config.createSection(SPlayerData.MUTATIONS.toString());
+                    config.createSection(SPlayerData.LAST_LOCATION.toString());
                     
-                    config.set(StonePlayerData.INVENTORY_CONTENT.toString(), p.getInventory().getContents());
-                    config.set(StonePlayerData.EFFECTS.toString(), effectmapGetEntry(p.getUniqueId()));
-                    config.set(StonePlayerData.DEBUFFS.toString(), null);
-                    config.set(StonePlayerData.LAST_SEEN.toString(), LocalDateTime.now().format(DateTimeFormatter.BASIC_ISO_DATE));
-                    config.set(StonePlayerData.MUTATIONS.toString(), null);
-                    config.set(StonePlayerData.LAST_LOCATION.toString(), p.getLocation());
+                    config.set(SPlayerData.INVENTORY_CONTENT.toString(), p.getInventory().getContents());
+                    config.set(SPlayerData.EFFECTS.toString(), effectmapGetEntry(p.getUniqueId()));
+                    config.set(SPlayerData.DEBUFFS.toString(), null);
+                    config.set(SPlayerData.LAST_SEEN.toString(), LocalDateTime.now().format(DateTimeFormatter.BASIC_ISO_DATE));
+                    config.set(SPlayerData.MUTATIONS.toString(), null);
+                    config.set(SPlayerData.LAST_LOCATION.toString(), p.getLocation());
                     
                     config.save(file);
                     byte[] encoded = Base64.getEncoder().encode(config.saveToString().getBytes(StandardCharsets.UTF_8));
@@ -113,12 +114,12 @@ public class DataHolder {
         if(p != null){
             try{
                 config = YamlConfiguration.loadConfiguration(file);
-                config.set(StonePlayerData.INVENTORY_CONTENT.toString(), p.getInventory().getContents());
-                config.set(StonePlayerData.EFFECTS.toString(), effectmapGetEntry(p.getUniqueId()));
-                config.set(StonePlayerData.DEBUFFS.toString(), null);
-                config.set(StonePlayerData.LAST_SEEN.toString(), LocalDateTime.now().format(DateTimeFormatter.ISO_DATE));
-                config.set(StonePlayerData.MUTATIONS.toString(), null);
-                config.set(StonePlayerData.LAST_LOCATION.toString(), p.getLocation());
+                config.set(SPlayerData.INVENTORY_CONTENT.toString(), p.getInventory().getContents());
+                config.set(SPlayerData.EFFECTS.toString(), effectmapGetEntry(p.getUniqueId()));
+                config.set(SPlayerData.DEBUFFS.toString(), null);
+                config.set(SPlayerData.LAST_SEEN.toString(), LocalDateTime.now().format(DateTimeFormatter.ISO_DATE));
+                config.set(SPlayerData.MUTATIONS.toString(), null);
+                config.set(SPlayerData.LAST_LOCATION.toString(), p.getLocation());
                 
                 
                 config.save(file);
@@ -130,7 +131,7 @@ public class DataHolder {
         }
     }
     
-    public static void saveDataEntryForPlayer(UUID id, StonePlayerData entry, Object value) throws FileNotFoundException{
+    public static void saveDataEntryForPlayer(UUID id, SPlayerData entry, Object value) throws FileNotFoundException{
         Player p = Bukkit.getPlayer(id);
         File file = new File(Stones.getPlugin().getDataFolder()+"/playerdata/"+id+".yml");
         YamlConfiguration config;
@@ -190,33 +191,33 @@ public class DataHolder {
         }
     }
     
-    public static HashMap<UUID, ArrayList<StoneEffect>> getEffectmap(){
+    public static HashMap<UUID, ArrayList<SEffect>> getEffectmap(){
         return effectmap;
     }
     
-    public static ArrayList<StoneEffect> effectmapGetEntry(UUID id){
+    public static ArrayList<SEffect> effectmapGetEntry(UUID id){
         if(effectmap.containsKey(id)){
             return effectmap.get(id);
         }
         return new ArrayList<>();
     }
     
-    public static void effectmapSet(UUID id, ArrayList<StoneEffect> effects){
+    public static void effectmapSet(UUID id, ArrayList<SEffect> effects){
         effectmap.put(id, effects);
     }
     
-    public static void effectmapAdd(UUID id, StoneEffect effect){
+    public static void effectmapAdd(UUID id, SEffect effect){
         if(effectmap.containsKey(id)){
             effectmap.get(id).add(effect);
         } else {
-            ArrayList<StoneEffect> l = new ArrayList<>();
+            ArrayList<SEffect> l = new ArrayList<>();
             l.add(effect);
             effectmap.put(id, l);
         }
         
     }
     
-    public static void effectmapRemove(UUID id, StoneEffect effect){
+    public static void effectmapRemove(UUID id, SEffect effect){
         if(effectmap.containsKey(id)){
             effectmap.get(id).remove(effect);
         }

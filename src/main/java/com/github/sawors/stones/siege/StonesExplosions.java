@@ -11,12 +11,12 @@ import java.util.ArrayList;
 public class StonesExplosions {
     
     
-    public static void doExplosion(Location loc, float power, StoneExplosionPattern pattern){
+    public static void doExplosion(Location loc, float power, SExplosionPattern pattern){
         ArrayList<Vector> vectors = new ArrayList<>();
         
     }
     
-    public static void doDirectionalExplosion(Location loc, float power, StoneExplosionPattern pattern, Vector direction){
+    public static void doDirectionalExplosion(Location loc, float power, SExplosionPattern pattern, Vector direction){
         ArrayList<Vector> vectors = new ArrayList<>();
         direction = direction.normalize();
         Vector perpendicular = direction.clone().rotateAroundY(Math.toRadians(90));

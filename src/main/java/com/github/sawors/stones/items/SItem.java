@@ -1,6 +1,6 @@
 package com.github.sawors.stones.items;
 
-public enum StoneItem {
+public enum SItem {
     PARCHMENT,
     MUSIC_PARCHMENT,
     HAMMER,

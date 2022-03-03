@@ -1,5 +1,5 @@
 package com.github.sawors.stones.siege;
 
-public enum StoneExplosionPattern {
+public enum SExplosionPattern {
     CANNON_BALL
 }

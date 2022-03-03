@@ -1170,5 +1170,21 @@ public class UsefulThings {
         
         return net.md_5.bungee.api.ChatColor.of(randomColor());
     }
+    
+    public static String getContent(Component c){
+        String content = c.toString();
+        StringBuilder result = new StringBuilder();
+        char[] cc = content.toCharArray();
+        if(content.contains("content=")){
+            for(int i = content.indexOf("content=")+9; i<=64; i++){
+                if(cc[i]=='"'&&cc[i+1]==','){
+                    break;
+                } else {
+                    result.append(cc[i]);
+                }
+            }
+        }
+        return result.toString();
+    }
 
 }

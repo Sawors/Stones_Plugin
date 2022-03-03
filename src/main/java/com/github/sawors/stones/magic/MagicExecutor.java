@@ -1,13 +1,21 @@
 package com.github.sawors.stones.magic;
 
 import com.github.sawors.stones.Stones;
-import org.bukkit.GameRule;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
+import com.github.sawors.stones.entitiy.SEntity;
+import com.github.sawors.stones.entitiy.StonesEntities;
+import org.bukkit.*;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Horse;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.vehicle.VehicleExitEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class MagicExecutor {
+public class MagicExecutor implements Listener {
     
     private static final Stones plugin = Stones.getPlugin();
     
@@ -52,6 +60,28 @@ public class MagicExecutor {
                     }.runTaskTimer(plugin,10,20);
                 }
             
+    }
+    
+    public static void invokeShadowfax(Player p){
+        Location ploc = p.getLocation();
+        Horse shadowfax = (Horse) p.getWorld().spawnEntity(ploc, EntityType.HORSE, false);
+        shadowfax.setColor(Horse.Color.WHITE);
+        shadowfax.setStyle(Horse.Style.WHITE);
+        shadowfax.setAdult();
+        shadowfax.addPassenger(p);
+        shadowfax.setTamed(true);
+        shadowfax.setOwner(p);
+        shadowfax.getInventory().setSaddle(new ItemStack(Material.SADDLE));
+        shadowfax.setJumpStrength(1);
+        shadowfax.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100000,1,false,false));
+        StonesEntities.registerEntity(shadowfax.getUniqueId(), SEntity.SHADOWFAX);
+    }
+    
+    @EventHandler
+    public void leaveShadowfax(VehicleExitEvent event){
+        if(StonesEntities.containsEntity(event.getVehicle().getUniqueId()) && StonesEntities.getEntity(event.getVehicle().getUniqueId()).equals(SEntity.SHADOWFAX)){
+            StonesEntities.entityRemove(event.getVehicle());
+        }
     }
     
     
