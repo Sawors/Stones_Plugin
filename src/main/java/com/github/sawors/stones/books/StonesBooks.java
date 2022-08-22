@@ -1,7 +1,7 @@
 package com.github.sawors.stones.books;
 
 import com.github.sawors.stones.UsefulThings.UsefulThings;
-import com.github.sawors.stones.database.DataHolder;
+import com.github.sawors.stones.core.database.DataHolder;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;

@@ -44,3 +44,9 @@ commands:
     usage: /<command>
   playmusic:
     usage: /<command> <song>
+  recall:
+    usage: /<command>
+  chcreate:
+    usage: /<command>
+  chswitch:
+    usage: /<command> <target character UUID>

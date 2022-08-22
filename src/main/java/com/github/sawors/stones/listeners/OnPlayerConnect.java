@@ -1,7 +1,7 @@
 package com.github.sawors.stones.listeners;
 
 import com.github.sawors.stones.Stones;
-import com.github.sawors.stones.database.DataHolder;
+import com.github.sawors.stones.core.database.DataHolder;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

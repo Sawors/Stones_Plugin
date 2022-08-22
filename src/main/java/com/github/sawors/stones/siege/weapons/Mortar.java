@@ -32,8 +32,6 @@ public class Mortar implements SiegeUnit {
     public Mortar(Block core) {
         create(core);
     }
-    Mortar() {
-    }
     
     @Override
     public void create(Block core){

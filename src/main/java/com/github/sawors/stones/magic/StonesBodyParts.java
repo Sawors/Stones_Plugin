@@ -1,7 +1,7 @@
 package com.github.sawors.stones.magic;
 
 import com.github.sawors.stones.Stones;
-import com.github.sawors.stones.database.DataHolder;
+import com.github.sawors.stones.core.database.DataHolder;
 import com.github.sawors.stones.effects.SEffect;
 import com.github.sawors.stones.items.SItem;
 import com.github.sawors.stones.items.StonesItems;

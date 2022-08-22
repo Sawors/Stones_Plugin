@@ -1,4 +1,4 @@
-package com.github.sawors.stones.recipes;
+package com.github.sawors.stones.core.recipes;
 
 import org.bukkit.Material;
 import org.bukkit.Particle;

@@ -1,4 +1,4 @@
-package com.github.sawors.stones.player;
+package com.github.sawors.stones.core.player;
 
 import com.github.sawors.stones.Stones;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -11,7 +11,6 @@ public class StonesPlayerData {
     static HashMap<UUID, ArrayList<SPlayerAction>> playerActionMap = new HashMap<>();
     
     public static void logAction(UUID id, SPlayerAction a, int duration, int cooldown){
-        Stones.adminLog(playerActionMap.get(id));
         ArrayList<SPlayerAction> ar;
         if(playerActionMap.containsKey(id)){
             ar = playerActionMap.get(id);
@@ -20,7 +19,6 @@ public class StonesPlayerData {
             ar = playerActionMap.get(id);
         }
         ar.add(a);
-        Stones.adminLog(playerActionMap.get(id));
         if(duration > 0){
             new BukkitRunnable(){
                 @Override
@@ -28,7 +26,6 @@ public class StonesPlayerData {
                     if(playerActionMap.containsKey(id)){
                         playerActionMap.get(id).remove(a);
                     }
-                    Stones.adminLog(playerActionMap.get(id));
                 }
             }.runTaskLater(Stones.getPlugin(), duration);
         }
@@ -41,7 +38,6 @@ public class StonesPlayerData {
                    if(playerActionMap.containsKey(id)){
                        playerActionMap.get(id).remove(SPlayerAction.COOLDOWN);
                    }
-                    Stones.adminLog(playerActionMap.get(id));
                 }
             }.runTaskLater(Stones.getPlugin(), cooldown);
         }
@@ -61,16 +57,22 @@ public class StonesPlayerData {
                 ar.add(SPlayerAction.COOLDOWN);
                 playerActionMap.put(id, ar);
             }
-            Stones.adminLog(playerActionMap.get(id));
             new BukkitRunnable(){
                 @Override
                 public void run() {
                     if(playerActionMap.containsKey(id)){
                         playerActionMap.get(id).remove(SPlayerAction.COOLDOWN);
                     }
-                    Stones.adminLog(playerActionMap.get(id));
                 }
             }.runTaskLater(Stones.getPlugin(), cooldown);
+        }
+    }
+    
+    public static boolean hasCooldown(UUID id){
+        if(playerActionMap.containsKey(id)){
+            return playerActionMap.get(id).contains(SPlayerAction.COOLDOWN);
+        } else {
+            return false;
         }
     }
     
@@ -94,4 +96,6 @@ public class StonesPlayerData {
     public static boolean hasAction(UUID id, SPlayerAction ac){
         return playerActionMap.containsKey(id)&&playerActionMap.get(id).contains(ac);
     }
+    
+    
 }

@@ -1,6 +1,6 @@
-package com.github.sawors.stones.entitiy;
+package com.github.sawors.stones.entity;
 
-import com.github.sawors.stones.database.DataHolder;
+import com.github.sawors.stones.core.database.DataHolder;
 import io.papermc.paper.event.entity.EntityMoveEvent;
 import org.bukkit.Material;
 import org.bukkit.Particle;

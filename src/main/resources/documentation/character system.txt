@@ -1,0 +1,18 @@
+
+
+
+This is how we store data for each character
+
+file system :
+
+SERVER ROOT/
+    characters/
+        _links.json
+            {
+            [PLAYER_UUID] : [CHARACTER_UUID],
+            [PLAYER_UUID] : [CHARACTER_UUID],
+            [...]
+            }
+        [UUID].json
+
+

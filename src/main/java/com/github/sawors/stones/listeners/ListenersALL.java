@@ -2,39 +2,36 @@ package com.github.sawors.stones.listeners;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
-import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import com.github.sawors.stones.Stones;
-import com.github.sawors.stones.UsefulThings.SerializeInventory;
 import com.github.sawors.stones.UsefulThings.UsefulThings;
-import com.github.sawors.stones.database.DataHolder;
+import com.github.sawors.stones.core.database.DataHolder;
 import com.github.sawors.stones.items.SItem;
 import com.github.sawors.stones.items.StonesItems;
 import com.github.sawors.stones.magic.MagicExecutor;
-import com.github.sawors.stones.recipes.Recipes;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Jukebox;
-import org.bukkit.block.data.Bisected;
-import org.bukkit.block.data.type.Chain;
-import org.bukkit.block.data.type.Door;
-import org.bukkit.block.data.type.Slab;
-import org.bukkit.block.data.type.Stairs;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.*;
-import org.bukkit.event.entity.*;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.EntityCombustEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -43,72 +40,19 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
-import org.spigotmc.event.entity.EntityDismountEvent;
 
-import java.io.IOException;
 import java.util.Objects;
-import java.util.logging.Level;
 
 public class ListenersALL implements Listener {
 
     ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
 
     //ALL PRAISE THE XP ORB REMOVER  \i/ MAY HIS POWER CURE US OF THE DISEASE THAT CONSUME OUR WORLD \i/
-    @EventHandler
-    public void onXpSpawn(EntityAddToWorldEvent event){
-        if(event.getEntity() instanceof ExperienceOrb){
-            event.getEntity().remove();
-        }
-    }
+    
 
-    @EventHandler
-    public void onPlayerEat(PlayerItemConsumeEvent event){
-        Player p = event.getPlayer();
-        ItemStack consumed_item = event.getItem();
+    
 
-        if(consumed_item.getType() == Material.COOKED_MUTTON || consumed_item.getType() == Material.COOKED_PORKCHOP || consumed_item.getType() == Material.COOKED_BEEF){
-            p.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 100, 1, false));
-            p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 100, 2, false));
-        }
-    }
-
-    @EventHandler
-    public void onArrowHit(ProjectileHitEvent event){
-        if(event.getHitBlock() != null && event.getEntity() instanceof Arrow){
-            Arrow arrow = (Arrow) event.getEntity();
-            Block block = event.getHitBlock();
-            if(block.getType().getBlastResistance() > 1){
-                if(Math.random() < block.getType().getBlastResistance()/10){
-                    arrow.getWorld().spawnParticle(Particle.ITEM_CRACK, arrow.getLocation(),2,.1,.1,.1,.1,new ItemStack(Material.STICK));
-                    arrow.getWorld().spawnParticle(Particle.ITEM_CRACK, arrow.getLocation(),4,.1,.1,.1,.1,new ItemStack(Material.IRON_INGOT));
-                    block.getWorld().playSound(block.getLocation(), Sound.ITEM_SHIELD_BREAK, 1f, UsefulThings.randomPitchSimple()+2f);
-                    arrow.remove();
-                } else {
-                    block.getWorld().playSound(block.getLocation(), block.getSoundGroup().getPlaceSound(), 1f, UsefulThings.randomPitchSimple()+0.5f);
-                }
-            } else {
-                arrow.getWorld().spawnParticle(Particle.BLOCK_CRACK, arrow.getLocation(),6,.1,.1,.1,.1,block.getBlockData());
-                block.getWorld().playSound(block.getLocation(), block.getSoundGroup().getPlaceSound(), 1f, UsefulThings.randomPitchSimple()+0.2f);
-            }
-            
-            // switch for sound
-
-
-
-            //arrow break reaction
-            if(block.getType().toString().contains("GLASS_PANE")){
-                new BukkitRunnable(){
-                    @Override
-                    public void run(){
-                        block.getWorld().playSound(block.getLocation(), Sound.BLOCK_GLASS_BREAK, 1,1.2f);
-                        block.getWorld().spawnParticle(Particle.BLOCK_CRACK, block.getX()+0.5, block.getY()+0.5, block.getZ()+0.5,16, 0, 0,0, block.getBlockData());
-                        block.getWorld().spawnParticle(Particle.FLAME, block.getLocation(), 1);
-                        block.breakNaturally();
-                    }
-                }.runTaskLater(Stones.getPlugin(), 1);
-            }
-        }
-    }
+    
 
 
     @EventHandler
@@ -291,18 +235,7 @@ public class ListenersALL implements Listener {
     
     
     
-        @EventHandler
-        public void onPlayerLeaveSit(EntityDismountEvent event){
-        if(event.getEntity() instanceof Player && event.getDismounted() instanceof ArmorStand){
-            Player player = (Player) event.getEntity();
-            ArmorStand seat = (ArmorStand) event.getDismounted();
-            if(seat.getCustomName() != null && seat.getCustomName().contains("seat")){
-                seat.remove();
-                player.teleport(player.getLocation().add(0,1,0));
-            }
-        }
-
-        }
+        
 
         @EventHandler
         public void onItemSwitch(PlayerItemHeldEvent event){
@@ -336,50 +269,7 @@ public class ListenersALL implements Listener {
                 }
             }
         }
-
-        @EventHandler
-    public void onPlayerBreakLogEvent(BlockBreakEvent event){
-            Player p = event.getPlayer();
-            Block b = event.getBlock();
-
-
-
-
-
-
-
-
-            //just in case the event is triggered by magic or else
-            /*if(p.getHealth() != 0){
-                if(String.valueOf(b.getType()).contains("LOG")){
-                    for(int i = 1; i<128; i++){
-                        if(String.valueOf(b.getLocation().add(0.5,i,0.5).getBlock().getType()).contains("LOG")){
-                            b.getWorld().spawnFallingBlock(b.getLocation().add(0.5,i,0.5), b.getLocation().add(0.5,i,0.5).getBlock().getBlockData());
-                            b.getLocation().add(0.5,i,0.5).getBlock().setType(Material.AIR);
-                        } else{
-                        break;
-                        }
-                    }
-                }
-            }*/
-
-    }
-
-
-    @EventHandler
-    public void onItemDespawn(ItemDespawnEvent event){
-        if(event.getEntity().getItemStack().getType() == Material.TORCH && Math.random() < 0.5){
-            event.getEntity().getLocation().getBlock().setType(Material.FIRE);
-        }
-    }
-
-    @EventHandler
-    public void onItemSpawn(ItemSpawnEvent event){
-        if(event.getEntity().getItemStack().getType() == Material.TORCH){
-           event.getEntity().setTicksLived(4800);
-        }
-    }
-
+        
     @EventHandler
     public void onEntityBurn(EntityCombustEvent event){
             if(event.getEntity() instanceof Item){
@@ -400,142 +290,6 @@ public class ListenersALL implements Listener {
                 }
             }
     }
-
-//    @EventHandler
-//    public void onPlayerSneak(PlayerToggleSneakEvent event){
-//            Player p = event.getPlayer();
-//            if(event.isSneaking()){
-//                p.sendMessage("sneak");
-//            } else{
-//                p.sendMessage("unsneak");
-//            }
-//    }
-
-    @EventHandler
-    public void onPlayerOpenDoor(PlayerInteractEvent event){
-            Block b = event.getClickedBlock();
-            if(b != null && b.getType().toString().contains("_DOOR") && event.getAction().isRightClick()){
-                //event.setCancelled(true);
-                Door door = (Door) b.getBlockData().clone();
-
-
-
-                //DOUBLE DOOR LOGIC
-                if(!event.useInteractedBlock().equals(Event.Result.DENY) && !event.getPlayer().isSneaking()) {
-                    Block b1;
-                    Block b2;
-                    if (door.getFacing().equals(BlockFace.NORTH) || door.getFacing().equals(BlockFace.SOUTH)) {
-                        b1 = b.getLocation().add(1, 0, 0).getBlock();
-                        b2 = b.getLocation().add(-1, 0, 0).getBlock();
-
-
-                    } else {
-                        b1 = b.getLocation().add(0, 0, 1).getBlock();
-                        b2 = b.getLocation().add(0, 0, -1).getBlock();
-                    }
-                    if (b1.getType().toString().contains("_DOOR") && ((Door) b1.getBlockData()).getHinge() != door.getHinge()) {
-                        Door d1 = (Door) b1.getBlockData().clone();
-                        if (door.isOpen()) {
-                            d1.setOpen(false);
-                            b1.getWorld().playSound(b1.getLocation().add(0.5, 0.5, 0.5), Sound.BLOCK_WOODEN_DOOR_CLOSE, 1, 1);
-                        } else {
-                            d1.setOpen(true);
-                            b1.getWorld().playSound(b1.getLocation().add(0.5, 0.5, 0.5), Sound.BLOCK_WOODEN_DOOR_OPEN, 1, 1);
-                        }
-                        b1.setBlockData(d1);
-                        b1.getState().update();
-
-                    }
-                    if (b2.getType().toString().contains("_DOOR") && ((Door) b2.getBlockData()).getHinge() != door.getHinge()) {
-                        Door d2 = (Door) b2.getBlockData().clone();
-                        if (door.isOpen()) {
-                            d2.setOpen(false);
-                            b2.getWorld().playSound(b1.getLocation().add(0.5, 0.5, 0.5), Sound.BLOCK_WOODEN_DOOR_CLOSE, 1, 1);
-                        } else {
-                            d2.setOpen(true);
-                            b2.getWorld().playSound(b1.getLocation().add(0.5, 0.5, 0.5), Sound.BLOCK_WOODEN_DOOR_OPEN, 1, 1);
-                        }
-                        b2.setBlockData(d2);
-                        b2.getState().update();
-                    }
-                }
-            }
-        if(b != null && b.getType().toString().contains("_DOOR") && event.getAction().isLeftClick() && event.getPlayer().getInventory().getItemInMainHand().getType().isAir()){
-            if(event.getPlayer().isSneaking()){
-                b.getWorld().playSound(b.getLocation().add(.5,0,.5), "minecraft:sawors.door.knock", .25f, UsefulThings.randomPitchSimple()-0.5f);
-            }else{
-                b.getWorld().playSound(b.getLocation().add(.5,0,.5), "minecraft:sawors.door.knock", 1, UsefulThings.randomPitchSimple());
-            }
-        }
-    }
-
-    @EventHandler
-    public void chainClimber(PlayerInteractEvent event){
-            Player p = event.getPlayer();
-
-            if(event.getClickedBlock() != null && event.getClickedBlock().getType() == Material.CHAIN && p.getLocation().add(0,1,0).getBlock().getType().equals(Material.CHAIN) && ((Chain) p.getLocation().add(0,1,0).getBlock().getBlockData()).getAxis().equals(Axis.Y)){
-                if(p.isSneaking()){
-                    p.setVelocity(new Vector(0,.25,0));
-                    p.getWorld().playSound(p.getLocation().add(0,1,0), Sound.BLOCK_CHAIN_STEP, .25f, 1);
-                }else{
-                    p.setVelocity(new Vector(0,.33,0));
-                    p.getWorld().playSound(p.getLocation().add(0,1,0), Sound.BLOCK_CHAIN_STEP, 1, 1);
-                }
-            }
-    }
-
-    @EventHandler
-    public void playerOpenBackpack(PlayerInteractEvent event){
-        Player p = event.getPlayer();
-
-        if(p.getInventory().getItemInMainHand().getType().equals(Material.RAW_IRON) && p.isSneaking()){
-            ItemStack mainhand = event.getPlayer().getInventory().getItemInMainHand();
-            Inventory inv = Bukkit.createInventory(event.getPlayer(), 45, Component.text("Backpack"));
-            for(int i = 0; i<45; i++){
-                inv.setItem(i, new ItemStack(Material.OAK_BOAT));
-            }
-            String s = mainhand.getItemMeta().getPersistentDataContainer().get(DataHolder.getStonesItemDataKey(), PersistentDataType.STRING);
-            p.sendMessage(s);
-            //if(mainhand.hasItemMeta() && mainhand.getItemMeta().getPersistentDataContainer().get(DataHolder.getStonesItemDataKey(), PersistentDataType.STRING) != null){
-                try{
-
-                    ItemStack[] itemlist = SerializeInventory.itemStackArrayFromBase64(s);
-                    for(int i = 0; i<45; i++){
-                        inv.setItem(i, itemlist[i]);
-                    }
-                }catch(IOException exception){
-                    Bukkit.getLogger().log(Level.WARNING, "backpack from player " + event.getPlayer().getName() + " failed to open (no data found on item or IOException)");
-                }
-
-            //}
-            event.getPlayer().openInventory(inv);
-        }
-
-    }
-
-    @EventHandler
-    public void playerCloseBackpack(InventoryCloseEvent event){
-            if(event.getPlayer().getInventory().getItemInMainHand().getType().equals(Material.RAW_IRON)){
-                ItemStack mainhand = event.getPlayer().getInventory().getItemInMainHand();
-                ItemStack[] itemlist = event.getInventory().getContents();
-
-                for(int i = 0; i<itemlist.length; i++){
-                    event.getPlayer().sendMessage("i: "+i);
-                   if(itemlist[i] == null){
-                       itemlist[i] = new ItemStack(Material.STONE);
-                   }
-                }
-
-
-//                event.getPlayer().sendMessage(Arrays.toString(itemlist));
-                String s = SerializeInventory.itemStackArrayToBase64(itemlist);
-                event.getPlayer().sendMessage(s);
-                mainhand.getItemMeta().getPersistentDataContainer().set(DataHolder.getStonesItemDataKey(), PersistentDataType.STRING, s);
-
-                //event.getPlayer().sendMessage(SerializeInventory.itemStackArrayToBase64(event.getInventory().getContents()));
-            }
-    }
-
 
     @EventHandler
     public void explosionEvent(EntityExplodeEvent event){
@@ -952,142 +706,7 @@ public class ListenersALL implements Listener {
     }
     
     
-    @EventHandler
-    public void onPlayerCutPlant(PlayerInteractEvent event){
-        if(event.getClickedBlock() != null && !event.getClickedBlock().getType().isAir()){
-            Block b = event.getClickedBlock();
-            Player p = event.getPlayer();
-            ItemStack item = p.getInventory().getItemInMainHand();
-            byte globaltimer = 5;
-            
-            if(UsefulThings.isShortPlant(b) && event.getAction().isLeftClick()){
-                for(Entity e : b.getLocation().add(0.5,1,0.5).getNearbyEntities(1,1,1)){
-                    if(e.getType().equals(EntityType.ARMOR_STAND) && e.getCustomName() != null && (e.getCustomName().toLowerCase().contains("shovel") || e.getCustomName().toLowerCase().contains("sickle"))){
-                        event.setCancelled(true);
-                        return;
-                    }
-                }
-            }
-            
-            
-            if(UsefulThings.isFlower(b.getLocation().add(0,1,0).getBlock()) && b.isSolid() && (b.getType().toString().contains("DIRT") || b.getType().toString().contains("GRASS_") || b.getType().toString().contains("PODZOL")) && event.getAction().isRightClick() && item.getType().toString().contains("SHOVEL")){
-                Location mid = b.getLocation();
-                mid.setX(b.getLocation().add(0,1,0).getBlock().getBoundingBox().getCenter().getX());
-                mid.setY(b.getLocation().add(0,1,0).getBlock().getBoundingBox().getCenter().getY() +13/16f);
-                mid.setZ(b.getLocation().add(0,1,0).getBlock().getBoundingBox().getCenter().getZ());
-                for(Entity e : mid.getNearbyEntities(.5,.5,.5)){
-                    if(e.getType().equals(EntityType.ARMOR_STAND)){
-                        return;
-                    }
-                }
-                event.setCancelled(true);
-                p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, (int) ((globaltimer-1)/0.2), 2, false, false));
-                ArmorStand stand2 = UsefulThings.createDisplay(mid.add((p.getLocation().getX() - b.getBoundingBox().getCenter().getX())/10,-2/16f,(p.getLocation().getZ()-b.getBoundingBox().getCenter().getZ())/10), item.clone(), true);
-                stand2.setSmall(true);
-                stand2.setCustomName("_shovel");
-                stand2.setHeadPose(new EulerAngle(0, Math.toRadians(p.getLocation().getYaw()+180), 0));
-                new BukkitRunnable(){
-                    byte timer = (byte) ((globaltimer-1)/2);
-        
-        
-                    @Override
-                    public void run(){
-                        if(timer <= -1){
-                            stand2.remove();
-                            this.cancel();
-                            return;
-                        }
-                        stand2.setHeadPose(new EulerAngle(stand2.getHeadPose().getX()+Math.toRadians(10), stand2.getHeadPose().getY(), 0));
-                        b.getWorld().spawnParticle(Particle.BLOCK_DUST, mid, 8,0,0,0, 0, b.getBlockData());
-                        b.getWorld().playSound(mid, Sound.BLOCK_GRAVEL_BREAK, .5f, 1 + 1f/(4*timer));
-                        if(timer == 0){
-                            Material baseb = b.getType();
-                            b.setType(Material.DIRT);
-                            b.getWorld().spawnParticle(Particle.BLOCK_DUST, mid, 16,0,0,0, 0, b.getBlockData());
-                            b.getWorld().playSound(mid, Sound.BLOCK_GRAVEL_BREAK, .5f, 1.25f);
-                            b.setType(baseb);
-                            b.getLocation().add(0,1,0).getBlock().breakNaturally();
-                            if(b.getType().toString().contains("GRASS_")){
-                                b.setType(Material.DIRT);
-                            }
-                            
-                        }
-                        timer --;
-                    }
-                }.runTaskTimer(Stones.getPlugin(), 1, 10);
-            }
-            
-            
-            
-            
-            if(UsefulThings.isShortPlant(b) && item.hasItemMeta() && item.getItemMeta().getLocalizedName().contains("sickle")){
     
-                Location mid = b.getLocation();
-                mid.setX(b.getBoundingBox().getCenter().getX());
-                mid.setY(b.getBoundingBox().getCenter().getY() +13/16f);
-                mid.setZ(b.getBoundingBox().getCenter().getZ());
-                
-                
-                    for(Entity e : mid.getNearbyEntities(.5,.5,.5)){
-                        if(e.getType().equals(EntityType.ARMOR_STAND)){
-                            return;
-                        }
-                    }
-                if(event.getAction().isRightClick()){
-                    
-                    p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, globaltimer+5, 2, false, false));
-    
-                    final ArmorStand stand = UsefulThings.createDisplay(mid.add((p.getLocation().getX() - b.getBoundingBox().getCenter().getX())/10,0,(p.getLocation().getZ()-b.getBoundingBox().getCenter().getZ())/10), item.clone(), true);
-                    stand.setSmall(true);
-                    stand.setCustomName("_sickle");
-                    Location standloc = stand.getLocation();
-                    stand.setHeadPose(new EulerAngle(0, Math.toRadians(p.getLocation().getYaw()+225), 0));
-    
-                    new BukkitRunnable(){
-                        byte timer = globaltimer;
-        
-        
-                        @Override
-                        public void run(){
-                            if(timer <= -5){
-                                stand.remove();
-                                this.cancel();
-                                return;
-                            }
-                            if(timer > 0){
-                                standloc.setYaw(standloc.getYaw()-125f/globaltimer);
-                                stand.teleport(standloc);
-                            }
-                            if(timer == 0){
-                                Material baseb = b.getType();
-                                b.setType(Material.GRASS);
-                                b.getWorld().spawnParticle(Particle.BLOCK_DUST, mid, 8,0.2,0.2,0.2, 0, b.getBlockData());
-                                b.getWorld().playSound(mid, Sound.ENTITY_SNOW_GOLEM_SHEAR, .25f, 1f);
-                                b.getWorld().playSound(mid, Sound.BLOCK_GRASS_BREAK, .5f, 1.5f);
-                                b.setType(baseb);
-                                if(!UsefulThings.plantToItem(b).getType().isAir()){
-                                    b.getWorld().dropItem(mid, Recipes.sickleCut(b));
-                                }
-                                b.setType(Material.AIR);
-                            }
-                            timer --;
-                        }
-                    }.runTaskTimer(Stones.getPlugin(), 1, 1);
-                } else {
-                    event.setCancelled(true);
-                    b.setType(Material.GRASS);
-                    b.getWorld().spawnParticle(Particle.BLOCK_DUST, mid, 8,0.2,0.2,0.2, 0, b.getBlockData());
-                    b.getWorld().dropItem(mid, StonesItems.get(SItem.THATCH));
-                    b.setType(Material.AIR);
-                    
-                    
-                    
-                    
-                }
-    
-            }
-        }
-    }
     
     @EventHandler(priority = EventPriority.HIGHEST)
     public void placedArmorStandsWithArms(CreatureSpawnEvent event){
@@ -1095,7 +714,7 @@ public class ListenersALL implements Listener {
             ((ArmorStand) event.getEntity()).setArms(true);
             if(event.getSpawnReason() != CreatureSpawnEvent.SpawnReason.BREEDING){
                 
-                // AS RETARDED AS IT SEEMS, IT IS MY WAY TO PATCH INVISIBLE ARMOR STANDS FROM APPEARING FOR A FRACTION OF SECOND WHEN SPAWNED
+                // AS RETARDED AS IT SEEMS, IT'S MY WAY TO PATCH INVISIBLE ARMOR STANDS FROM APPEARING FOR A FRACTION OF SECOND WHEN SPAWNED
                 // WORKS IN DUO WITH THE RESOURCE PACK (OPTIFINE)
                 
                 event.getEntity().setCustomName("Armor Stand");
@@ -1103,52 +722,13 @@ public class ListenersALL implements Listener {
         }
     }
     
-    @EventHandler
-    public void playerSit(PlayerInteractEvent event){
-        if(event.getClickedBlock() != null && !event.getPlayer().isSneaking() && event.getAction().isRightClick() && ((event.getClickedBlock().getType().toString().contains("STAIRS") && ((Stairs) event.getClickedBlock().getBlockData()).getShape().equals(Stairs.Shape.STRAIGHT) && ((Stairs) event.getClickedBlock().getBlockData()).getHalf().equals(Bisected.Half.BOTTOM)) || (event.getClickedBlock().getType().toString().contains("SLAB") && ((Slab) event.getClickedBlock().getBlockData()).getType().equals(Slab.Type.BOTTOM))) && event.getPlayer().getInventory().getItemInMainHand().getType().isAir()){
-            Block b = event.getClickedBlock();
-            Location loc = b.getLocation().add(0.5,0.5,0.5);
-            Player p = event.getPlayer();
-            if(
-                    loc.clone().add(1,0,0).getBlock().getType().toString().contains("TRAPDOOR") || loc.clone().add(1,0,0).getBlock().getType().toString().contains("SIGN") ||
-                    loc.clone().add(-1,0,0).getBlock().getType().toString().contains("TRAPDOOR") || loc.clone().add(1,0,0).getBlock().getType().toString().contains("SIGN") ||
-                    loc.clone().add(0,0,1).getBlock().getType().toString().contains("TRAPDOOR") || loc.clone().add(1,0,0).getBlock().getType().toString().contains("SIGN") ||
-                    loc.clone().add(0,0,-1).getBlock().getType().toString().contains("TRAPDOOR") || loc.clone().add(1,0,0).getBlock().getType().toString().contains("SIGN")
-            ){
-                loc.setYaw(p.getLocation().getYaw()+180);
-                UsefulThings.sitEntity(p, loc);
-            }
-            
-            
-        }
-    }
     
-    @EventHandler
-    public void playerUsesCrayon(PlayerInteractEvent event){
-        if(event.getAction().isRightClick() && Objects.equals(event.getPlayer().getInventory().getItemInMainHand().getType(), Material.STICK) && event.getPlayer().getInventory().getItemInMainHand().hasItemMeta() && event.getPlayer().getInventory().getItemInMainHand().getItemMeta().getLocalizedName().contains("crayon")){
-            Block b = event.getClickedBlock();
-            Player p = event.getPlayer();
-            if(b != null){
-                if(b.getType().toString().contains("SIGN")){
-                    org.bukkit.block.Sign sign = ((org.bukkit.block.Sign) b.getState());
-                    p.openSign(sign);
-                }
-            }
-        }
-    }
     
-    @EventHandler
-    public void playerExitSign(SignChangeEvent event){
-        Location loc = event.getBlock().getLocation().add(0.5,0.5,0.5);
-        loc.getWorld().playSound(loc, Sound.ENTITY_VILLAGER_WORK_CARTOGRAPHER, .5f, 1);
-    }
     
-    @EventHandler(priority = EventPriority.LOW)
-    public void disableRespawnAnchors(PlayerInteractEvent event){
-        if(event.getClickedBlock() != null && event.getClickedBlock().getType().equals(Material.RESPAWN_ANCHOR) && event.getAction().isRightClick() && event.getPlayer().getInventory().getItemInMainHand().getType().equals(Material.GLOWSTONE)){
-            event.setCancelled(true);
-        }
-    }
+    
+    
+    
+    
     
     @EventHandler
     public void timeSkipperUse(PlayerInteractEvent event){
@@ -1171,34 +751,7 @@ public class ListenersALL implements Listener {
         }
     }
     
-    @EventHandler
-    public void onFireEnd(BlockFadeEvent event){
     
-    }
-    
-    @EventHandler
-    public void setCompassNorth(PlayerChangedWorldEvent event){
-        new BukkitRunnable(){
-            @Override
-            public void run() {
-                Player p = event.getPlayer();
-                p.setCompassTarget(new Location(p.getWorld(), 0,0,-1000000));
-                p.updateInventory();
-            }
-        }.runTask(Stones.getPlugin());
-    
-    }
-    @EventHandler
-    public void setCompassNorth(PlayerJoinEvent event){
-        new BukkitRunnable(){
-            @Override
-            public void run() {
-                Player p = event.getPlayer();
-                p.setCompassTarget(new Location(p.getWorld(), 0,0,-1000000));
-                p.updateInventory();
-            }
-        }.runTask(Stones.getPlugin());
-    }
     
     
     

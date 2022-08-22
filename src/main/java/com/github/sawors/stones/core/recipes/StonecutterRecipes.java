@@ -1,4 +1,4 @@
-package com.github.sawors.stones.recipes;
+package com.github.sawors.stones.core.recipes;
 
 import com.github.sawors.stones.Stones;
 import com.github.sawors.stones.UsefulThings.UsefulThings;

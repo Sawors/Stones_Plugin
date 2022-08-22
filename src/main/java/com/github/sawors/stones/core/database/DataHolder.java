@@ -1,8 +1,8 @@
-package com.github.sawors.stones.database;
+package com.github.sawors.stones.core.database;
 
 import com.github.sawors.stones.Stones;
+import com.github.sawors.stones.core.character.SCharacterData;
 import com.github.sawors.stones.effects.SEffect;
-import com.github.sawors.stones.player.SPlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -76,19 +76,19 @@ public class DataHolder {
         if(p != null){
             try{
                 if(!file.exists()){
-                    config.createSection(SPlayerData.INVENTORY_CONTENT.toString());
-                    config.createSection(SPlayerData.EFFECTS.toString());
-                    config.createSection(SPlayerData.DEBUFFS.toString());
-                    config.createSection(SPlayerData.LAST_SEEN.toString());
-                    config.createSection(SPlayerData.MUTATIONS.toString());
-                    config.createSection(SPlayerData.LAST_LOCATION.toString());
+                    config.createSection(SCharacterData.INVENTORY.toString());
+                    config.createSection(SCharacterData.EFFECTS.toString());
+                    config.createSection(SCharacterData.DEBUFFS.toString());
+                    config.createSection(SCharacterData.LAST_SEEN.toString());
+                    config.createSection(SCharacterData.MUTATIONS.toString());
+                    config.createSection(SCharacterData.LOCATION.toString());
                     
-                    config.set(SPlayerData.INVENTORY_CONTENT.toString(), p.getInventory().getContents());
-                    config.set(SPlayerData.EFFECTS.toString(), effectmapGetEntry(p.getUniqueId()));
-                    config.set(SPlayerData.DEBUFFS.toString(), null);
-                    config.set(SPlayerData.LAST_SEEN.toString(), LocalDateTime.now().format(DateTimeFormatter.BASIC_ISO_DATE));
-                    config.set(SPlayerData.MUTATIONS.toString(), null);
-                    config.set(SPlayerData.LAST_LOCATION.toString(), p.getLocation());
+                    config.set(SCharacterData.INVENTORY.toString(), p.getInventory().getContents());
+                    config.set(SCharacterData.EFFECTS.toString(), effectmapGetEntry(p.getUniqueId()));
+                    config.set(SCharacterData.DEBUFFS.toString(), null);
+                    config.set(SCharacterData.LAST_SEEN.toString(), LocalDateTime.now().format(DateTimeFormatter.BASIC_ISO_DATE));
+                    config.set(SCharacterData.MUTATIONS.toString(), null);
+                    config.set(SCharacterData.LOCATION.toString(), p.getLocation());
                     
                     config.save(file);
                     byte[] encoded = Base64.getEncoder().encode(config.saveToString().getBytes(StandardCharsets.UTF_8));
@@ -114,12 +114,12 @@ public class DataHolder {
         if(p != null){
             try{
                 config = YamlConfiguration.loadConfiguration(file);
-                config.set(SPlayerData.INVENTORY_CONTENT.toString(), p.getInventory().getContents());
-                config.set(SPlayerData.EFFECTS.toString(), effectmapGetEntry(p.getUniqueId()));
-                config.set(SPlayerData.DEBUFFS.toString(), null);
-                config.set(SPlayerData.LAST_SEEN.toString(), LocalDateTime.now().format(DateTimeFormatter.ISO_DATE));
-                config.set(SPlayerData.MUTATIONS.toString(), null);
-                config.set(SPlayerData.LAST_LOCATION.toString(), p.getLocation());
+                config.set(SCharacterData.INVENTORY.toString(), p.getInventory().getContents());
+                config.set(SCharacterData.EFFECTS.toString(), effectmapGetEntry(p.getUniqueId()));
+                config.set(SCharacterData.DEBUFFS.toString(), null);
+                config.set(SCharacterData.LAST_SEEN.toString(), LocalDateTime.now().format(DateTimeFormatter.ISO_DATE));
+                config.set(SCharacterData.MUTATIONS.toString(), null);
+                config.set(SCharacterData.LOCATION.toString(), p.getLocation());
                 
                 
                 config.save(file);
@@ -131,7 +131,7 @@ public class DataHolder {
         }
     }
     
-    public static void saveDataEntryForPlayer(UUID id, SPlayerData entry, Object value) throws FileNotFoundException{
+    public static void saveDataEntryForPlayer(UUID id, SCharacterData entry, Object value) throws FileNotFoundException{
         Player p = Bukkit.getPlayer(id);
         File file = new File(Stones.getPlugin().getDataFolder()+"/playerdata/"+id+".yml");
         YamlConfiguration config;

@@ -2,9 +2,9 @@ package com.github.sawors.stones.combat;
 
 import com.github.sawors.stones.Stones;
 import com.github.sawors.stones.UsefulThings.UsefulThings;
-import com.github.sawors.stones.database.DataHolder;
-import com.github.sawors.stones.player.SPlayerAction;
-import com.github.sawors.stones.player.StonesPlayerData;
+import com.github.sawors.stones.core.database.DataHolder;
+import com.github.sawors.stones.core.player.SPlayerAction;
+import com.github.sawors.stones.core.player.StonesPlayerData;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -116,12 +116,16 @@ public class CombatListeners implements Listener {
     
     @EventHandler
     public void parry(PlayerInteractEvent event){
-        if(event.getAction().isRightClick() && !event.getPlayer().getInventory().getItemInMainHand().getType().isAir() && event.getPlayer().getInventory().getItemInOffHand().getType().isAir()){
+        if(StonesPlayerData.hasAction(event.getPlayer().getUniqueId(), SPlayerAction.PARRY)){
+            event.setCancelled(true);
+            return;
+        }
+        if(event.getAction().isRightClick() && !event.getPlayer().getInventory().getItemInMainHand().getType().isAir() && event.getPlayer().getInventory().getItemInOffHand().getType().isAir() && !StonesPlayerData.hasCooldown(event.getPlayer().getUniqueId())){
             Player p = event.getPlayer();
             ItemStack item = p.getInventory().getItemInMainHand();
-            if(canParryAttacks(item)){
+            if(WeaponUtils.canParry(item)){
                 int duration = 10;
-                StonesPlayerData.logAction(p.getUniqueId(), SPlayerAction.PARRY,duration, 60);
+                StonesPlayerData.logAction(p.getUniqueId(), SPlayerAction.PARRY,duration, 15);
                 p.sendActionBar(Component.text(ChatColor.WHITE+"/"));
                 new BukkitRunnable(){
                     @Override
@@ -135,25 +139,14 @@ public class CombatListeners implements Listener {
     
     @EventHandler
     public void parriedAttack(EntityDamageByEntityEvent event){
+        if(StonesPlayerData.hasAction(event.getDamager().getUniqueId(), SPlayerAction.PARRY)){
+            event.setCancelled(true);
+            return;
+        }
         if(event.getEntity() instanceof Player && StonesPlayerData.hasAction(event.getEntity().getUniqueId(), SPlayerAction.PARRY)){
             event.setCancelled(true);
-            event.getEntity().getWorld().playSound(event.getEntity().getLocation(), Sound.ITEM_SHIELD_BLOCK, 1,1);
+            event.getEntity().getWorld().playSound(event.getEntity().getLocation(), Sound.BLOCK_METAL_BREAK, 1,1.5f);
             StonesPlayerData.clearActions(event.getEntity().getUniqueId());
         }
-    }
-    
-    private static boolean canParryAttacks(ItemStack item){
-        Material itemtype = item.getType();
-        if(itemtype.toString().contains("SWORD") || itemtype.equals(Material.STICK)){
-            if(item.hasItemMeta() && item.getItemMeta().hasLocalizedName()){
-                if(item.getItemMeta().getLocalizedName().contains("SWORD")){
-                    return true;
-                }
-            } else {
-                return true;
-            }
-        }
-        
-        return false;
     }
 }

@@ -1,8 +1,8 @@
 package com.github.sawors.stones.magic;
 
 import com.github.sawors.stones.Stones;
-import com.github.sawors.stones.entitiy.SEntity;
-import com.github.sawors.stones.entitiy.StonesEntities;
+import com.github.sawors.stones.entity.SEntity;
+import com.github.sawors.stones.entity.StonesEntities;
 import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;

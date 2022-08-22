@@ -11,10 +11,13 @@ import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import com.destroystokyo.paper.event.entity.ProjectileCollideEvent;
 import com.github.sawors.stones.Stones;
 import com.github.sawors.stones.UsefulThings.UsefulThings;
+import com.github.sawors.stones.core.player.SPlayerAction;
+import com.github.sawors.stones.core.player.StonesPlayerData;
 import com.github.sawors.stones.items.SItem;
 import com.github.sawors.stones.items.StonesItems;
 import com.github.sawors.stones.siege.weapons.Mortar;
 import com.github.sawors.stones.siege.weapons.StraightCannon;
+import com.github.sawors.stones.siege.weapons.Trebuchet;
 import io.papermc.paper.event.block.BlockPreDispenseEvent;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Location;
@@ -26,15 +29,18 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import org.spigotmc.event.entity.EntityDismountEvent;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -53,30 +59,10 @@ public class StonesSiege implements Listener {
     private static final ProtocolManager pmanager = Stones.getProtocolManager();
     
     @EventHandler
-    public void cannonShoot(PlayerInteractEvent event){
+    public void siegeShoot(PlayerInteractEvent event){
         Block core = event.getClickedBlock();
-        if(core != null && core.getType() == Material.DISPENSER && event.getAction().isRightClick() && event.getPlayer().getInventory().getItemInMainHand().getType().equals(Material.FLINT_AND_STEEL)){
-            org.bukkit.block.data.type.Dispenser disp = (org.bukkit.block.data.type.Dispenser) core.getBlockData();
-            switch(disp.getFacing()){
-                case NORTH:
-                case EAST:
-                case WEST:
-                case SOUTH:
-                    if(StraightCannon.checkCannon(core)){
-                        StraightCannon cannon = new StraightCannon(core);
-                        event.setCancelled(true);
-                        cannon.shoot();
-                    }
-                    break;
-                case UP:
-                case DOWN:
-                    if(Mortar.checkCannon(core)){
-                        Mortar mortar = new Mortar(core);
-                        event.setCancelled(true);
-                        mortar.shoot();
-                    }
-                    break;
-            }
+        if(core != null && core.getType() == Material.DISPENSER && event.getAction().isRightClick() && event.getPlayer().getInventory().getItemInMainHand().getType().equals(Material.FLINT_AND_STEEL)) {
+            shootProcedure(core, event);
         }
     }
     
@@ -84,30 +70,41 @@ public class StonesSiege implements Listener {
     public void autoshoot(BlockPreDispenseEvent event){
         Block core = event.getBlock();
         if(core.getType() == Material.DISPENSER){
-            org.bukkit.block.data.type.Dispenser disp = (org.bukkit.block.data.type.Dispenser) core.getBlockData();
-            switch(disp.getFacing()){
-                case NORTH:
-                case EAST:
-                case WEST:
-                case SOUTH:
-                    if(StraightCannon.checkCannon(core)){
-                        StraightCannon cannon = new StraightCannon(core);
-                        event.setCancelled(true);
-                        cannon.shoot();
-                    }
-                    break;
-                case UP:
-                case DOWN:
-                    if(Mortar.checkCannon(core)){
-                        Mortar mortar = new Mortar(core);
-                        event.setCancelled(true);
-                        mortar.shoot();
-                    }
-                    break;
-            }
+            shootProcedure(core, event);
         }
         
     }
+    
+    void shootProcedure(Block core, Cancellable event){
+        org.bukkit.block.data.type.Dispenser disp = (org.bukkit.block.data.type.Dispenser) core.getBlockData();
+        switch(disp.getFacing()){
+            case NORTH:
+            case EAST:
+            case WEST:
+            case SOUTH:
+                if(StraightCannon.checkCannon(core)){
+                    StraightCannon cannon = new StraightCannon(core);
+                    event.setCancelled(true);
+                    cannon.shoot();
+                    break;
+                }
+            case UP:
+            case DOWN:
+                if(Mortar.checkCannon(core)){
+                    Mortar mortar = new Mortar(core);
+                    event.setCancelled(true);
+                    mortar.shoot();
+                    break;
+                } else if(Trebuchet.checkCannon(core)){
+                    Trebuchet trebuchet = new Trebuchet(core);
+                    event.setCancelled(true);
+                    trebuchet.shoot();
+                    break;
+                }
+            break;
+        }
+    }
+    
     
     @EventHandler
     public void onProjectileHitBlock(ProjectileHitEvent event){
@@ -138,6 +135,21 @@ public class StonesSiege implements Listener {
     public void onProjectileHitGlobal(ProjectileCollideEvent event){
     }
     
+    @EventHandler(priority = EventPriority.LOW)
+    public static void disablePlayerExitSeat(EntityDismountEvent event){
+        if(StonesPlayerData.hasAction(event.getEntity().getUniqueId(), SPlayerAction.LAUNCHED)){
+            event.setCancelled(true);
+        }
+    }
+    
+    @EventHandler(priority = EventPriority.LOW)
+    public static void preventFallDamages(EntityDamageEvent event){
+        if(event.getCause().equals(EntityDamageEvent.DamageCause.FALL) && StonesPlayerData.hasAction(event.getEntity().getUniqueId(), SPlayerAction.LAUNCHED)){
+            event.setCancelled(true);
+            Block feetblock = event.getEntity().getLocation().add(0,-.75,0).getBlock();
+            event.getEntity().getWorld().spawnParticle(Particle.BLOCK_CRACK, event.getEntity().getLocation(), 128,1.5,.5,1.5,.5,feetblock.getBlockData());
+        }
+    }
     
     //
     //      PROJECTILE MAP
@@ -234,18 +246,6 @@ public class StonesSiege implements Listener {
         }
     };
     
-    static PacketAdapter test = new PacketAdapter(Stones.getPlugin(), PacketType.Play.Server.SPAWN_ENTITY) {
-        @Override
-        public void onPacketSending(PacketEvent event) {
-            PacketContainer packet = event.getPacket();
-            if(packet.getType() == PacketType.Play.Server.SPAWN_ENTITY) {
-                if (packet.getEntityTypeModifier().read(0) == EntityType.CHICKEN) {
-                    packet.getEntityTypeModifier().write(0, EntityType.DOLPHIN);
-                }
-            }
-        }
-    };
-    
     static PacketAdapter test2 = new PacketAdapter(Stones.getPlugin(), PacketType.Play.Server.SPAWN_ENTITY) {
         @Override
         public void onPacketSending(PacketEvent event) {
@@ -274,6 +274,6 @@ public class StonesSiege implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public static void onEnable(PluginEnableEvent event){
         Stones.getProtocolManager().addPacketListener(blockprojectiles);
-        Stones.getProtocolManager().addPacketListener(test2);
+        //Stones.getProtocolManager().addPacketListener(test2);
     }
 }

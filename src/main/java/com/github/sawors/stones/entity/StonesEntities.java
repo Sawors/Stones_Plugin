@@ -1,4 +1,4 @@
-package com.github.sawors.stones.entitiy;
+package com.github.sawors.stones.entity;
 
 import org.bukkit.entity.Entity;
 

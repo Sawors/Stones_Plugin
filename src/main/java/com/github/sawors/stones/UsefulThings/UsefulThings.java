@@ -1,7 +1,7 @@
 package com.github.sawors.stones.UsefulThings;
 
 import com.github.sawors.stones.Stones;
-import com.github.sawors.stones.database.DataHolder;
+import com.github.sawors.stones.core.database.DataHolder;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
@@ -426,103 +426,7 @@ public class UsefulThings {
         }
     }
 
-    /**
-     * Used to sit an entity at it's location. Conditions : entity must : be on ground, not swimming, not jumping
-     * @param entity the entity to sit
-     */
-    public static void sitEntity(LivingEntity entity){
-        if(entity.getLocation().subtract(0,0.1,0).getBlock().isSolid() && !entity.isJumping() && !entity.isSwimming()){
-            ArmorStand e = createDisplay(entity.getLocation().subtract(0,1,0), new ItemStack(Material.AIR));
-            e.setSmall(true);
-            e.addPassenger(entity);
-
-        } else {
-            if(entity instanceof Player){
-                entity.sendActionBar(Component.text(ChatColor.RED + "you must be on ground to sit"));
-            }
-        }
-    }
-
-
-
-    /**
-     * Used to sit an entity at it's location. Conditions : entity must : be on ground, not swimming, not jumping
-     * @param entity the entity to sit
-     * @param forcesit if the sit should be forced or not (ignore Conditions)
-     */
-    public static void sitEntity(LivingEntity entity, boolean forcesit){
-        if(forcesit){
-            ArmorStand e = (ArmorStand) entity.getWorld().spawnEntity(entity.getLocation().subtract(0,1,0), EntityType.ARMOR_STAND);
-            e.setGravity(false);
-            e.setVisible(false);
-            e.setInvulnerable(true);
-            e.setSmall(true);
-            e.setCustomName("seat");
-            e.setCustomNameVisible(false);
-            e.addEquipmentLock(EquipmentSlot.HEAD, ArmorStand.LockType.ADDING_OR_CHANGING);
-            e.addEquipmentLock(EquipmentSlot.CHEST, ArmorStand.LockType.ADDING_OR_CHANGING);
-            e.addEquipmentLock(EquipmentSlot.LEGS, ArmorStand.LockType.ADDING_OR_CHANGING);
-            e.addEquipmentLock(EquipmentSlot.FEET, ArmorStand.LockType.ADDING_OR_CHANGING);
-
-            e.addPassenger(entity);
-        } else {
-            UsefulThings.sitEntity(entity);
-        }
-    }
-
-    /**
-     * Used to sit an entity at it's location. Conditions : entity must : be on ground, not swimming, not jumping
-     * @param entity the entity to sit
-     * @param location where to sit the entity
-     */
-    public static void sitEntity(LivingEntity entity, Location location){
-        if(entity.getLocation().subtract(0,0.1,0).getBlock().isSolid() && !entity.isJumping() && !entity.isSwimming()){
-            ArmorStand e = (ArmorStand) entity.getWorld().spawnEntity(location.subtract(0,1,0), EntityType.ARMOR_STAND);
-            e.setGravity(false);
-            e.setVisible(false);
-            e.setInvulnerable(true);
-            e.setSmall(true);
-            e.setCustomName("seat");
-            e.setCustomNameVisible(false);
-            e.addEquipmentLock(EquipmentSlot.HEAD, ArmorStand.LockType.ADDING_OR_CHANGING);
-            e.addEquipmentLock(EquipmentSlot.CHEST, ArmorStand.LockType.ADDING_OR_CHANGING);
-            e.addEquipmentLock(EquipmentSlot.LEGS, ArmorStand.LockType.ADDING_OR_CHANGING);
-            e.addEquipmentLock(EquipmentSlot.FEET, ArmorStand.LockType.ADDING_OR_CHANGING);
-
-            e.addPassenger(entity);
-
-        } else {
-            if(entity instanceof Player){
-                entity.sendActionBar(Component.text(ChatColor.RED + "you must be on ground to sit"));
-            }
-        }
-    }
-
-    /**
-     * Used to sit an entity at it's location. Conditions : entity must : be on ground, not swimming, not jumping
-     * @param entity the entity to sit
-     * @param location where to sit the entity
-     * @param forcesit if the sit should be forced or not (ignore Conditions)
-     */
-    public static void sitEntity(LivingEntity entity, Location location, boolean forcesit){
-        if(forcesit){
-            ArmorStand e = (ArmorStand) entity.getWorld().spawnEntity(location.subtract(0,1,0), EntityType.ARMOR_STAND);
-            e.setGravity(false);
-            e.setVisible(false);
-            e.setInvulnerable(true);
-            e.setSmall(true);
-            e.setCustomName("seat");
-            e.setCustomNameVisible(false);
-            e.addEquipmentLock(EquipmentSlot.HEAD, ArmorStand.LockType.ADDING_OR_CHANGING);
-            e.addEquipmentLock(EquipmentSlot.CHEST, ArmorStand.LockType.ADDING_OR_CHANGING);
-            e.addEquipmentLock(EquipmentSlot.LEGS, ArmorStand.LockType.ADDING_OR_CHANGING);
-            e.addEquipmentLock(EquipmentSlot.FEET, ArmorStand.LockType.ADDING_OR_CHANGING);
-
-            e.addPassenger(entity);
-        } else {
-            UsefulThings.sitEntity(entity, location);
-        }
-    }
+    
 
     public static boolean isDead(Player player){
         return player.isInvulnerable() && player.isInvisible() && player.getHealth() <= 1;
@@ -566,18 +470,6 @@ public class UsefulThings {
     public static @Nullable String getPlayerRole(@NotNull Player player){
         if(player.getPersistentDataContainer().get(DataHolder.getRoleKey(), PersistentDataType.STRING) != null ){
             return player.getPersistentDataContainer().get(DataHolder.getRoleKey(), PersistentDataType.STRING);
-        } else{
-            return null;
-        }
-    }
-
-    public static void setItemType(@NotNull ItemStack item, String itemtype){
-        item.getItemMeta().getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, itemtype);
-    }
-
-    public static @Nullable String getItemType(@NotNull ItemStack item){
-        if(item.hasItemMeta() && item.getItemMeta().getPersistentDataContainer().get(DataHolder.getItemTypeKey(), PersistentDataType.STRING) != null ){
-            return item.getItemMeta().getPersistentDataContainer().get(DataHolder.getItemTypeKey(), PersistentDataType.STRING);
         } else{
             return null;
         }
@@ -1185,6 +1077,14 @@ public class UsefulThings {
             }
         }
         return result.toString();
+    }
+    
+    public static String getItemType(ItemStack item){
+        String itemtype = item.getType().toString();
+        if(item.hasItemMeta() && item.getItemMeta().hasLocalizedName() && item.getItemMeta().getLocalizedName().length() > 0){
+            itemtype = item.getItemMeta().getLocalizedName();
+        }
+        return itemtype;
     }
 
 }

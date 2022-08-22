@@ -26,11 +26,12 @@ public class ChatController implements Listener {
                             MagicExecutor.invokeShadowfax(sender);
                         }
                     }.runTask(Stones.getPlugin());
+                    event.message(Component.text(ChatColor.MAGIC+""+ChatColor.BOLD+content));
                     break;
                 case"light":
                 
             }
-            event.message(Component.text(ChatColor.MAGIC+""+ChatColor.BOLD+content));
+            
         }
         
     }

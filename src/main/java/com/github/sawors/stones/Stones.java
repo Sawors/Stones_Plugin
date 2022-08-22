@@ -4,28 +4,35 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.github.sawors.stones.books.StonesBooks;
 import com.github.sawors.stones.combat.CombatListeners;
+import com.github.sawors.stones.combat.StonesWeapons;
 import com.github.sawors.stones.commands.*;
-import com.github.sawors.stones.database.DataHolder;
-import com.github.sawors.stones.death.DeathManager;
+import com.github.sawors.stones.core.character.CharacterCreateCommand;
+import com.github.sawors.stones.core.character.CharacterManager;
+import com.github.sawors.stones.core.character.CharacterSwitchCommand;
+import com.github.sawors.stones.core.database.DataHolder;
+import com.github.sawors.stones.core.death.DeathManager;
+import com.github.sawors.stones.core.player.StonesPlayerAdditions;
+import com.github.sawors.stones.core.player.StonesPlayerSit;
+import com.github.sawors.stones.core.recipes.AnvilListeners;
+import com.github.sawors.stones.core.recipes.SickleRecipes;
+import com.github.sawors.stones.core.recipes.StonecutterRecipes;
+import com.github.sawors.stones.core.recipes.TreeCuttingRecipes;
 import com.github.sawors.stones.effects.StonesEffects;
-import com.github.sawors.stones.entitiy.SpecialEntityListeners;
-import com.github.sawors.stones.items.HandcuffCommandExecutor;
-import com.github.sawors.stones.items.IgniteCommandExecutor;
-import com.github.sawors.stones.items.StonesWeapons;
+import com.github.sawors.stones.entity.SpecialEntityListeners;
 import com.github.sawors.stones.listeners.*;
 import com.github.sawors.stones.magic.ChatController;
 import com.github.sawors.stones.magic.MagicExecutor;
 import com.github.sawors.stones.magic.StonesBodyParts;
-import com.github.sawors.stones.recipes.AnvilListeners;
-import com.github.sawors.stones.recipes.StonecutterRecipes;
 import com.github.sawors.stones.siege.StonesSiege;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
+import java.io.File;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.UUID;
@@ -37,6 +44,11 @@ public final class Stones extends JavaPlugin {
     private static Stones instance;
     private static Team t;
     public static ProtocolManager manager;
+    private static final CharacterManager chmanager = new CharacterManager(new File("./characters").getAbsoluteFile());
+    
+    public static CharacterManager getCharacterManager() {
+        return chmanager;
+    }
 
     @Override
     public void onEnable() {
@@ -72,6 +84,10 @@ public final class Stones extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new StonesSiege(), this);
         getServer().getPluginManager().registerEvents(new ChatController(), this);
         getServer().getPluginManager().registerEvents(new MagicExecutor(), this);
+        getServer().getPluginManager().registerEvents(new TreeCuttingRecipes(), this);
+        getServer().getPluginManager().registerEvents(new StonesPlayerAdditions(), this);
+        getServer().getPluginManager().registerEvents(new StonesPlayerSit(), this);
+        getServer().getPluginManager().registerEvents(new SickleRecipes(), this);
 
         //      LOAD COMMANDS
         getServer().getPluginCommand("vvoid").setExecutor(new VvoidCommand());
@@ -87,6 +103,9 @@ public final class Stones extends JavaPlugin {
         getServer().getPluginCommand("stest").setExecutor(new StestCommandExecutor());
         getServer().getPluginCommand("sdebug").setExecutor(new SdebugCommandExecutor());
         getServer().getPluginCommand("playmusic").setExecutor(new PlayMusicCommandExecutor());
+        getServer().getPluginCommand("recall").setExecutor(new RecallCommandExecutor());
+        getServer().getPluginCommand("chcreate").setExecutor(new CharacterCreateCommand());
+        getServer().getPluginCommand("chswitch").setExecutor(new CharacterSwitchCommand());
 
         //      INITIATE PROTOCOLLIB
         manager = ProtocolLibrary.getProtocolManager();
@@ -110,12 +129,17 @@ public final class Stones extends JavaPlugin {
     
     
         StonesEffects.doEffects();
+        
+        //  CHARACTERS MAP
+        chmanager.loadLinks();
     }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
         DataHolder.triggerRemoveList();
+        
+        chmanager.saveLinks();
         
     }
 
@@ -133,7 +157,7 @@ public final class Stones extends JavaPlugin {
     
     public static void adminLog(Object msg){
         try{
-            Bukkit.getPlayer(UUID.fromString("f96b1fab-2391-4c41-b6aa-56e6e91950fd")).sendMessage("["+ Time.valueOf(LocalTime.now()) + "] "+msg.toString());
+            Bukkit.getPlayer(UUID.fromString("f96b1fab-2391-4c41-b6aa-56e6e91950fd")).sendMessage("["+ ChatColor.YELLOW+"DEBUG"+ChatColor.WHITE+"-"+ Time.valueOf(LocalTime.now()) + "] "+msg.toString());
         } catch (NullPointerException exception){
             try{
                 Bukkit.getLogger().log(Level.INFO, msg.toString());

@@ -1,4 +1,4 @@
-package com.github.sawors.stones.items;
+package com.github.sawors.stones.combat;
 
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
