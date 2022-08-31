@@ -1,6 +1,7 @@
 package com.github.sawors.stones.commands;
 
 import com.github.sawors.stones.core.database.DataHolder;
+import com.github.sawors.stones.items.StonesItem;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -82,6 +83,11 @@ public class SdebugCommandExecutor implements CommandExecutor {
                         return true;
                     } else {
                         return false;
+                    }
+                case"item":
+                    if(sender instanceof Player player){
+                        player.sendMessage(ChatColor.GOLD + "ID : "+ ChatColor.GOLD + StonesItem.getItemId(player.getInventory().getItemInMainHand()));
+                        return true;
                     }
             }
         }

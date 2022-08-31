@@ -89,7 +89,7 @@ public abstract class StonesItem {
         if(typeskey.toString().endsWith(":")){
             typeskey.deleteCharAt(typeskey.lastIndexOf(":"));
         }
-        meta.getPersistentDataContainer().set(StonesItem.getItemTypeKey(), PersistentDataType.STRING, typeskey.toString().toLowerCase(Locale.ROOT));
+        meta.getPersistentDataContainer().set(StonesItem.getItemTagsKey(), PersistentDataType.STRING, typeskey.toString().toLowerCase(Locale.ROOT));
         
         item.setItemMeta(meta);
         
@@ -106,7 +106,7 @@ public abstract class StonesItem {
                 .append("\n")
                 .append("Item Tags : ").append("[")
         ;
-        String typestr = container.get(StonesItem.getItemTypeKey(), PersistentDataType.STRING);
+        String typestr = container.get(StonesItem.getItemTagsKey(), PersistentDataType.STRING);
         if(typestr != null){
             if(typestr.contains(":")){
                 for(String str : typestr.split(":")){
@@ -127,7 +127,19 @@ public abstract class StonesItem {
         return new NamespacedKey((Stones.getPlugin(Stones.class)), "id");
     }
     
-    public static NamespacedKey getItemTypeKey(){
+    public static NamespacedKey getItemTagsKey(){
         return new NamespacedKey((Stones.getPlugin(Stones.class)), "itemtype");
+    }
+    
+    public static String getItemId(ItemStack item){
+        String id = item.getType().toString().toLowerCase(Locale.ROOT);;
+        if(item.hasItemMeta()){
+            String checkid = item.getItemMeta().getPersistentDataContainer().get(getItemIdKey(), PersistentDataType.STRING);
+            if(checkid != null){
+                id = checkid;
+            }
+        }
+        
+        return id;
     }
 }
