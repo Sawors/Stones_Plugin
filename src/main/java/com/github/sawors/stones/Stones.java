@@ -6,9 +6,7 @@ import com.github.sawors.stones.books.StonesBooks;
 import com.github.sawors.stones.combat.CombatListeners;
 import com.github.sawors.stones.combat.StonesWeapons;
 import com.github.sawors.stones.commands.*;
-import com.github.sawors.stones.core.character.CharacterCreateCommand;
 import com.github.sawors.stones.core.character.CharacterManager;
-import com.github.sawors.stones.core.character.CharacterSwitchCommand;
 import com.github.sawors.stones.core.database.DataHolder;
 import com.github.sawors.stones.core.death.DeathManager;
 import com.github.sawors.stones.core.player.StonesPlayerAdditions;
@@ -104,8 +102,6 @@ public final class Stones extends JavaPlugin {
         getServer().getPluginCommand("sdebug").setExecutor(new SdebugCommandExecutor());
         getServer().getPluginCommand("playmusic").setExecutor(new PlayMusicCommandExecutor());
         getServer().getPluginCommand("recall").setExecutor(new RecallCommandExecutor());
-        getServer().getPluginCommand("chcreate").setExecutor(new CharacterCreateCommand());
-        getServer().getPluginCommand("chswitch").setExecutor(new CharacterSwitchCommand());
 
         //      INITIATE PROTOCOLLIB
         manager = ProtocolLibrary.getProtocolManager();

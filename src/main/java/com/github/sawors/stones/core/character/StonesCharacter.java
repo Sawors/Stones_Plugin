@@ -130,7 +130,7 @@ public class StonesCharacter{
     }
     
      
-     public StonesCharacter(UUID id, String name, int hp, int food, ItemStack[] inventory,ItemStack[] armor, ItemStack offhand, Location location, ArrayList<PotionEffect> pots, float xp, Location compasstarget, Location spawnpoint){
+    public StonesCharacter(UUID id, String name, int hp, int food, ItemStack[] inventory,ItemStack[] armor, ItemStack offhand, Location location, ArrayList<PotionEffect> pots, float xp, Location compasstarget, Location spawnpoint){
         this.id = id;
         this.name = name;
         this.hp = hp;
@@ -143,7 +143,7 @@ public class StonesCharacter{
         this.xp = xp;
         this.compasstarget = compasstarget;
         this.spawnpoint = spawnpoint;
-     }
+    }
     
     public StonesCharacter(Player p){
         this.id = UUID.randomUUID();

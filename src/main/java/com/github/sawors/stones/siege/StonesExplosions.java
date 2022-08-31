@@ -2,7 +2,6 @@ package com.github.sawors.stones.siege;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.util.Vector;
 
@@ -38,11 +37,11 @@ public class StonesExplosions {
                     for(Vector path : vectors){
                         for(double i = path.length(); i>= 0; i-=.5){
                             Location bloc = loc.clone().add(path.clone().normalize().multiply(i));
-                            bloc.getWorld().spawnParticle(Particle.FLAME,loc.clone().add(path.clone().normalize().multiply(i)),1,0,0,0,0);
+                            //bloc.getWorld().spawnParticle(Particle.FLAME,loc.clone().add(path.clone().normalize().multiply(i)),1,0,0,0,0);
                             
                             Block b = bloc.getBlock();
                             if(b.getType() != Material.AIR){
-                                b.getWorld().spawnParticle(Particle.BLOCK_DUST,b.getLocation().add(.5,.5,.5),1,1,1,1,.5, b.getBlockData());
+                                //b.getWorld().spawnParticle(Particle.BLOCK_DUST,b.getLocation().add(.5,.5,.5),1,1,1,1,.5, b.getBlockData());
                                 b.setType(Material.AIR);
                             }
                         }
