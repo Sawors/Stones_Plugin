@@ -121,17 +121,4 @@ run/
 *.bat
 *.jar
 
-/${dir}/classes/documentation/character system.txt
-/${dir}/classes/documentation/books/template/_cover.png
-/${dir}/classes/documentation/books/how-to-write-books.txt
-/${dir}/classes/documentation/books/template/PAGENUMBER.properties
-/${dir}/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
-/${dir}/classes/documentation/books/template/PAGENUMBER.json
-/${dir}/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
-/${dir}/classes/documentation/music/how-to-create-music.txt
-/${dir}/maven-archiver/pom.properties
-/${dir}/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst
-/${dir}/classes/documentation/books/template/PAGE_TEMPLATE.xcf
-/${dir}/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst
-/${dir}/classes/documentation/books/template/_close.properties
-/${dir}/classes/documentation/books/template/_close.json
+/${dir}/*
