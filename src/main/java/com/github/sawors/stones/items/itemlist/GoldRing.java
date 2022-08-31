@@ -8,7 +8,7 @@ import org.bukkit.Material;
 
 import java.util.ArrayList;
 
-public class GoldRing extends StonesItem {
+public class GoldRing extends StonesItem{
     
     public GoldRing() {
         super();

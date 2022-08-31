@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.Locale;
 
 
+// When creating a new object NEVER FORGET to register it in main class Stones on onEnable using Stones.registerItem(StonesItem item)
 public abstract class StonesItem {
     Component name;
     ArrayList<Component> lore;
