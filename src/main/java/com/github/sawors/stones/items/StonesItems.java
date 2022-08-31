@@ -2,6 +2,7 @@ package com.github.sawors.stones.items;
 
 import com.github.sawors.stones.UsefulThings.UsefulThings;
 import com.github.sawors.stones.core.database.DataHolder;
+import com.github.sawors.stones.items.itemlist.GoldRing;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -55,7 +56,7 @@ public class StonesItems {
                 meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
                 break;
             case GOLD_RING:
-                item.setType(Material.GOLD_NUGGET);
+                /*item.setType(Material.GOLD_NUGGET);
                 meta.displayName(Component.translatable(ChatColor.GOLD + "Gold Ring"));
                 meta.setLocalizedName(itemname.toString().toLowerCase());
                 lore.add(Component.text(ChatColor.ITALIC + "" + ChatColor.DARK_GRAY + "unique : " + ChatColor.MAGIC + (int)((Math.random()*10)-1) + (int)((Math.random()*10)-1)));
@@ -63,8 +64,9 @@ public class StonesItems {
                 lore.add(Component.text(ChatColor.GOLD+ ""+ ChatColor.ITALIC +"classic, stylish, never gets old"));
                 meta.setUnbreakable(true);
                 meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-                meta.getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, "ring");
-                break;
+                meta.getPersistentDataContainer().set(DataHolder.getItemTypeKey(), PersistentDataType.STRING, "ring");*/
+                return new GoldRing().get();
+                //break;
             case RESONANT_CRYSTAL:
                 item.setType(Material.AMETHYST_SHARD);
                 meta.displayName(Component.translatable(ChatColor.LIGHT_PURPLE + "Resonant Crystal"));

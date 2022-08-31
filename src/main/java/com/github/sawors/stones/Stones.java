@@ -17,6 +17,8 @@ import com.github.sawors.stones.core.recipes.StonecutterRecipes;
 import com.github.sawors.stones.core.recipes.TreeCuttingRecipes;
 import com.github.sawors.stones.effects.StonesEffects;
 import com.github.sawors.stones.entity.SpecialEntityListeners;
+import com.github.sawors.stones.items.StonesItem;
+import com.github.sawors.stones.items.itemlist.GoldRing;
 import com.github.sawors.stones.listeners.*;
 import com.github.sawors.stones.magic.ChatController;
 import com.github.sawors.stones.magic.MagicExecutor;
@@ -26,6 +28,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
 import org.bukkit.World;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -33,6 +36,7 @@ import org.bukkit.scoreboard.Team;
 import java.io.File;
 import java.sql.Time;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -43,6 +47,8 @@ public final class Stones extends JavaPlugin {
     private static Team t;
     public static ProtocolManager manager;
     private static final CharacterManager chmanager = new CharacterManager(new File("./characters").getAbsoluteFile());
+    private static HashMap<String, StonesItem> itemmap = new HashMap<>();
+    
     
     public static CharacterManager getCharacterManager() {
         return chmanager;
@@ -64,6 +70,9 @@ public final class Stones extends JavaPlugin {
         saveResource("documentation/books/template/PAGENUMBER.properties", true);
         saveResource("documentation/music/how-to-create-music.txt", true);
     
+        //      REGISTER ITEMS
+        registerItem(new GoldRing());
+        
         
         //      REGISTER EVENTS
         getServer().getPluginManager().registerEvents(new ListenersALL(), this);
@@ -161,5 +170,20 @@ public final class Stones extends JavaPlugin {
                 Bukkit.getLogger().log(Level.INFO, "null");
             }
         }
+    }
+    
+    public void registerItem(StonesItem item){
+        itemmap.put(item.getId(), item);
+        if(item instanceof Listener itemlistener){
+            getServer().getPluginManager().registerEvents(itemlistener, this);
+        }
+    }
+    
+    public StonesItem getRegisteredItem(String id){
+        return itemmap.get(id);
+    }
+    
+    private void loadItems(){
+    
     }
 }
