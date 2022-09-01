@@ -86,7 +86,7 @@ public class SdebugCommandExecutor implements CommandExecutor {
                     }
                 case"item":
                     if(sender instanceof Player player){
-                        player.sendMessage(ChatColor.GOLD + "ID : "+ ChatColor.GOLD + StonesItem.getItemId(player.getInventory().getItemInMainHand()));
+                        player.sendMessage(ChatColor.GOLD + "ID : "+ ChatColor.YELLOW + StonesItem.getItemId(player.getInventory().getItemInMainHand()));
                         return true;
                     }
             }

@@ -1,8 +1,9 @@
 package com.github.sawors.stones.items;
 
-import com.github.sawors.stones.UsefulThings.UsefulThings;
 import com.github.sawors.stones.core.database.DataHolder;
 import com.github.sawors.stones.items.itemlist.GoldRing;
+import com.github.sawors.stones.items.itemlist.MusicParchment;
+import com.github.sawors.stones.items.itemlist.instruments.OakFlute;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -32,7 +33,7 @@ public class StonesItems {
                 meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
                 break;
             case MUSIC_PARCHMENT:
-                item.setType(Material.PAPER);
+                /*item.setType(Material.PAPER);
                 meta.displayName(Component.translatable(ChatColor.WHITE + "Music Parchment"));
                 meta.setLocalizedName(itemname.toString().toLowerCase());
                 // LOTR : kp0000000000nn000000nnnnpg000000000000000000uuwwx0000000wwuuss000000uuwwru0000000000ds000000rb00pk0000000000nb000000kknnkp000000000000000000uuw0xa0000000wwuuks000000uu00pw0000000000ww
@@ -47,7 +48,8 @@ public class StonesItems {
                 
                 meta.setUnbreakable(true);
                 meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-                break;
+                break;*/
+                return new MusicParchment("§6Lord Of The Rings Theme","kp0000000000nn000000nnnnpg000000000000000000uuwwx0000000wwuuss000000uuwwru0000000000ds000000rb00pk0000000000nb000000kknnkp000000000000000000uuw0xa0000000wwuuks000000uu00pw0000000000ww").get();
             case HAMMER:
                 item.setType(Material.STICK);
                 meta.displayName(Component.translatable(ChatColor.WHITE + "Hammer"));
@@ -231,7 +233,7 @@ public class StonesItems {
                 
                 break;
             case OAK_FLUTE:
-                item.setType(Material.SHIELD);
+                /*item.setType(Material.SHIELD);
                 meta.displayName(Component.translatable(ChatColor.WHITE + "Oak Flute"));
                 meta.setLocalizedName(itemname.toString().toLowerCase());
                 meta.setUnbreakable(true);
@@ -242,9 +244,9 @@ public class StonesItems {
                 lore.add(Component.text(ChatColor.GRAY +""+ ChatColor.ITALIC +"No music to be played"));
                 lore.add(Component.text(""));
             
-                meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-                
-                break;
+                meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);*/
+                return new OakFlute().get();
+                //break;
             case OAK_LYRE:
                 item.setType(Material.SHIELD);
                 meta.displayName(Component.translatable(ChatColor.WHITE + "Oak Lyre"));

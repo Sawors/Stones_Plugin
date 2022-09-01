@@ -2,6 +2,7 @@ package com.github.sawors.stones.items;
 
 import com.github.sawors.stones.Stones;
 import net.kyori.adventure.text.Component;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemFlag;
@@ -9,10 +10,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Locale;
+import java.lang.invoke.MethodHandles;
+import java.util.*;
 
 
 // When creating a new object NEVER FORGET to register it in main class Stones on onEnable using Stones.registerItem(StonesItem item)
@@ -23,29 +24,49 @@ public abstract class StonesItem {
     String id;
     boolean unique;
     Material basematerial;
+    HashMap<NamespacedKey, String> additionaldata = new HashMap<>();
     
     public StonesItem(){
         String classname = this.getClass().getSimpleName();
-        StringBuilder idformated = new StringBuilder();
-        char lastchar = '/';
-        for(char c : classname.toCharArray()){
-            if(Character.isUpperCase(c) && Character.isLowerCase(lastchar)){
-                idformated.append("_");
-            }
-            idformated.append(Character.toLowerCase(c));
-            lastchar = c;
-        }
-        id = idformated.toString();
+        id = getTypeId();
         types = new HashSet<>();
         lore = new ArrayList<>();
         
-        name = Component.text(id);
+        
+        StringBuilder nameformated = new StringBuilder();
+        char lastchar = '/';
+        for(char c : classname.toCharArray()){
+            if(Character.isUpperCase(c) && Character.isLowerCase(lastchar)){
+                nameformated.append(" ");
+            }
+            nameformated.append(c);
+            lastchar = c;
+        }
+        name = Component.translatable(ChatColor.WHITE + nameformated.toString());
+        
         basematerial = Material.ROTTEN_FLESH;
         unique = false;
     }
     
     public String getId(){
         return id;
+    }
+    
+    public static String getTypeId(){
+        StringBuilder idformated = new StringBuilder();
+        char lastchar = '/';
+        for(char c : MethodHandles.lookup().lookupClass().getSimpleName().toCharArray()){
+            if(Character.isUpperCase(c) && Character.isLowerCase(lastchar)){
+                idformated.append("_");
+            }
+            idformated.append(Character.toLowerCase(c));
+            lastchar = c;
+        }
+        return idformated.toString();
+    }
+    
+    public void addData(@NotNull NamespacedKey key, String data){
+        additionaldata.put(key,data);
     }
     
     public void setDisplayName(Component name){
@@ -90,6 +111,9 @@ public abstract class StonesItem {
             typeskey.deleteCharAt(typeskey.lastIndexOf(":"));
         }
         meta.getPersistentDataContainer().set(StonesItem.getItemTagsKey(), PersistentDataType.STRING, typeskey.toString().toLowerCase(Locale.ROOT));
+        for(Map.Entry<NamespacedKey, String> entry : additionaldata.entrySet()){
+            meta.getPersistentDataContainer().set(entry.getKey(), PersistentDataType.STRING,entry.getValue());
+        }
         
         item.setItemMeta(meta);
         
