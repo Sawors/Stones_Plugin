@@ -69,8 +69,7 @@ public class StonesInstrument extends StonesItem implements Listener {
     
                         String offid = offcontainer.get(StonesItem.getItemIdKey(), PersistentDataType.STRING);
                         
-                        if(Objects.equals(offid, MusicParchment.getTypeId()
-                        )){
+                        if(Objects.equals(offid, new MusicParchment().getTypeId())){
                             music = offcontainer.get(MusicParchment.getMusicSheetKey(), PersistentDataType.STRING);
                         }
                         

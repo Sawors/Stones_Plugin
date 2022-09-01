@@ -26,11 +26,13 @@ import com.github.sawors.stones.magic.ChatController;
 import com.github.sawors.stones.magic.MagicExecutor;
 import com.github.sawors.stones.magic.StonesBodyParts;
 import com.github.sawors.stones.siege.StonesSiege;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -177,16 +179,27 @@ public final class Stones extends JavaPlugin {
     
     public void registerItem(StonesItem item){
         itemmap.put(item.getId(), item);
+        Stones.adminLog("registering item "+item.getId());
+        Stones.adminLog(itemmap);
         if(item instanceof Listener itemlistener){
             getServer().getPluginManager().registerEvents(itemlistener, this);
         }
     }
     
-    public StonesItem getRegisteredItem(String id){
+    public static StonesItem getRegisteredItem(String id){
         return itemmap.get(id);
     }
     
     private void loadItems(){
     
+    }
+    
+    public static Inventory getItemListDisplay(){
+        Inventory itemsview = Bukkit.createInventory(null, 6*9, Component.text("Item List"));
+        for(StonesItem item : itemmap.values()){
+            itemsview.addItem(item.get());
+        }
+        
+        return itemsview;
     }
 }

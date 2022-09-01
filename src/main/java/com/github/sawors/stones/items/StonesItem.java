@@ -12,7 +12,6 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.invoke.MethodHandles;
 import java.util.*;
 
 
@@ -52,10 +51,10 @@ public abstract class StonesItem {
         return id;
     }
     
-    public static String getTypeId(){
+    public String getTypeId(){
         StringBuilder idformated = new StringBuilder();
         char lastchar = '/';
-        for(char c : MethodHandles.lookup().lookupClass().getSimpleName().toCharArray()){
+        for(char c : getClass().getSimpleName().toCharArray()){
             if(Character.isUpperCase(c) && Character.isLowerCase(lastchar)){
                 idformated.append("_");
             }
