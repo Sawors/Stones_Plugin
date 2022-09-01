@@ -3,7 +3,7 @@ package com.github.sawors.stones.items;
 import com.github.sawors.stones.core.database.DataHolder;
 import com.github.sawors.stones.items.itemlist.GoldRing;
 import com.github.sawors.stones.items.itemlist.MusicParchment;
-import com.github.sawors.stones.items.itemlist.instruments.OakFlute;
+import com.github.sawors.stones.items.itemlist.instruments.Flute;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -245,7 +245,7 @@ public class StonesItems {
                 lore.add(Component.text(""));
             
                 meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);*/
-                return new OakFlute().get();
+                return new Flute().get();
                 //break;
             case OAK_LYRE:
                 item.setType(Material.SHIELD);

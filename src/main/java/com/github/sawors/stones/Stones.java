@@ -20,7 +20,7 @@ import com.github.sawors.stones.entity.SpecialEntityListeners;
 import com.github.sawors.stones.items.StonesItem;
 import com.github.sawors.stones.items.itemlist.GoldRing;
 import com.github.sawors.stones.items.itemlist.MusicParchment;
-import com.github.sawors.stones.items.itemlist.instruments.OakFlute;
+import com.github.sawors.stones.items.itemlist.instruments.*;
 import com.github.sawors.stones.listeners.*;
 import com.github.sawors.stones.magic.ChatController;
 import com.github.sawors.stones.magic.MagicExecutor;
@@ -76,8 +76,18 @@ public final class Stones extends JavaPlugin {
     
         //      REGISTER ITEMS
         registerItem(new GoldRing());
-        registerItem(new OakFlute());
         registerItem(new MusicParchment());
+        //music instruments
+        registerItem(new Flute());
+        registerItem(new Banjo());
+        registerItem(new Doublebass());
+        registerItem(new Guitar());
+        registerItem(new Koto());
+        registerItem(new Lyre());
+        registerItem(new Molophone());
+        registerItem(new Oud());
+        registerItem(new Panflute());
+        registerItem(new Sitar());
         
         //      REGISTER EVENTS
         getServer().getPluginManager().registerEvents(new ListenersALL(), this);
