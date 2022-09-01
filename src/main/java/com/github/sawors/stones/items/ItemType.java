@@ -16,7 +16,8 @@ public enum ItemType {
         SITAR,
         BANJO,
         MOLOPHONE,
-    OTHER
+    HAT,
+    UNMOVABLE
     ;
     
     public String tagString(){

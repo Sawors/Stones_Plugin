@@ -18,9 +18,12 @@ import com.github.sawors.stones.core.recipes.TreeCuttingRecipes;
 import com.github.sawors.stones.effects.StonesEffects;
 import com.github.sawors.stones.entity.SpecialEntityListeners;
 import com.github.sawors.stones.items.StonesItem;
+import com.github.sawors.stones.items.itemlist.BlankParchment;
 import com.github.sawors.stones.items.itemlist.GoldRing;
+import com.github.sawors.stones.items.itemlist.Hammer;
 import com.github.sawors.stones.items.itemlist.MusicParchment;
 import com.github.sawors.stones.items.itemlist.instruments.*;
+import com.github.sawors.stones.items.itemlist.wearable.StrawHat;
 import com.github.sawors.stones.listeners.*;
 import com.github.sawors.stones.magic.ChatController;
 import com.github.sawors.stones.magic.MagicExecutor;
@@ -77,6 +80,9 @@ public final class Stones extends JavaPlugin {
         //      REGISTER ITEMS
         registerItem(new GoldRing());
         registerItem(new MusicParchment());
+        registerItem(new BlankParchment());
+        registerItem(new Hammer());
+        registerItem(new StrawHat());
         //music instruments
         registerItem(new Flute());
         registerItem(new Banjo());

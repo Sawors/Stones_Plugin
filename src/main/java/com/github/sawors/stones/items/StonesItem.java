@@ -162,7 +162,20 @@ public abstract class StonesItem {
                 id = checkid;
             }
         }
-        
         return id;
+    }
+    public static List<String> getItemTags(ItemStack item){
+        List<String> tags = List.of();
+        if(item.hasItemMeta()){
+            String checktags = item.getItemMeta().getPersistentDataContainer().get(getItemTagsKey(), PersistentDataType.STRING);
+            if(checktags != null){
+                if(checktags.contains(":")){
+                    tags = List.of(checktags.split(":"));
+                } else {
+                    tags = List.of(checktags);
+                }
+            }
+        }
+        return tags;
     }
 }
