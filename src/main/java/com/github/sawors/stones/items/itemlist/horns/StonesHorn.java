@@ -37,7 +37,7 @@ public class StonesHorn extends StonesItem implements Listener {
         return this.hornsound;
     }
     
-    public BukkitRunnable getEffectAction(Object passabledata){
+    public BukkitRunnable getEffectAction(Player blower){
         return new BukkitRunnable() {
             @Override
             public void run() {}

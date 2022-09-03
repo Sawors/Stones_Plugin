@@ -34,13 +34,13 @@ public class StonesInstrument extends StonesItem implements Listener {
         lore.add(Component.text(ChatColor.GRAY+ ""+ ChatColor.ITALIC +"hold a Music Parchment in your offhand to play music"));
         setLore(lore);
     }
+    
     @EventHandler
     public void onPlayerBlock(EntityDamageEvent event){
         if(event.getEntity() instanceof Player player && player.isBlocking()){
             ItemStack item = player.getInventory().getItemInMainHand();
             if(item.hasItemMeta() && getItemTags(item).contains(ItemTag.DISABLE_ORIGINAL_FUNCTION.tagString())){
-                player.damage(event.getDamage());
-                player.setShieldBlockingDelay(80);
+                player.setHealth(player.getHealth()-event.getDamage());
             }
         }
     }

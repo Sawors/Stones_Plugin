@@ -17,21 +17,19 @@ public class RaidHorn extends StonesHorn{
     }
     
     @Override
-    public BukkitRunnable getEffectAction(Object passabledata) {
+    public BukkitRunnable getEffectAction(Player blower) {
         return new BukkitRunnable() {
             @Override
             public void run() {
-                if(passabledata instanceof Player p){
-                    if (!p.getWorld().getNearbyPlayers(p.getLocation(), 24).isEmpty()) {
-                        for (Player player : p.getWorld().getNearbyPlayers(p.getLocation(), 24)) {
+                    if (!blower.getWorld().getNearbyPlayers(blower.getLocation(), 24).isEmpty()) {
+                        for (Player player : blower.getWorld().getNearbyPlayers(blower.getLocation(), 24)) {
                             player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PILLAGER_AMBIENT, 2, UsefulThings.randomPitchSimple(0.4, 1));
                             player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PILLAGER_AMBIENT, 2, UsefulThings.randomPitchSimple(0.4, 1));
-                            player.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, (int) (((-p.getLocation().distance(player.getLocation()) / 24 / 1.25) + 1) * 30 * 20), 0, false, false));
-                            player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, (int) (((-p.getLocation().distance(player.getLocation()) / 24 / 1.25) + 1) * 30 * 20), 0, false, false));
-                            p.setCooldown(Material.SHIELD, 20 * 8);
+                            player.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, (int) (((-blower.getLocation().distance(player.getLocation()) / 24 / 1.25) + 1) * 30 * 20), 0, false, false));
+                            player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, (int) (((-blower.getLocation().distance(player.getLocation()) / 24 / 1.25) + 1) * 30 * 20), 0, false, false));
+                            blower.setCooldown(Material.SHIELD, 20 * 8);
                         }
                     }
-                }
             }
         };
     }
