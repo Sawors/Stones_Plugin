@@ -21,7 +21,7 @@ public class StonesHat extends StonesItem implements Listener {
         super();
     
         setMaterial(Material.BROWN_DYE);
-        addType(ItemType.HAT);
+        addTag(ItemType.HAT);
     
         ArrayList<Component> lore = new ArrayList<>();
         lore.add(Component.text(""));

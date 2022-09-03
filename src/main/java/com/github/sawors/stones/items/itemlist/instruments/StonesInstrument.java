@@ -25,7 +25,7 @@ public class StonesInstrument extends StonesItem implements Listener {
         super();
         
         setMaterial(Material.SHIELD);
-        addType(ItemType.INSTRUMENT);
+        addTag(ItemType.INSTRUMENT);
         
         ArrayList<Component> lore = new ArrayList<>();
         lore.add(Component.text(""));

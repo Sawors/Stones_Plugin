@@ -89,7 +89,7 @@ public abstract class StonesItem {
         }
     }
     
-    public void addType(ItemType type){
+    public void addTag(ItemType type){
         types.add(type.toString().toLowerCase(Locale.ROOT));
     }
     

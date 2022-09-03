@@ -15,7 +15,7 @@ public class GoldRing extends StonesItem{
         
         setMaterial(Material.GOLD_NUGGET);
         setDisplayName(Component.translatable(ChatColor.GOLD + "Gold Ring"));
-        addType(ItemType.RING);
+        addTag(ItemType.RING);
         
         ArrayList<Component> lore = new ArrayList<>();
         lore.add(Component.text(ChatColor.ITALIC + "" + ChatColor.DARK_GRAY + "unique : " + ChatColor.MAGIC + (int)((Math.random()*10)-1) + (int)((Math.random()*10)-1)));

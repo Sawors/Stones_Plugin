@@ -88,8 +88,6 @@ public final class Stones extends JavaPlugin {
         registerItem(new Kirby());
         registerItem(new Monocle());
         registerItem(new Sombrero());
-        registerItem(new Fez());
-        registerItem(new Fez());
         //music instruments
         registerItem(new Flute());
         registerItem(new Banjo());

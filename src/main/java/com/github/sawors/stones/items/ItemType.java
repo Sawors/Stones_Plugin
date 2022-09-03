@@ -17,7 +17,9 @@ public enum ItemType {
         BANJO,
         MOLOPHONE,
     HAT,
-    UNMOVABLE
+    UNMOVABLE,
+    DAGGER,
+    CURVED_DAGGER
     ;
     
     public String tagString(){
