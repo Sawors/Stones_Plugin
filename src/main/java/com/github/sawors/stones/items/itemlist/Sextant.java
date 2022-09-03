@@ -15,6 +15,8 @@ public class Sextant extends StonesItem implements Listener {
     // TODO : Give it a real role in navigation
     @EventHandler
     public static void onPlayerUseSextant(PlayerInteractEvent event){
-        event.getPlayer().sendMessage(event.getPlayer().getLocation().getChunk().getX()+" : "+event.getPlayer().getLocation().getChunk().getZ());
+        if(getItemId(event.getPlayer().getInventory().getItemInMainHand()).equals(new Sextant().getTypeId())){
+            event.getPlayer().sendMessage(event.getPlayer().getLocation().getChunk().getX()+" : "+event.getPlayer().getLocation().getChunk().getZ());
+        }
     }
 }
