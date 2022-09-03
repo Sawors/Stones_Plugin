@@ -18,6 +18,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class StonesHorn extends StonesItem implements Listener {
     
     NamespacedKey hornsound;
+    int cooldown = 20*4;
     
     public StonesHorn() {
         super();
@@ -35,6 +36,14 @@ public class StonesHorn extends StonesItem implements Listener {
     
     public NamespacedKey getHornSound(){
         return this.hornsound;
+    }
+    
+    public void setCooldown(int cooldown){
+        this.cooldown = cooldown;
+    }
+    
+    public int getCooldown(){
+        return this.cooldown;
     }
     
     public BukkitRunnable getEffectAction(Player blower){
@@ -71,6 +80,7 @@ public class StonesHorn extends StonesItem implements Listener {
                         StonesItem hornobject = Stones.getRegisteredItem(getItemId(hornitem));
                         if(hornobject instanceof StonesHorn horndata){
                             horndata.getEffectAction(p).run();
+                            p.setCooldown(Material.SHIELD, horndata.getCooldown());
                         }
                         this.cancel();
                         return;

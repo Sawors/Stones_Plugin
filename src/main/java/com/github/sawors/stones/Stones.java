@@ -29,7 +29,6 @@ import com.github.sawors.stones.items.itemlist.wearable.*;
 import com.github.sawors.stones.listeners.*;
 import com.github.sawors.stones.magic.ChatController;
 import com.github.sawors.stones.magic.MagicExecutor;
-import com.github.sawors.stones.magic.StonesBodyParts;
 import com.github.sawors.stones.siege.StonesSiege;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -88,6 +87,8 @@ public final class Stones extends JavaPlugin {
         registerItem(new Handcuffs());
         registerItem(new WoodCrayon());
         registerItem(new Spoon());
+        registerItem(new Rope());
+        registerItem(new Sextant());
         //hats
         registerListeners(new StonesHat());
         registerItem(new StrawHat(), false);
@@ -129,7 +130,6 @@ public final class Stones extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new FishingListeners(), this);
         getServer().getPluginManager().registerEvents(new StonesBooks(), this);
         getServer().getPluginManager().registerEvents(new StonesWeapons(), this);
-        getServer().getPluginManager().registerEvents(new StonesBodyParts(), this);
         getServer().getPluginManager().registerEvents(new StonesSiege(), this);
         getServer().getPluginManager().registerEvents(new ChatController(), this);
         getServer().getPluginManager().registerEvents(new MagicExecutor(), this);

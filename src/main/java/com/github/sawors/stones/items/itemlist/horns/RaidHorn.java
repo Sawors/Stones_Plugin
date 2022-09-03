@@ -14,6 +14,7 @@ public class RaidHorn extends StonesHorn{
     public RaidHorn() {
         super();
         addData(StonesInstrument.getSoundTypeKey(), Sound.EVENT_RAID_HORN.getKey().toString());
+        setCooldown(45*20);
     }
     
     @Override
