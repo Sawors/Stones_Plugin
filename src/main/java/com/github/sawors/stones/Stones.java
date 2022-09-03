@@ -23,6 +23,8 @@ import com.github.sawors.stones.items.itemlist.GoldRing;
 import com.github.sawors.stones.items.itemlist.Hammer;
 import com.github.sawors.stones.items.itemlist.MusicParchment;
 import com.github.sawors.stones.items.itemlist.instruments.*;
+import com.github.sawors.stones.items.itemlist.weapons.CurvedDagger;
+import com.github.sawors.stones.items.itemlist.weapons.StraightDagger;
 import com.github.sawors.stones.items.itemlist.wearable.*;
 import com.github.sawors.stones.listeners.*;
 import com.github.sawors.stones.magic.ChatController;
@@ -88,6 +90,9 @@ public final class Stones extends JavaPlugin {
         registerItem(new Kirby());
         registerItem(new Monocle());
         registerItem(new Sombrero());
+        //weapons
+        registerItem(new StraightDagger());
+        registerItem(new CurvedDagger());
         //music instruments
         registerItem(new Flute());
         registerItem(new Banjo());

@@ -155,6 +155,9 @@ public abstract class StonesItem {
     }
     
     public static String getItemId(ItemStack item){
+        if(item == null){
+            return "";
+        }
         String id = item.getType().toString().toLowerCase(Locale.ROOT);;
         if(item.hasItemMeta()){
             String checkid = item.getItemMeta().getPersistentDataContainer().get(getItemIdKey(), PersistentDataType.STRING);
@@ -165,6 +168,9 @@ public abstract class StonesItem {
         return id;
     }
     public static List<String> getItemTags(ItemStack item){
+        if(item == null){
+            return List.of();
+        }
         List<String> tags = List.of();
         if(item.hasItemMeta()){
             String checktags = item.getItemMeta().getPersistentDataContainer().get(getItemTagsKey(), PersistentDataType.STRING);

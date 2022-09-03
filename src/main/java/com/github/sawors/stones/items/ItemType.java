@@ -19,7 +19,9 @@ public enum ItemType {
     HAT,
     UNMOVABLE,
     DAGGER,
-    CURVED_DAGGER
+    CURVED_DAGGER,
+    ACTIVATED,
+    DISABLED,
     ;
     
     public String tagString(){

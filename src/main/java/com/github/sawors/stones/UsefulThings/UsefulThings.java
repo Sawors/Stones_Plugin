@@ -521,8 +521,6 @@ public class UsefulThings {
                 p.getWorld().playSound(p.getLocation(), Sound.BLOCK_IRON_TRAPDOOR_OPEN, 1f, 1.5f);
             }
         }
-
-
     }
 
     public static void spawnEntity(Location l, String entityname, int count){
