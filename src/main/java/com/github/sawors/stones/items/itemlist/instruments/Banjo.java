@@ -5,6 +5,6 @@ import org.bukkit.Sound;
 public class Banjo extends StonesInstrument{
     public Banjo() {
         super();
-        addData(StonesInstrument.getSoundtypeKey(), Sound.BLOCK_NOTE_BLOCK_BANJO.getKey().toString());
+        addData(StonesInstrument.getSoundTypeKey(), Sound.BLOCK_NOTE_BLOCK_BANJO.getKey().toString());
     }
 }

@@ -1,7 +1,7 @@
 package com.github.sawors.stones.items.itemlist.instruments;
 
 import com.github.sawors.stones.Stones;
-import com.github.sawors.stones.items.ItemType;
+import com.github.sawors.stones.items.ItemTag;
 import com.github.sawors.stones.items.StonesItem;
 import com.github.sawors.stones.items.itemlist.MusicParchment;
 import net.kyori.adventure.text.Component;
@@ -9,6 +9,7 @@ import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -25,12 +26,23 @@ public class StonesInstrument extends StonesItem implements Listener {
         super();
         
         setMaterial(Material.SHIELD);
-        addTag(ItemType.INSTRUMENT);
+        addTag(ItemTag.INSTRUMENT);
+        addTag(ItemTag.DISABLE_ORIGINAL_FUNCTION);
         
         ArrayList<Component> lore = new ArrayList<>();
         lore.add(Component.text(""));
         lore.add(Component.text(ChatColor.GRAY+ ""+ ChatColor.ITALIC +"hold a Music Parchment in your offhand to play music"));
         setLore(lore);
+    }
+    @EventHandler
+    public void onPlayerBlock(EntityDamageEvent event){
+        if(event.getEntity() instanceof Player player && player.isBlocking()){
+            ItemStack item = player.getInventory().getItemInMainHand();
+            if(item.hasItemMeta() && getItemTags(item).contains(ItemTag.DISABLE_ORIGINAL_FUNCTION.tagString())){
+                player.damage(event.getDamage());
+                player.setShieldBlockingDelay(80);
+            }
+        }
     }
     
     @EventHandler
@@ -55,7 +67,7 @@ public class StonesInstrument extends StonesItem implements Listener {
             }
            
             // actually attempting to play the sound
-            if(id != null && event.getAction().isRightClick() && tags.contains(ItemType.INSTRUMENT.tagString()) && item.getType().equals(Material.SHIELD) && event.getPlayer().getCooldown(Material.SHIELD) <= 0 ){
+            if(id != null && event.getAction().isRightClick() && tags.contains(ItemTag.INSTRUMENT.tagString()) && item.getType().equals(Material.SHIELD) && event.getPlayer().getCooldown(Material.SHIELD) <= 0 ){
                 String music = "";
                 // checks for music parchment
                 if(p.getInventory().getItemInOffHand().getType().equals(Material.PAPER)){
@@ -77,7 +89,7 @@ public class StonesInstrument extends StonesItem implements Listener {
                    
                 }
     
-                String soundtype = container.get(getSoundtypeKey(), PersistentDataType.STRING);
+                String soundtype = container.get(getSoundTypeKey(), PersistentDataType.STRING);
                 if(music != null && music.length() > 2){
                     if(soundtype != null && soundtype.length() > 0){
                         p.sendActionBar(Component.text(MusicParchment.getMusicName(music)));
@@ -99,7 +111,7 @@ public class StonesInstrument extends StonesItem implements Listener {
         }
     }
     
-    public static NamespacedKey getSoundtypeKey(){
+    public static NamespacedKey getSoundTypeKey(){
         return new NamespacedKey((Stones.getPlugin(Stones.class)), "soundtype");
     }
     
@@ -361,5 +373,19 @@ public class StonesInstrument extends StonesItem implements Listener {
         char[] notes = note.toCharArray();
         float[] pitch = StonesInstrument.noteToPitch(notes);
         playMusic(pitch, p, shouldhold, speed, sound);
+    }
+    
+    public static String getItemSoundType(ItemStack item){
+        String type = "";
+        if(item == null){
+            return type;
+        }
+        if(item.hasItemMeta()){
+            String checkdata = item.getItemMeta().getPersistentDataContainer().get(getSoundTypeKey(), PersistentDataType.STRING);
+            if(checkdata != null){
+                type = checkdata;
+            }
+        }
+        return type;
     }
 }

@@ -95,7 +95,7 @@ public abstract class StonesItem {
         }
     }
     
-    public void addTag(ItemType type){
+    public void addTag(ItemTag type){
         tags.add(type.toString().toLowerCase(Locale.ROOT));
     }
     
@@ -213,5 +213,19 @@ public abstract class StonesItem {
             lastchar = c;
         }
         return idformated.toString();
+    }
+    
+    public static String formatTextToName(String text){
+        StringBuilder nameformated = new StringBuilder();
+        char lastchar = '/';
+        for(char c : text.toCharArray()){
+            if(Character.isUpperCase(c) && Character.isLowerCase(lastchar)){
+                nameformated.append(" ");
+            }
+            nameformated.append(c);
+            lastchar = c;
+        }
+        
+        return nameformated.toString();
     }
 }

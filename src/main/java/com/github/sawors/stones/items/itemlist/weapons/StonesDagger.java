@@ -1,7 +1,7 @@
 package com.github.sawors.stones.items.itemlist.weapons;
 
 import com.github.sawors.stones.UsefulThings.UsefulThings;
-import com.github.sawors.stones.items.ItemType;
+import com.github.sawors.stones.items.ItemTag;
 import com.github.sawors.stones.items.StonesItem;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -36,12 +36,12 @@ public class StonesDagger extends StonesItem implements Listener {
             //straight daggers
             if (UsefulThings.isBehind(damager, receiver) && damager.isSneaking()) {
                 if(damager.getLocation().add(0,-0.25,0).getBlock().getType().isSolid()){
-                    if(mainitem.hasItemMeta() && StonesItem.getItemTags(mainitem).contains(ItemType.DAGGER.tagString())){
+                    if(mainitem.hasItemMeta() && StonesItem.getItemTags(mainitem).contains(ItemTag.DAGGER.tagString())){
 
                         receiver.getWorld().spawnParticle(Particle.BLOCK_CRACK, receiver.getLocation(), (int) event.getDamage()*2, .5, receiver.getHeight(),.5 , 0.1, Material.REDSTONE_BLOCK.createBlockData());
                         receiver.addPotionEffect(potionslowheavy);
                         if (receiver.getEquipment() != null && receiver.getEquipment().getChestplate() != null && receiver.getEquipment().getChestplate().getType() != Material.AIR) {
-                            if(offitem.hasItemMeta() && StonesItem.getItemTags(offitem).contains(ItemType.DAGGER.tagString())){
+                            if(offitem.hasItemMeta() && StonesItem.getItemTags(offitem).contains(ItemTag.DAGGER.tagString())){
                                 receiver.damage((event.getDamage()*1.5*2)-event.getDamage());
                             } else{
                                 receiver.damage((event.getDamage()*1.5)-event.getDamage());
@@ -50,7 +50,7 @@ public class StonesDagger extends StonesItem implements Listener {
                             receiver.getWorld().playSound(receiver.getLocation(), Sound.ITEM_SHIELD_BREAK, 1, 1);
 
                         } else{
-                            if(offitem.hasItemMeta() && StonesItem.getItemTags(offitem).contains(ItemType.DAGGER.tagString())){
+                            if(offitem.hasItemMeta() && StonesItem.getItemTags(offitem).contains(ItemTag.DAGGER.tagString())){
                                 receiver.damage((event.getDamage()*2*2)-event.getDamage());
                             } else{
                                 receiver.damage((event.getDamage()*2)-event.getDamage());
@@ -63,7 +63,7 @@ public class StonesDagger extends StonesItem implements Listener {
             }
 
             //recurved daggers
-            else if (mainitem.hasItemMeta() && StonesItem.getItemTags(mainitem).contains(ItemType.CURVED_DAGGER.tagString())){
+            else if (mainitem.hasItemMeta() && StonesItem.getItemTags(mainitem).contains(ItemTag.CURVED_DAGGER.tagString())){
                 double multiplier = 1;
                 if(damager.isSprinting()){
                     multiplier += 0.5;
@@ -89,7 +89,7 @@ public class StonesDagger extends StonesItem implements Listener {
 
                     }
                 }
-                if(offitem.hasItemMeta() && StonesItem.getItemTags(offitem).contains(ItemType.CURVED_DAGGER.tagString())){
+                if(offitem.hasItemMeta() && StonesItem.getItemTags(offitem).contains(ItemTag.CURVED_DAGGER.tagString())){
                     multiplier *= 2;
                 }
                 if(multiplier > 0){

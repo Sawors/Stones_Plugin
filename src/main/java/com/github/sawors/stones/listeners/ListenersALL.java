@@ -201,17 +201,6 @@ public class ListenersALL implements Listener {
     }
 
     @EventHandler
-    public void onPlayerBlock(EntityDamageEvent event){
-            if(event.getEntity() instanceof Player && ((Player) event.getEntity()).isBlocking()){
-                Player p = ((Player) event.getEntity()).getPlayer();
-                if(p != null && p.getInventory().getItemInMainHand().hasItemMeta() && Objects.equals(p.getInventory().getItemInMainHand().getItemMeta().getPersistentDataContainer().get(DataHolder.getItemTypeKey(), PersistentDataType.STRING), "horn")){
-                    p.setHealth(p.getHealth()-event.getDamage());
-//                    event.setCancelled(true);
-                }
-            }
-    }
-
-    @EventHandler
     public void explosionEvent(EntityExplodeEvent event){
             Entity e = event.getEntity();
             EntityType etype= e.getType();

@@ -5,6 +5,6 @@ import org.bukkit.Sound;
 public class Guitar extends StonesInstrument{
     public Guitar() {
         super();
-        addData(StonesInstrument.getSoundtypeKey(), Sound.BLOCK_NOTE_BLOCK_GUITAR.getKey().toString());
+        addData(StonesInstrument.getSoundTypeKey(), Sound.BLOCK_NOTE_BLOCK_GUITAR.getKey().toString());
     }
 }

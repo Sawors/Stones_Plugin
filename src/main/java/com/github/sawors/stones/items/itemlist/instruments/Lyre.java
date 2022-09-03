@@ -5,6 +5,6 @@ import org.bukkit.Sound;
 public class Lyre extends StonesInstrument{
     public Lyre() {
         super();
-        addData(StonesInstrument.getSoundtypeKey(), Sound.BLOCK_NOTE_BLOCK_HARP.getKey().toString());
+        addData(StonesInstrument.getSoundTypeKey(), Sound.BLOCK_NOTE_BLOCK_HARP.getKey().toString());
     }
 }

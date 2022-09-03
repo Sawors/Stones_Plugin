@@ -3,7 +3,7 @@ package com.github.sawors.stones.items.itemlist;
 import com.github.sawors.stones.Stones;
 import com.github.sawors.stones.UsefulThings.UsefulThings;
 import com.github.sawors.stones.events.PlayerWearHatEvent;
-import com.github.sawors.stones.items.ItemType;
+import com.github.sawors.stones.items.ItemTag;
 import com.github.sawors.stones.items.StonesItem;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -31,7 +31,7 @@ public class Blindfold extends StonesItem implements Listener {
         lore.add(Component.text(""));
         lore.add(Component.text(ChatColor.GREEN + "Right-click at someone or wear it to blind the wearer"));
         
-        addTag(ItemType.HAT);
+        addTag(ItemTag.HAT);
     
         setLore(lore);
     }

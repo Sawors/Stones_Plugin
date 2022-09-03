@@ -5,6 +5,6 @@ import org.bukkit.Sound;
 public class Flute extends StonesInstrument{
     public Flute() {
         super();
-        addData(StonesInstrument.getSoundtypeKey(), Sound.BLOCK_NOTE_BLOCK_FLUTE.getKey().toString());
+        addData(StonesInstrument.getSoundTypeKey(), Sound.BLOCK_NOTE_BLOCK_FLUTE.getKey().toString());
     }
 }

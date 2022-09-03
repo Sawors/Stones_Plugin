@@ -1,6 +1,6 @@
 package com.github.sawors.stones.items.itemlist;
 
-import com.github.sawors.stones.items.ItemType;
+import com.github.sawors.stones.items.ItemTag;
 import com.github.sawors.stones.items.StonesItem;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
@@ -15,7 +15,7 @@ public class GoldRing extends StonesItem{
         
         setMaterial(Material.GOLD_NUGGET);
         setDisplayName(Component.translatable(ChatColor.GOLD + "Gold Ring"));
-        addTag(ItemType.RING);
+        addTag(ItemTag.RING);
         
         ArrayList<Component> lore = new ArrayList<>();
         lore.add(Component.text(ChatColor.ITALIC + "" + ChatColor.DARK_GRAY + "unique : " + ChatColor.MAGIC + (int)((Math.random()*10)-1) + (int)((Math.random()*10)-1)));

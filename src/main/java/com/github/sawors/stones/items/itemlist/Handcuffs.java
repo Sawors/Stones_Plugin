@@ -1,7 +1,7 @@
 package com.github.sawors.stones.items.itemlist;
 
 import com.github.sawors.stones.UsefulThings.UsefulThings;
-import com.github.sawors.stones.items.ItemType;
+import com.github.sawors.stones.items.ItemTag;
 import com.github.sawors.stones.items.StonesItem;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
@@ -47,8 +47,8 @@ public class Handcuffs extends StonesItem implements Listener {
     public static void handcuffPlayer(Player p){
 
         Handcuffs replacement = new Handcuffs();
-        replacement.addTag(ItemType.ACTIVATED);
-        replacement.addTag(ItemType.UNMOVABLE);
+        replacement.addTag(ItemTag.ACTIVATED);
+        replacement.addTag(ItemTag.UNMOVABLE);
         ArrayList<Component> lore = new ArrayList<>();
         lore.add(Component.text(""));
         lore.add(Component.text(ChatColor.RED + "You are now handcuffed, you are prevented from :"));
@@ -78,7 +78,7 @@ public class Handcuffs extends StonesItem implements Listener {
         ItemStack itemoff = p.getInventory().getItemInOffHand();
         if(itemmain.hasItemMeta() && itemoff.hasItemMeta()){
 
-            if(StonesItem.getItemTags(itemmain).contains(ItemType.UNMOVABLE.tagString()) && StonesItem.getItemTags(itemoff).contains(ItemType.UNMOVABLE.tagString())){
+            if(StonesItem.getItemTags(itemmain).contains(ItemTag.UNMOVABLE.tagString()) && StonesItem.getItemTags(itemoff).contains(ItemTag.UNMOVABLE.tagString())){
                 p.getInventory().setItem(p.getInventory().getHeldItemSlot(), null);
                 p.getInventory().setItem(EquipmentSlot.OFF_HAND, null);
                 p.getWorld().playSound(p.getLocation(), Sound.BLOCK_IRON_TRAPDOOR_OPEN, 1f, 1.5f);

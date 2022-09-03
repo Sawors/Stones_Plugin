@@ -15,7 +15,6 @@ import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
@@ -28,8 +27,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
-
-import java.util.Objects;
 
 public class StonesPlayerAdditions implements Listener {
     
@@ -65,28 +62,6 @@ public class StonesPlayerAdditions implements Listener {
         if(event.getClickedBlock() != null && event.getClickedBlock().getType().equals(Material.RESPAWN_ANCHOR) && event.getAction().isRightClick() && event.getPlayer().getInventory().getItemInMainHand().getType().equals(Material.GLOWSTONE)){
             event.setCancelled(true);
         }
-    }
-    //
-    //  SIGN EDIT WITH CRAYON
-    @EventHandler
-    public void playerUsesCrayon(PlayerInteractEvent event){
-        if(event.getAction().isRightClick() && Objects.equals(event.getPlayer().getInventory().getItemInMainHand().getType(), Material.STICK) && event.getPlayer().getInventory().getItemInMainHand().hasItemMeta() && event.getPlayer().getInventory().getItemInMainHand().getItemMeta().getLocalizedName().contains("crayon")){
-            Block b = event.getClickedBlock();
-            Player p = event.getPlayer();
-            if(b != null){
-                if(b.getType().toString().contains("SIGN")){
-                    org.bukkit.block.Sign sign = ((org.bukkit.block.Sign) b.getState());
-                    p.openSign(sign);
-                }
-            }
-        }
-    }
-    //
-    //  SIGN EDIT EXIT
-    @EventHandler
-    public void playerExitSign(SignChangeEvent event){
-        Location loc = event.getBlock().getLocation().add(0.5,0.5,0.5);
-        loc.getWorld().playSound(loc, Sound.ENTITY_VILLAGER_WORK_CARTOGRAPHER, .5f, 1);
     }
     //
     //  CHAIN CLIMB

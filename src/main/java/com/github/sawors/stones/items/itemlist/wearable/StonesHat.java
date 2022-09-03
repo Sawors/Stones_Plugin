@@ -2,7 +2,7 @@ package com.github.sawors.stones.items.itemlist.wearable;
 
 import com.github.sawors.stones.Stones;
 import com.github.sawors.stones.events.PlayerWearHatEvent;
-import com.github.sawors.stones.items.ItemType;
+import com.github.sawors.stones.items.ItemTag;
 import com.github.sawors.stones.items.StonesItem;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -24,7 +24,7 @@ public class StonesHat extends StonesItem implements Listener {
         super();
     
         setMaterial(Material.BROWN_DYE);
-        addTag(ItemType.HAT);
+        addTag(ItemTag.HAT);
     
         ArrayList<Component> lore = new ArrayList<>();
         lore.add(Component.text(""));
@@ -43,9 +43,9 @@ public class StonesHat extends StonesItem implements Listener {
         if (item.hasItemMeta() && taglist.size() > 0) {
             //WEAR HAT
             if (p.getLocation().getPitch() <= -85 && b == null) {
-                if (taglist.contains(ItemType.HAT.tagString())) {
+                if (taglist.contains(ItemTag.HAT.tagString())) {
                     p.getInventory().setItemInMainHand(p.getInventory().getHelmet());
-                    if(getItemTags(p.getInventory().getHelmet()).contains(ItemType.HAT.tagString())){
+                    if(getItemTags(p.getInventory().getHelmet()).contains(ItemTag.HAT.tagString())){
                         // calling wear hat event when removing the previous hat is there is one
                         PlayerWearHatEvent hatevent = new PlayerWearHatEvent(p, item, false);
                         Bukkit.getPluginManager().callEvent(hatevent);
@@ -62,8 +62,8 @@ public class StonesHat extends StonesItem implements Listener {
         } else if (item.getType() == Material.AIR) {
             //"unwear" hat
             ItemStack helmet = p.getInventory().getHelmet();
-            if (p.getInventory().getItemInMainHand().getType() == Material.AIR && helmet != null && getItemTags(helmet).contains(ItemType.HAT.tagString()) && p.isSneaking() && p.getLocation().getPitch() >= 85) {
-                if (!taglist.contains(ItemType.UNMOVABLE.tagString())) {
+            if (p.getInventory().getItemInMainHand().getType() == Material.AIR && helmet != null && getItemTags(helmet).contains(ItemTag.HAT.tagString()) && p.isSneaking() && p.getLocation().getPitch() >= 85) {
+                if (!taglist.contains(ItemTag.UNMOVABLE.tagString())) {
                     p.getInventory().setItemInMainHand(helmet);
                     p.getInventory().setHelmet(null);
                     p.playSound(p.getLocation(), Sound.ITEM_ARMOR_EQUIP_LEATHER, 1, 1.5F);

@@ -2,7 +2,7 @@ package com.github.sawors.stones.items;
 
 import java.util.Locale;
 
-public enum ItemType {
+public enum ItemTag {
     RING,
     INSTRUMENT,
         FLUTE,
@@ -22,6 +22,8 @@ public enum ItemType {
     CURVED_DAGGER,
     ACTIVATED,
     DISABLED,
+    HORN,
+    DISABLE_ORIGINAL_FUNCTION
     ;
     
     public String tagString(){

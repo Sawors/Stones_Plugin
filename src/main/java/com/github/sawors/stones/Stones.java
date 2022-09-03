@@ -19,6 +19,8 @@ import com.github.sawors.stones.effects.StonesEffects;
 import com.github.sawors.stones.entity.SpecialEntityListeners;
 import com.github.sawors.stones.items.StonesItem;
 import com.github.sawors.stones.items.itemlist.*;
+import com.github.sawors.stones.items.itemlist.horns.RaidHorn;
+import com.github.sawors.stones.items.itemlist.horns.StonesHorn;
 import com.github.sawors.stones.items.itemlist.instruments.*;
 import com.github.sawors.stones.items.itemlist.weapons.CurvedDagger;
 import com.github.sawors.stones.items.itemlist.weapons.StonesDagger;
@@ -84,6 +86,8 @@ public final class Stones extends JavaPlugin {
         registerItem(new BlankParchment());
         registerItem(new Hammer());
         registerItem(new Handcuffs());
+        registerItem(new WoodCrayon());
+        registerItem(new Spoon());
         //hats
         registerListeners(new StonesHat());
         registerItem(new StrawHat(), false);
@@ -92,6 +96,9 @@ public final class Stones extends JavaPlugin {
         registerItem(new Monocle(), false);
         registerItem(new Sombrero(), false);
         registerItem(new Blindfold());
+        //horns
+        registerListeners(new StonesHorn());
+        registerItem(new RaidHorn(), false);
         //weapons
         registerListeners(new StonesDagger());
         registerItem(new StraightDagger(), false);

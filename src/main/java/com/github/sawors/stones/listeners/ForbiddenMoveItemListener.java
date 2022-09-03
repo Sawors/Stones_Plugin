@@ -1,6 +1,6 @@
 package com.github.sawors.stones.listeners;
 
-import com.github.sawors.stones.items.ItemType;
+import com.github.sawors.stones.items.ItemTag;
 import com.github.sawors.stones.items.StonesItem;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
@@ -23,7 +23,7 @@ public class ForbiddenMoveItemListener implements Listener {
         ItemStack item = event.getCurrentItem();
         HumanEntity p = event.getWhoClicked();
 
-        if(StonesItem.getItemTags(item).contains(ItemType.UNMOVABLE.tagString()) || (event.getSlotType() == InventoryType.SlotType.ARMOR && StonesItem.getItemTags(event.getWhoClicked().getInventory().getItemInMainHand()).contains(ItemType.UNMOVABLE.tagString()))){
+        if(StonesItem.getItemTags(item).contains(ItemTag.UNMOVABLE.tagString()) || (event.getSlotType() == InventoryType.SlotType.ARMOR && StonesItem.getItemTags(event.getWhoClicked().getInventory().getItemInMainHand()).contains(ItemTag.UNMOVABLE.tagString()))){
             p.sendActionBar(message);
             p.getWorld().playSound(p.getLocation(), Sound.BLOCK_NETHERITE_BLOCK_BREAK, 1f, 0.1f);
             event.setCancelled(true);
@@ -34,7 +34,7 @@ public class ForbiddenMoveItemListener implements Listener {
     @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent event){
         ItemStack item = event.getItemDrop().getItemStack();
-        if(StonesItem.getItemTags(item).contains(ItemType.UNMOVABLE.tagString())){
+        if(StonesItem.getItemTags(item).contains(ItemTag.UNMOVABLE.tagString())){
             event.getPlayer().sendActionBar(message);
             event.getPlayer().getWorld().playSound(event.getPlayer().getLocation(), Sound.BLOCK_NETHERITE_BLOCK_BREAK, 1f, 0.1f);
             event.setCancelled(true);
@@ -45,7 +45,7 @@ public class ForbiddenMoveItemListener implements Listener {
     public void onPlayerClickAtEntity(PlayerInteractEntityEvent event){
         Player p = event.getPlayer();
         ItemStack item = p.getActiveItem();
-        if(StonesItem.getItemTags(item).contains(ItemType.UNMOVABLE.tagString())){
+        if(StonesItem.getItemTags(item).contains(ItemTag.UNMOVABLE.tagString())){
             p.sendActionBar(message);
             p.getWorld().playSound(p.getLocation(), Sound.BLOCK_NETHERITE_BLOCK_BREAK, 1f, 0.1f);
             event.setCancelled(true);
@@ -56,7 +56,7 @@ public class ForbiddenMoveItemListener implements Listener {
     public void onPlayerInteractAtVehicle(VehicleEnterEvent event){
         if(event.getEntered() instanceof Player && !(event.getVehicle() instanceof Minecart || event.getVehicle() instanceof ArmorStand || event.getVehicle() instanceof Boat)){
             ItemStack item = ((Player) event.getEntered()).getInventory().getItemInMainHand();
-            if(StonesItem.getItemTags(item).contains(ItemType.UNMOVABLE.tagString())){
+            if(StonesItem.getItemTags(item).contains(ItemTag.UNMOVABLE.tagString())){
                 //event.getEntered().teleport(event.getEntered().getLocation().add(0,0.25,0));
                 event.getEntered().sendActionBar(message);
                 event.getEntered().getWorld().playSound(event.getEntered().getLocation(), Sound.BLOCK_NETHERITE_BLOCK_BREAK, 1f, 0.1f);
@@ -69,7 +69,7 @@ public class ForbiddenMoveItemListener implements Listener {
     public void onPlayerInteractAtBlock(PlayerInteractEvent event){
         Player p = event.getPlayer();
         ItemStack item = p.getInventory().getItemInMainHand();
-        if(StonesItem.getItemTags(item).contains(ItemType.UNMOVABLE.tagString())){
+        if(StonesItem.getItemTags(item).contains(ItemTag.UNMOVABLE.tagString())){
             //event.getEntered().teleport(event.getEntered().getLocation().add(0,0.25,0));
             p.sendActionBar(message);
             p.getWorld().playSound(p.getLocation(), Sound.BLOCK_NETHERITE_BLOCK_BREAK, 1f, 0.1f);
@@ -81,7 +81,7 @@ public class ForbiddenMoveItemListener implements Listener {
     public void onPlayerSwitchItemInHand(PlayerItemHeldEvent event){
         Player p = event.getPlayer();
         ItemStack item = p.getInventory().getItem(event.getPreviousSlot());
-        if(StonesItem.getItemTags(item).contains(ItemType.UNMOVABLE.tagString())){
+        if(StonesItem.getItemTags(item).contains(ItemTag.UNMOVABLE.tagString())){
             //event.getEntered().teleport(event.getEntered().getLocation().add(0,0.25,0));
             p.sendActionBar(message);
             p.getWorld().playSound(p.getLocation(), Sound.BLOCK_NETHERITE_BLOCK_BREAK, 1f, 0.1f);
@@ -97,7 +97,7 @@ public class ForbiddenMoveItemListener implements Listener {
 
         if(event.hasChangedBlock()){
             //block
-            if(StonesItem.getItemTags(item).contains(ItemType.UNMOVABLE.tagString())){
+            if(StonesItem.getItemTags(item).contains(ItemTag.UNMOVABLE.tagString())){
                 //event.getEntered().teleport(event.getEntered().getLocation().add(0,0.25,0));
                 p.getWorld().playSound(p.getLocation(), Sound.ITEM_ARMOR_EQUIP_CHAIN, 0.1f, 0.8f);
 
