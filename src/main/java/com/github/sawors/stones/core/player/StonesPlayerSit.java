@@ -56,7 +56,7 @@ public class StonesPlayerSit implements Listener {
     }
     
     /**
-     * Used to sit an entity at it's location. Conditions : entity must : be on ground, not swimming, not jumping
+     * Used to sit an entity at its location. Conditions : entity must : be on ground, not swimming, not jumping
      * @param entity the entity to sit
      */
     public static void sitEntity(LivingEntity entity){

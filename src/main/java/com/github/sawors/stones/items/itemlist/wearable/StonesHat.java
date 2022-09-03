@@ -1,8 +1,11 @@
 package com.github.sawors.stones.items.itemlist.wearable;
 
+import com.github.sawors.stones.Stones;
+import com.github.sawors.stones.events.PlayerWearHatEvent;
 import com.github.sawors.stones.items.ItemType;
 import com.github.sawors.stones.items.StonesItem;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
@@ -42,8 +45,18 @@ public class StonesHat extends StonesItem implements Listener {
             if (p.getLocation().getPitch() <= -85 && b == null) {
                 if (taglist.contains(ItemType.HAT.tagString())) {
                     p.getInventory().setItemInMainHand(p.getInventory().getHelmet());
+                    if(getItemTags(p.getInventory().getHelmet()).contains(ItemType.HAT.tagString())){
+                        // calling wear hat event when removing the previous hat is there is one
+                        PlayerWearHatEvent hatevent = new PlayerWearHatEvent(p, item, false);
+                        Bukkit.getPluginManager().callEvent(hatevent);
+                    }
                     p.getInventory().setHelmet(item);
                     p.playSound(p.getLocation(), Sound.ITEM_ARMOR_EQUIP_LEATHER, 1, 1);
+    
+                    // calling wear hat event
+                    Stones.adminLog("wearing");
+                    PlayerWearHatEvent hatevent = new PlayerWearHatEvent(p, item, true);
+                    Bukkit.getPluginManager().callEvent(hatevent);
                 }
             }
         } else if (item.getType() == Material.AIR) {
@@ -54,6 +67,9 @@ public class StonesHat extends StonesItem implements Listener {
                     p.getInventory().setItemInMainHand(helmet);
                     p.getInventory().setHelmet(null);
                     p.playSound(p.getLocation(), Sound.ITEM_ARMOR_EQUIP_LEATHER, 1, 1.5F);
+                    // calling wear hat event
+                    PlayerWearHatEvent hatevent = new PlayerWearHatEvent(p, item, false);
+                    Bukkit.getPluginManager().callEvent(hatevent);
                 }
         
             }

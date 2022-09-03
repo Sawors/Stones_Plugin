@@ -18,10 +18,7 @@ import com.github.sawors.stones.core.recipes.TreeCuttingRecipes;
 import com.github.sawors.stones.effects.StonesEffects;
 import com.github.sawors.stones.entity.SpecialEntityListeners;
 import com.github.sawors.stones.items.StonesItem;
-import com.github.sawors.stones.items.itemlist.BlankParchment;
-import com.github.sawors.stones.items.itemlist.GoldRing;
-import com.github.sawors.stones.items.itemlist.Hammer;
-import com.github.sawors.stones.items.itemlist.MusicParchment;
+import com.github.sawors.stones.items.itemlist.*;
 import com.github.sawors.stones.items.itemlist.instruments.*;
 import com.github.sawors.stones.items.itemlist.weapons.CurvedDagger;
 import com.github.sawors.stones.items.itemlist.weapons.StonesDagger;
@@ -47,7 +44,6 @@ import java.io.File;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -59,8 +55,6 @@ public final class Stones extends JavaPlugin {
     public static ProtocolManager manager;
     private static final CharacterManager chmanager = new CharacterManager(new File("./characters").getAbsoluteFile());
     private static HashMap<String, StonesItem> itemmap = new HashMap<>();
-    // we store only the hashcodes
-    private static HashSet<Integer> registeredlisteners = new HashSet<>();
     
     
     
@@ -89,6 +83,7 @@ public final class Stones extends JavaPlugin {
         registerItem(new MusicParchment());
         registerItem(new BlankParchment());
         registerItem(new Hammer());
+        registerItem(new Handcuffs());
         //hats
         registerListeners(new StonesHat());
         registerItem(new StrawHat(), false);
@@ -96,6 +91,7 @@ public final class Stones extends JavaPlugin {
         registerItem(new Kirby(), false);
         registerItem(new Monocle(), false);
         registerItem(new Sombrero(), false);
+        registerItem(new Blindfold());
         //weapons
         registerListeners(new StonesDagger());
         registerItem(new StraightDagger(), false);

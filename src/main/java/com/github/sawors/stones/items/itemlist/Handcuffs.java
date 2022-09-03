@@ -44,7 +44,6 @@ public class Handcuffs extends StonesItem implements Listener {
             }
         }
     }
-
     public static void handcuffPlayer(Player p){
 
         Handcuffs replacement = new Handcuffs();
