@@ -24,6 +24,7 @@ import com.github.sawors.stones.items.itemlist.Hammer;
 import com.github.sawors.stones.items.itemlist.MusicParchment;
 import com.github.sawors.stones.items.itemlist.instruments.*;
 import com.github.sawors.stones.items.itemlist.weapons.CurvedDagger;
+import com.github.sawors.stones.items.itemlist.weapons.StonesDagger;
 import com.github.sawors.stones.items.itemlist.weapons.StraightDagger;
 import com.github.sawors.stones.items.itemlist.wearable.*;
 import com.github.sawors.stones.listeners.*;
@@ -46,6 +47,7 @@ import java.io.File;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -57,6 +59,9 @@ public final class Stones extends JavaPlugin {
     public static ProtocolManager manager;
     private static final CharacterManager chmanager = new CharacterManager(new File("./characters").getAbsoluteFile());
     private static HashMap<String, StonesItem> itemmap = new HashMap<>();
+    // we store only the hashcodes
+    private static HashSet<Integer> registeredlisteners = new HashSet<>();
+    
     
     
     public static CharacterManager getCharacterManager() {
@@ -85,25 +90,28 @@ public final class Stones extends JavaPlugin {
         registerItem(new BlankParchment());
         registerItem(new Hammer());
         //hats
-        registerItem(new StrawHat());
-        registerItem(new Fez());
-        registerItem(new Kirby());
-        registerItem(new Monocle());
-        registerItem(new Sombrero());
+        registerListeners(new StonesHat());
+        registerItem(new StrawHat(), false);
+        registerItem(new Fez(), false);
+        registerItem(new Kirby(), false);
+        registerItem(new Monocle(), false);
+        registerItem(new Sombrero(), false);
         //weapons
-        registerItem(new StraightDagger());
-        registerItem(new CurvedDagger());
+        registerListeners(new StonesDagger());
+        registerItem(new StraightDagger(), false);
+        registerItem(new CurvedDagger(), false);
         //music instruments
-        registerItem(new Flute());
-        registerItem(new Banjo());
-        registerItem(new Doublebass());
-        registerItem(new Guitar());
-        registerItem(new Koto());
-        registerItem(new Lyre());
-        registerItem(new Molophone());
-        registerItem(new Oud());
-        registerItem(new Panflute());
-        registerItem(new Sitar());
+        registerListeners(new StonesInstrument());
+        registerItem(new Flute(), false);
+        registerItem(new Banjo(), false);
+        registerItem(new Doublebass(), false);
+        registerItem(new Guitar(), false);
+        registerItem(new Koto(), false);
+        registerItem(new Lyre(), false);
+        registerItem(new Molophone(), false);
+        registerItem(new Oud(), false);
+        registerItem(new Panflute(), false);
+        registerItem(new Sitar(), false);
         
         //      REGISTER EVENTS
         getServer().getPluginManager().registerEvents(new ListenersALL(), this);
@@ -203,10 +211,18 @@ public final class Stones extends JavaPlugin {
         }
     }
     
-    public void registerItem(StonesItem item){
+    private void registerItem(StonesItem item){
+        registerItem(item, true);
+    }
+    
+    private void registerItem(StonesItem item, boolean registerlisteners){
         itemmap.put(item.getId(), item);
-        Stones.adminLog("registering item "+item.getId());
-        Stones.adminLog(itemmap);
+        if(registerlisteners){
+            registerListeners(item);
+        }
+    }
+    
+    private void registerListeners(StonesItem item){
         if(item instanceof Listener itemlistener){
             getServer().getPluginManager().registerEvents(itemlistener, this);
         }

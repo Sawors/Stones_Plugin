@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class MusicParchment extends StonesItem {
     
     String musicname = "Unnamed";
-    String musicnotes = "ABCD";
+    String musicnotes = "Empty";
     
     public MusicParchment() {
         super();
@@ -27,10 +27,11 @@ public class MusicParchment extends StonesItem {
     
     public MusicParchment(String musicname, String notes){
         super();
-        this.musicname = musicname;
-        this.musicnotes = notes;
     
         setMaterial(Material.PAPER);
+        
+        this.musicname = musicname;
+        this.musicnotes = notes;
     
         addData(getMusicSheetKey(), buildMusicSheet(musicname,musicnotes));
     
@@ -40,6 +41,7 @@ public class MusicParchment extends StonesItem {
     
     public void setMusicName(String name){
         this.musicname = name;
+        setVariant(musicname);
     }
     
     // modify this to add more data to music sheets (like eventually color, tempo, etc...)

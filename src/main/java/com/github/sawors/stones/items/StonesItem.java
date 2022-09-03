@@ -11,6 +11,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -19,7 +20,8 @@ import java.util.*;
 public abstract class StonesItem {
     Component name;
     ArrayList<Component> lore;
-    HashSet<String> types;
+    HashSet<String> tags;
+    String variant;
     String id;
     boolean unique;
     Material basematerial;
@@ -28,9 +30,9 @@ public abstract class StonesItem {
     public StonesItem(){
         String classname = this.getClass().getSimpleName();
         id = getTypeId();
-        types = new HashSet<>();
+        tags = new HashSet<>();
         lore = new ArrayList<>();
-        
+        variant = ItemVariant.DEFAULT.getFormatted();
         
         StringBuilder nameformated = new StringBuilder();
         char lastchar = '/';
@@ -47,25 +49,29 @@ public abstract class StonesItem {
         unique = false;
     }
     
+    public StonesItem(String variant){
+        this();
+        this.variant = formatTextToId(variant);
+    }
+    
     public String getId(){
         return id;
     }
     
     public String getTypeId(){
-        StringBuilder idformated = new StringBuilder();
-        char lastchar = '/';
-        for(char c : getClass().getSimpleName().toCharArray()){
-            if(Character.isUpperCase(c) && Character.isLowerCase(lastchar)){
-                idformated.append("_");
-            }
-            idformated.append(Character.toLowerCase(c));
-            lastchar = c;
-        }
-        return idformated.toString();
+        return formatTextToId(getClass().getSimpleName());
     }
     
     public void addData(@NotNull NamespacedKey key, String data){
         additionaldata.put(key,data);
+    }
+    
+    public void setVariant(String variant){
+        this.variant = formatTextToId(variant);
+    }
+    
+    public String getVariant(){
+        return this.variant;
     }
     
     public void setDisplayName(Component name){
@@ -90,7 +96,7 @@ public abstract class StonesItem {
     }
     
     public void addTag(ItemType type){
-        types.add(type.toString().toLowerCase(Locale.ROOT));
+        tags.add(type.toString().toLowerCase(Locale.ROOT));
     }
     
     public ItemStack get(){
@@ -103,7 +109,7 @@ public abstract class StonesItem {
         meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
         meta.getPersistentDataContainer().set(StonesItem.getItemIdKey(), PersistentDataType.STRING, id.toLowerCase(Locale.ROOT));
         StringBuilder typeskey = new StringBuilder();
-        for(String s : types){
+        for(String s : tags){
             typeskey.append(s.toUpperCase(Locale.ROOT)).append(":");
         }
         if(typeskey.toString().endsWith(":")){
@@ -151,37 +157,61 @@ public abstract class StonesItem {
     }
     
     public static NamespacedKey getItemTagsKey(){
-        return new NamespacedKey((Stones.getPlugin(Stones.class)), "itemtype");
+        return new NamespacedKey((Stones.getPlugin(Stones.class)), "tags");
+    }
+    
+    public static NamespacedKey getItemVariantKey(){
+        return new NamespacedKey((Stones.getPlugin(Stones.class)), "variant");
     }
     
     public static String getItemId(ItemStack item){
-        if(item == null){
-            return "";
+        String itemid = getItemData(item, getItemIdKey());
+        if(itemid == null || itemid.length() == 0){
+            itemid = item.getType().toString().toLowerCase(Locale.ROOT);
         }
-        String id = item.getType().toString().toLowerCase(Locale.ROOT);;
-        if(item.hasItemMeta()){
-            String checkid = item.getItemMeta().getPersistentDataContainer().get(getItemIdKey(), PersistentDataType.STRING);
-            if(checkid != null){
-                id = checkid;
-            }
-        }
-        return id;
+        return itemid;
     }
     public static List<String> getItemTags(ItemStack item){
-        if(item == null){
-            return List.of();
-        }
+        String foundtags = getItemData(item, getItemTagsKey());
         List<String> tags = List.of();
-        if(item.hasItemMeta()){
-            String checktags = item.getItemMeta().getPersistentDataContainer().get(getItemTagsKey(), PersistentDataType.STRING);
-            if(checktags != null){
-                if(checktags.contains(":")){
-                    tags = List.of(checktags.split(":"));
-                } else {
-                    tags = List.of(checktags);
-                }
+        if(foundtags != null && foundtags.length() > 0){
+            if(foundtags.contains(":")){
+                tags = List.of(foundtags.split(":"));
+            } else {
+                tags = List.of(foundtags);
             }
         }
+        
         return tags;
+    }
+    public static String getItemVariant(ItemStack item){
+        String data = getItemData(item, getItemVariantKey());
+        return data != null ? data : ItemVariant.DEFAULT.getFormatted();
+    }
+    private static @Nullable String getItemData(ItemStack item, NamespacedKey key){
+        if(item == null){
+            return null;
+        }
+        String data = null;
+        if(item.hasItemMeta()){
+            String checkdata = item.getItemMeta().getPersistentDataContainer().get(key, PersistentDataType.STRING);
+            if(checkdata != null){
+                data = checkdata;
+            }
+        }
+        return data;
+    }
+    
+    public static String formatTextToId(String text){
+        StringBuilder idformated = new StringBuilder();
+        char lastchar = '/';
+        for(char c : text.replaceAll(" ", "_").toCharArray()){
+            if(Character.isUpperCase(c) && Character.isLowerCase(lastchar)){
+                idformated.append("_");
+            }
+            idformated.append(Character.toLowerCase(c));
+            lastchar = c;
+        }
+        return idformated.toString();
     }
 }

@@ -143,92 +143,12 @@ public class ListenersALL implements Listener {
     
                 }.runTaskTimer(Stones.getPlugin(), 0, 10);
             }
-        
-            if(event.getAction().isRightClick() && item.getType().equals(Material.SHIELD) && event.getPlayer().getCooldown(Material.SHIELD) <= 0 && Objects.equals(item.getItemMeta().getPersistentDataContainer().get(DataHolder.getItemTypeKey(), PersistentDataType.STRING), "instrument")){
-                String music = "";
-                Sound sound = null;
-                String soundstr = "";
-                if(locname.contains("_flute")){
-                    sound = Sound.BLOCK_NOTE_BLOCK_FLUTE;
-                } else if(locname.contains("_lyre")){
-                    sound = Sound.BLOCK_NOTE_BLOCK_HARP;
-                } else if(locname.contains("_guitar")){
-                    sound = Sound.BLOCK_NOTE_BLOCK_GUITAR;
-                } else if(locname.contains("_banjo")){
-                    sound = Sound.BLOCK_NOTE_BLOCK_BANJO;
-                } else if(locname.contains("_doublebass")){
-                    soundstr = "minecraft:sawors.instrument.doublebass";
-                } else if(locname.contains("_harp")){
-                    soundstr = "minecraft:sawors.instrument.harp";
-                } else if(locname.contains("_koto")){
-                    soundstr = "minecraft:sawors.instrument.koto";
-                } else if(locname.contains("_oud")){
-                    soundstr = "minecraft:sawors.instrument.oud";
-                } else if(locname.contains("_panflute")){
-                    soundstr = "minecraft:sawors.instrument.panflute";
-                } else if(locname.contains("_sitar")){
-                    soundstr = "minecraft:sawors.instrument.sitar";
-                } else if(locname.contains("molophone")){
-                    soundstr = "minecraft:sawors.instrument.molophone";
-                }
-                
-                
-                if(p.getInventory().getItemInOffHand().getType().equals(Material.PAPER) && p.getInventory().getItemInOffHand().hasItemMeta() && p.getInventory().getItemInOffHand().getItemMeta().getLocalizedName().equals("music_parchment") && p.getInventory().getItemInOffHand().getItemMeta().getPersistentDataContainer().get(DataHolder.getStonesItemDataKey(), PersistentDataType.STRING) != null){
-                    music = p.getInventory().getItemInOffHand().getItemMeta().getPersistentDataContainer().get(DataHolder.getStonesItemDataKey(), PersistentDataType.STRING);
-                }
-                
-                
-                if(music != null && music.length() > 0){
-                    if(sound != null){
-                        UsefulThings.playMusic(music, p, true, 2, sound);
-                    } else if(soundstr.length() != 0){
-                        UsefulThings.playMusic(music, p, true, 2, soundstr);
-                    } else{
-                        UsefulThings.playMusic(music, p, true, 2, Sound.ENTITY_VILLAGER_YES);
-                    }
-                } else {
-                    p.sendActionBar(Component.text(ChatColor.RED + "no music selected"));
-                    float[] pitch = {(-p.getLocation().getPitch()/180)+1};
-                    if(sound != null){
-                        UsefulThings.playMusic(pitch, p, true, 2, sound);
-                    } else if(soundstr.length() != 0){
-                        UsefulThings.playMusic(pitch, p, true, 2, soundstr);
-                    } else{
-                        UsefulThings.playMusic(pitch, p, true, 2, Sound.ENTITY_VILLAGER_YES);
-                    }
-                }
-                
-            }
             
         
             if (locname.contains("dice") && item.getItemMeta().getPersistentDataContainer().get(DataHolder.getItemTypeKey(), PersistentDataType.STRING) != null && item.getItemMeta().getPersistentDataContainer().get(DataHolder.getItemTypeKey(), PersistentDataType.STRING).equals("dice6")) {
                 int roll = ((int) (Math.random() * 6) + 1);
     
                 p.sendMessage(ChatColor.YELLOW + "You roll a " + ChatColor.GOLD + "" + ChatColor.BOLD + roll);
-            }
-        
-            
-            
-            
-            
-            //WEAR HAT
-            if (p.getLocation().getPitch() <= -85 && b == null) {
-                    if (Objects.equals(item.getItemMeta().getPersistentDataContainer().get(DataHolder.getItemTypeKey(), PersistentDataType.STRING), "hat")) {
-                        p.getInventory().setItemInMainHand(p.getInventory().getHelmet());
-                        p.getInventory().setHelmet(item);
-                        p.playSound(p.getLocation(), Sound.ITEM_ARMOR_EQUIP_LEATHER, 1, 1);
-                    }
-            }
-        
-        } else if (item.getType() == Material.AIR) {
-            //"unwear" hat
-            if (p.getInventory().getItemInMainHand().getType() == Material.AIR && p.getInventory().getHelmet() != null && p.getInventory().getHelmet().hasItemMeta() && p.getInventory().getHelmet().getItemMeta().getPersistentDataContainer().get(DataHolder.getItemTypeKey(), PersistentDataType.STRING).equals("hat") && p.isSneaking() && p.getLocation().getPitch() >= 85) {
-                if (!p.getInventory().getHelmet().getItemMeta().getLocalizedName().equals("blindfold")) {
-                    p.getInventory().setItemInMainHand(p.getInventory().getHelmet());
-                    p.getInventory().setHelmet(null);
-                    p.playSound(p.getLocation(), Sound.ITEM_ARMOR_EQUIP_LEATHER, 1, 1.5F);
-                }
-        
             }
         }
     }
