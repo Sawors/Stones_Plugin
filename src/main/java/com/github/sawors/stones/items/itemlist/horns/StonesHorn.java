@@ -13,11 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import java.util.Objects;
 
 public class StonesHorn extends StonesItem implements Listener {
     
@@ -41,7 +37,7 @@ public class StonesHorn extends StonesItem implements Listener {
         return this.hornsound;
     }
     
-    public BukkitRunnable getEffectAction(){
+    public BukkitRunnable getEffectAction(Object passabledata){
         return new BukkitRunnable() {
             @Override
             public void run() {}
@@ -65,25 +61,22 @@ public class StonesHorn extends StonesItem implements Listener {
             
                 final int max = 8;
                 int countdown = max;
+                final ItemStack hornitem = item.clone();
             
                 @Override
                 public void run() {
-                
+                    
+                    // action to do when the player finished blowing
                     if (countdown <= 0 || Bukkit.getOnlinePlayers().isEmpty()) {
-                        if (!p.getWorld().getNearbyPlayers(p.getLocation(), 24).isEmpty()) {
-                            for (Player player : p.getWorld().getNearbyPlayers(p.getLocation(), 24)) {
-                                player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PILLAGER_AMBIENT, 2, UsefulThings.randomPitchSimple(0.4, 1));
-                                player.getWorld().playSound(player.getLocation(), Sound.ENTITY_PILLAGER_AMBIENT, 2, UsefulThings.randomPitchSimple(0.4, 1));
-                                player.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, (int) (((-p.getLocation().distance(player.getLocation()) / 24 / 1.25) + 1) * 30 * 20), 0, false, false));
-                                player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, (int) (((-p.getLocation().distance(player.getLocation()) / 24 / 1.25) + 1) * 30 * 20), 0, false, false));
-                                p.setCooldown(Material.SHIELD, 20 * 8);
-                            }
+                        StonesItem hornobject = Stones.getRegisteredItem(getItemId(hornitem));
+                        if(hornobject instanceof StonesHorn horndata){
+                            horndata.getEffectAction(p).run();
                         }
                         this.cancel();
                         return;
                     }
                     if (countdown == max) {
-                        if (event.hasItem() && event.getItem().hasItemMeta() && Objects.equals(event.getItem().getItemMeta().getLocalizedName(), "raid_horn")) {
+                        if (hornitem.hasItemMeta() && getItemTags(hornitem).contains(ItemTag.HORN.tagString())) {
                             p.spawnParticle(Particle.REDSTONE, p.getLocation().add(0, 3.25 + ((float) -countdown / max), 0), 4, 0.1, .25, 0.1, new Particle.DustOptions(Color.fromRGB(0x45171f), 1));
                         } else {
                             p.getWorld().stopSound(sound);
@@ -91,7 +84,7 @@ public class StonesHorn extends StonesItem implements Listener {
                             return;
                         }
                     } else {
-                        if (p.isBlocking() && event.hasItem() && event.getItem().hasItemMeta() && Objects.equals(event.getItem().getItemMeta().getLocalizedName(), "raid_horn")) {
+                        if (p.isBlocking() && hornitem.hasItemMeta() && getItemTags(hornitem).contains(ItemTag.HORN.tagString())) {
                             p.spawnParticle(Particle.REDSTONE, p.getLocation().add(0, 3.25 + ((float) -countdown / max), 0), 4, 0.1, .25, 0.1, new Particle.DustOptions(Color.fromRGB(0x45171f), 1));
                         } else {
                             p.getWorld().stopSound(sound);
