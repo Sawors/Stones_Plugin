@@ -5,8 +5,6 @@ import com.comphenix.protocol.ProtocolManager;
 import com.github.sawors.stones.Stones;
 import com.github.sawors.stones.UsefulThings.UsefulThings;
 import com.github.sawors.stones.core.database.DataHolder;
-import com.github.sawors.stones.items.SItem;
-import com.github.sawors.stones.items.StonesItems;
 import com.github.sawors.stones.magic.MagicExecutor;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
@@ -28,7 +26,6 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -161,32 +158,7 @@ public class ListenersALL implements Listener {
         public void onItemSwitch(PlayerItemHeldEvent event){
             Player p = event.getPlayer();
             if(p.getInventory().getItem(event.getPreviousSlot()) != null && p.getInventory().getItem(event.getPreviousSlot()).hasItemMeta() && p.getInventory().getItem(event.getPreviousSlot()).getItemMeta().getEnchants().get(Enchantment.FIRE_ASPECT) != null && p.getInventory().getItem(event.getPreviousSlot()).getItemMeta().getEnchants().get(Enchantment.FIRE_ASPECT) <= 1){
-                UsefulThings.extinguishItem(p.getInventory().getItem(event.getPreviousSlot()), "normal", p);
-            }
-        }
-
-        @EventHandler
-        public void onPlayerClickEntity(PlayerInteractEntityEvent event){
-            Player player = event.getPlayer();
-            ItemStack item = player.getInventory().getItemInMainHand();
-            if(event.getRightClicked() instanceof Player){
-                Player rightclicked = (Player) event.getRightClicked();
-                if(player.getInventory().getItemInMainHand().hasItemMeta()){
-                    switch(item.getItemMeta().getLocalizedName()){
-                        case "handcuffs":
-                            if(UsefulThings.isBehind(player, rightclicked, 45)){
-                                UsefulThings.handcuffPlayer(rightclicked);
-                                ItemStack itemtemp = player.getInventory().getItemInMainHand().clone();
-                                itemtemp.setAmount(itemtemp.getAmount()-1);
-                                player.getInventory().setItem(player.getInventory().getHeldItemSlot(), itemtemp);
-                            }
-                        case "blindfold":
-                            if(UsefulThings.isBehind(player, rightclicked, 45) && rightclicked.getInventory().getHelmet() == null){
-                                rightclicked.getInventory().setHelmet(StonesItems.get(SItem.BLINDFOLD));
-                                
-                            }
-                    }
-                }
+                UsefulThings.extinguishItem(Objects.requireNonNull(p.getInventory().getItem(event.getPreviousSlot())), "normal", p);
             }
         }
         
