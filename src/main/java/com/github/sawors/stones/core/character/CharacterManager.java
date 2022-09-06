@@ -78,7 +78,7 @@ public class CharacterManager{
             
             ItemStack offhand = new ItemStack(Material.AIR);
             if(Objects.requireNonNull(conf.getString(SCharacterData.OFFHAND.toString())).length() >4){
-                Stones.adminLog(conf.getString(SCharacterData.OFFHAND.toString()));
+                Stones.logAdmin(conf.getString(SCharacterData.OFFHAND.toString()));
                 try{
                     offhand = SerializeInventory.itemStackArrayFromBase64(conf.getString(SCharacterData.OFFHAND.toString()))[0];
                 } catch (IOException exception) {
@@ -103,7 +103,7 @@ public class CharacterManager{
                     conf.getLocation(SCharacterData.SPAWN_LOCATION.toString())
             );
         } else {
-            Stones.adminLog(src);
+            Stones.logAdmin(src);
             throw new FileNotFoundException("data file for this id could not be found");
         }
     }

@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class StonesInstrument extends StonesItem implements Listener {
+public abstract class StonesInstrument extends StonesItem implements Listener {
     
     public StonesInstrument() {
         super();
@@ -28,12 +28,16 @@ public class StonesInstrument extends StonesItem implements Listener {
         setMaterial(Material.SHIELD);
         addTag(ItemTag.INSTRUMENT);
         addTag(ItemTag.DISABLE_ORIGINAL_FUNCTION);
-        
+
         ArrayList<Component> lore = new ArrayList<>();
         lore.add(Component.text(""));
-        lore.add(Component.text(ChatColor.GRAY+ ""+ ChatColor.ITALIC +"hold a Music Parchment in your offhand to play music"));
+        lore.add(Component.text(ChatColor.GRAY+ ""+ ChatColor.ITALIC +"hold a Music Parchment"));
+        lore.add(Component.text(ChatColor.GRAY+ ""+ ChatColor.ITALIC +"in your offhand"));
+        lore.add(Component.text(ChatColor.GRAY+ ""+ ChatColor.ITALIC +"to play music"));
         setLore(lore);
     }
+
+
     
     @EventHandler
     public void onPlayerBlock(EntityDamageEvent event){
@@ -43,6 +47,7 @@ public class StonesInstrument extends StonesItem implements Listener {
                 player.setHealth(player.getHealth()-event.getDamage());
             }
         }
+
     }
     
     @EventHandler
@@ -93,17 +98,17 @@ public class StonesInstrument extends StonesItem implements Listener {
                 if(music != null && music.length() > 2){
                     if(soundtype != null && soundtype.length() > 0){
                         p.sendActionBar(Component.text(MusicParchment.getMusicName(music)));
-                        StonesInstrument.playMusic(MusicParchment.getMusicNotes(music), p, true, 2, soundtype);
+                        StonesInstrument.playMusic(MusicParchment.getMusicNotes(music), p, true, soundtype);
                     } else{
-                        StonesInstrument.playMusic(MusicParchment.getMusicNotes(music), p, true, 2, Sound.ENTITY_VILLAGER_YES);
+                        StonesInstrument.playMusic(MusicParchment.getMusicNotes(music), p, true, Sound.ENTITY_VILLAGER_YES);
                     }
                 } else {
                     p.sendActionBar(Component.text(ChatColor.RED + "no music selected"));
                     float[] pitch = {(-p.getLocation().getPitch()/180)+1};
                     if(soundtype != null && soundtype.length() > 0){
-                        StonesInstrument.playMusic(pitch, p, true, 2, soundtype);
+                        StonesInstrument.playMusic(pitch, p, true, soundtype);
                     } else{
-                        StonesInstrument.playMusic(pitch, p, true, 2, Sound.ENTITY_VILLAGER_YES);
+                        StonesInstrument.playMusic(pitch, p, true, Sound.ENTITY_VILLAGER_YES);
                     }
                 }
             }
@@ -305,10 +310,7 @@ public class StonesInstrument extends StonesItem implements Listener {
         return colors;
     }
     
-    public static void playMusic(float[] pitch, Player p, boolean shouldhold, int speed, Sound sound){
-        if(speed <= 0){
-            return;
-        }
+    public static void playMusic(float[] pitch, Player p, boolean shouldhold, Sound sound){
         new BukkitRunnable(){
             int timer = 0;
             
@@ -328,24 +330,21 @@ public class StonesInstrument extends StonesItem implements Listener {
                 }
                 timer++;
             }
-        }.runTaskTimer(Stones.getPlugin(), 0,speed);
+        }.runTaskTimer(Stones.getPlugin(), 0,2);
         
     }
     
-    public static void playMusic(String note, Player p, boolean shouldhold, int speed, Sound sound){
+    public static void playMusic(String note, Player p, boolean shouldhold, Sound sound){
         char[] notes = note.toCharArray();
         float[] pitch = StonesInstrument.noteToPitch(notes);
-        playMusic(pitch, p, shouldhold, speed, sound);
+        playMusic(pitch, p, shouldhold, sound);
     }
     
     public static void playMusic(String note, Player p){
-        playMusic(note, p, false, 2, Sound.BLOCK_NOTE_BLOCK_HARP);
+        playMusic(note, p, false, Sound.BLOCK_NOTE_BLOCK_HARP);
     }
     
-    public static void playMusic(float[] pitch, Player p, boolean shouldhold, int speed, String sound){
-        if(speed <= 0){
-            return;
-        }
+    public static void playMusic(float[] pitch, Player p, boolean shouldhold, String sound){
         new BukkitRunnable(){
             int timer = 0;
             
@@ -365,14 +364,14 @@ public class StonesInstrument extends StonesItem implements Listener {
                 }
                 timer++;
             }
-        }.runTaskTimer(Stones.getPlugin(), 0,speed);
+        }.runTaskTimer(Stones.getPlugin(), 0,2);
         
     }
     
-    public static void playMusic(String note, Player p, boolean shouldhold, int speed, String sound){
+    public static void playMusic(String note, Player p, boolean shouldhold, String sound){
         char[] notes = note.toCharArray();
         float[] pitch = StonesInstrument.noteToPitch(notes);
-        playMusic(pitch, p, shouldhold, speed, sound);
+        playMusic(pitch, p, shouldhold, sound);
     }
     
     public static String getItemSoundType(ItemStack item){

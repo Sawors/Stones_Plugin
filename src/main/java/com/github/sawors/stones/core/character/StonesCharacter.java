@@ -180,7 +180,7 @@ public class StonesCharacter{
                 data.createSection(SCharacterData.XP.toString());
                 data.createSection(SCharacterData.COMPASS_TARGET.toString());
                 data.createSection(SCharacterData.SPAWN_LOCATION.toString());
-                Stones.adminLog(savefile.getPath());
+                Stones.logAdmin(savefile.getPath());
             }catch (IOException e){
                 e.printStackTrace();
             }

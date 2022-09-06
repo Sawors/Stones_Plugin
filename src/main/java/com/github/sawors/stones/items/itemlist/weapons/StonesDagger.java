@@ -16,7 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class StonesDagger extends StonesItem implements Listener {
+public abstract class StonesDagger extends StonesItem implements Listener {
 
     public StonesDagger() {
         super();

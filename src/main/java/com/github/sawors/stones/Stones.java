@@ -20,10 +20,8 @@ import com.github.sawors.stones.entity.SpecialEntityListeners;
 import com.github.sawors.stones.items.StonesItem;
 import com.github.sawors.stones.items.itemlist.*;
 import com.github.sawors.stones.items.itemlist.horns.RaidHorn;
-import com.github.sawors.stones.items.itemlist.horns.StonesHorn;
 import com.github.sawors.stones.items.itemlist.instruments.*;
 import com.github.sawors.stones.items.itemlist.weapons.CurvedDagger;
-import com.github.sawors.stones.items.itemlist.weapons.StonesDagger;
 import com.github.sawors.stones.items.itemlist.weapons.StraightDagger;
 import com.github.sawors.stones.items.itemlist.wearable.*;
 import com.github.sawors.stones.listeners.*;
@@ -35,17 +33,22 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.HashMap;
-import java.util.UUID;
+import java.util.HashSet;
 import java.util.logging.Level;
 
 
@@ -56,9 +59,10 @@ public final class Stones extends JavaPlugin {
     public static ProtocolManager manager;
     private static final CharacterManager chmanager = new CharacterManager(new File("./characters").getAbsoluteFile());
     private static HashMap<String, StonesItem> itemmap = new HashMap<>();
+    private static HashSet<Integer> registeredlisteners = new HashSet<>();
     
     
-    
+
     public static CharacterManager getCharacterManager() {
         return chmanager;
     }
@@ -90,32 +94,28 @@ public final class Stones extends JavaPlugin {
         registerItem(new Rope());
         registerItem(new Sextant());
         //hats
-        registerListeners(new StonesHat());
-        registerItem(new StrawHat(), false);
-        registerItem(new Fez(), false);
-        registerItem(new Kirby(), false);
-        registerItem(new Monocle(), false);
-        registerItem(new Sombrero(), false);
+        registerItem(new StrawHat());
+        registerItem(new Fez());
+        registerItem(new Kirby());
+        registerItem(new Monocle());
+        registerItem(new Sombrero());
         registerItem(new Blindfold());
         //horns
-        registerListeners(new StonesHorn());
-        registerItem(new RaidHorn(), false);
+        registerItem(new RaidHorn());
         //weapons
-        registerListeners(new StonesDagger());
-        registerItem(new StraightDagger(), false);
-        registerItem(new CurvedDagger(), false);
+        registerItem(new StraightDagger());
+        registerItem(new CurvedDagger());
         //music instruments
-        registerListeners(new StonesInstrument());
-        registerItem(new Flute(), false);
-        registerItem(new Banjo(), false);
-        registerItem(new Doublebass(), false);
-        registerItem(new Guitar(), false);
-        registerItem(new Koto(), false);
-        registerItem(new Lyre(), false);
-        registerItem(new Molophone(), false);
-        registerItem(new Oud(), false);
-        registerItem(new Panflute(), false);
-        registerItem(new Sitar(), false);
+        registerItem(new Flute());
+        registerItem(new Banjo());
+        registerItem(new Doublebass());
+        registerItem(new Guitar());
+        registerItem(new Koto());
+        registerItem(new Lyre());
+        registerItem(new Molophone());
+        registerItem(new Oud());
+        registerItem(new Panflute());
+        registerItem(new Sitar());
         
         //      REGISTER EVENTS
         getServer().getPluginManager().registerEvents(new ListenersALL(), this);
@@ -202,29 +202,42 @@ public final class Stones extends JavaPlugin {
         return manager;
     }
     
-    public static void adminLog(Object msg){
-        try{
-            Bukkit.getPlayer(UUID.fromString("f96b1fab-2391-4c41-b6aa-56e6e91950fd")).sendMessage("["+ ChatColor.YELLOW+"DEBUG"+ChatColor.WHITE+"-"+ Time.valueOf(LocalTime.now()) + "] "+msg.toString());
-        } catch (NullPointerException exception){
-            try{
-                Bukkit.getLogger().log(Level.INFO, msg.toString());
-            } catch (NullPointerException wellwearefucked){
-                Bukkit.getLogger().log(Level.INFO, "null");
+    public static void logAdmin(Object msg){
+
+        String output = "["+ ChatColor.YELLOW+"DEBUG"+ChatColor.WHITE+"-"+ Time.valueOf(LocalTime.now()) + "] "+msg;
+        Bukkit.getLogger().log(Level.INFO, output);
+        for(Player p : Bukkit.getOnlinePlayers()){
+            if(p.isOp()){
+                p.sendMessage(Component.text(output));
             }
         }
     }
-    
+
     private void registerItem(StonesItem item){
-        registerItem(item, true);
-    }
-    
-    private void registerItem(StonesItem item, boolean registerlisteners){
         itemmap.put(item.getId(), item);
-        if(registerlisteners){
-            registerListeners(item);
+
+
+        if(item instanceof Listener listener){
+            for(Method method : listener.getClass().getMethods()){
+                if(!registeredlisteners.contains(method.hashCode()) && method.getAnnotation(EventHandler.class) != null && method.getParameters().length >= 1 && Event.class.isAssignableFrom(method.getParameters()[0].getType())){
+                    // method is recognized as handling an event
+                    /*
+                    plugin -> parameter
+                    listener -> parameter
+                    for (Map.Entry<Class<? extends Event>, Set<RegisteredListener>> entry : plugin.getPluginLoader().createRegisteredListeners(listener, plugin).entrySet()) {
+                        getEventListeners(getRegistrationClass(entry.getKey())).registerAll(entry.getValue());
+                    }
+                    */
+                    logAdmin("Listener found : "+method.getName());
+                    Class<? extends Event> itemclass = method.getParameters()[0].getType().asSubclass(Event.class);
+
+                    getServer().getPluginManager().registerEvent(itemclass, listener, method.getAnnotation(EventHandler.class).priority(), EventExecutor.create(method, itemclass),getPlugin());
+                    registeredlisteners.add(method.hashCode());
+                }
+            }
         }
     }
-    
+
     private void registerListeners(StonesItem item){
         if(item instanceof Listener itemlistener){
             getServer().getPluginManager().registerEvents(itemlistener, this);

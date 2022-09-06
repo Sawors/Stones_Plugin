@@ -15,10 +15,11 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class StonesHorn extends StonesItem implements Listener {
+public abstract class StonesHorn extends StonesItem implements Listener {
     
     NamespacedKey hornsound;
     int cooldown = 20*4;
+    int castlength;
     
     public StonesHorn() {
         super();
@@ -33,7 +34,15 @@ public class StonesHorn extends StonesItem implements Listener {
     public void setHornSound(NamespacedKey soundkey){
         this.hornsound = soundkey;
     }
-    
+
+    public void setCastLength(int seconds){
+        this.castlength = seconds;
+    }
+
+    public int getCastLength(){
+        return this.castlength;
+    }
+
     public NamespacedKey getHornSound(){
         return this.hornsound;
     }
@@ -58,17 +67,16 @@ public class StonesHorn extends StonesItem implements Listener {
         Player p = event.getPlayer();
         ItemStack item = p.getInventory().getItemInMainHand();
         
-        if (event.getAction().isRightClick() && item.getType().equals(Material.SHIELD) && event.getPlayer().getCooldown(Material.SHIELD) <= 0 && getItemTags(p.getInventory().getItemInMainHand()).contains(ItemTag.HORN.tagString())) {
+        if (event.getAction().isRightClick() && item.getType().equals(Material.SHIELD) && event.getPlayer().getCooldown(Material.SHIELD) <= 0 && Stones.getRegisteredItem(getItemId(item)) instanceof StonesHorn registeredhorn) {
             final String soundkey = StonesInstrument.getItemSoundType(item);
             Key key = NamespacedKey.fromString(soundkey);
             key = key != null ? key : Sound.EVENT_RAID_HORN.getKey();
             net.kyori.adventure.sound.Sound sound = net.kyori.adventure.sound.Sound.sound(key, net.kyori.adventure.sound.Sound.Source.PLAYER, UsefulThings.getVolume(24), 1);
-            
-            
+
             p.getWorld().playSound(sound, net.kyori.adventure.sound.Sound.Emitter.self());
             new BukkitRunnable() {
             
-                final int max = 8;
+                final int max = registeredhorn.getCastLength() > 0 ? registeredhorn.getCastLength()*2 : 2;
                 int countdown = max;
                 final ItemStack hornitem = item.clone();
             

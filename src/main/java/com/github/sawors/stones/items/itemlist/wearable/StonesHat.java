@@ -18,7 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StonesHat extends StonesItem implements Listener {
+public abstract class StonesHat extends StonesItem implements Listener {
     
     public StonesHat() {
         super();
@@ -54,7 +54,7 @@ public class StonesHat extends StonesItem implements Listener {
                     p.playSound(p.getLocation(), Sound.ITEM_ARMOR_EQUIP_LEATHER, 1, 1);
     
                     // calling wear hat event
-                    Stones.adminLog("wearing");
+                    Stones.logAdmin("wearing");
                     PlayerWearHatEvent hatevent = new PlayerWearHatEvent(p, item, true);
                     Bukkit.getPluginManager().callEvent(hatevent);
                 }
